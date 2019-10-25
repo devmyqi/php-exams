@@ -1,4 +1,4 @@
-# exams - test your knowledge
+# exams - test your knowledge (v0.0.1)
 
 ## features
 
@@ -6,4 +6,9 @@
 * data strorage in database, json or text files
 * admin interface (added later)
 * parse markdown
+
+## organisation
+
+* repo: git@github.com:devmyqi/php-exams.git
+* Dropbox: /learn/aside/exams/
 
