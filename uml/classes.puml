@@ -1,0 +1,46 @@
+@startuml exams
+
+' persistent
+
+class User {
+	id[int]
+	usernname[string]
+	firstname[string]
+	lastname[string]
+	email [string]
+	results [array]
+}
+
+class Course {
+	id[int]
+	title[string]
+	description[text]
+	users[array]
+	questions[array]
+}
+
+class Question {
+	id[int]
+	text[string]
+	answers[array]
+	solution[list]
+	hint[object]
+}
+
+class Hint {
+	id[int]
+	text[string]
+}
+
+class Answer {
+	id[int]
+	text[string]
+}
+
+' runtime classes
+
+class Exam {
+	id[int]
+}
+
+@enduml
