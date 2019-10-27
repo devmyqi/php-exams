@@ -1,0 +1,15 @@
+/*	meta information
+	filename: css/styles.less
+	description: styles for exams
+	version: v0.0.1
+	author: Michael Wronna, Konstanz
+	created: 2019-10-26
+	modified: 2019-10-26
+*/
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
