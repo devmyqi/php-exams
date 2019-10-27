@@ -1,3 +1,7 @@
+<?php
+	require_once('inc/site.php');
+	$site = new Site();
+?>
 <!DOCTYPE html>
 <html lang="de"><head>
     <meta charset="utf-8">

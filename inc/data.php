@@ -1,12 +1,12 @@
 <?php
 
 /*	meta information
-	filename: inc/exams.php
-	description: exams - test your knowledge
+	filename: inc/data.php
+	description: data classes for exams
 	version: v0.0.1
 	author: Michael Wronna, Konstanz
 	created: 2019-10-25
-	modified: 2019-10-26
+	modified: 2019-10-27
 */
 
 require_once('inc/meta.php');
@@ -97,7 +97,6 @@ class Answer extends Meta {
 	}
 } // end of class Answer
 
-$data = new Data('data/exams.md');
-$data->printTree();
+// $data = new Data('data/exams.md');
 
 ?>
