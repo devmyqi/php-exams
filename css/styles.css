@@ -1,15 +1,33 @@
-/*	meta information
-	filename: css/styles.less
-	description: styles for exams
-	version: v0.0.1
-	author: Michael Wronna, Konstanz
-	created: 2019-10-26
-	modified: 2019-10-26
-*/
 *,
 ::before,
 ::after {
   box-sizing: border-box;
   margin: 0px;
   padding: 0px;
+}
+html {
+  font-family: Arial, helvetica, sans-serif;
+  font-size: 1em;
+  color: #666;
+}
+html body {
+  font-size: 100%;
+  width: 66rem;
+  margin: 0px auto;
+}
+html h1,
+html h2,
+html h3,
+html h4,
+html h5,
+html h6,
+html p,
+html ul,
+html ol {
+  margin-bottom: 1rem;
+}
+footer {
+  font-size: 0.9rem;
+  border-top: solid 1px;
+  margin-top: 1rem;
 }

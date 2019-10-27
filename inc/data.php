@@ -14,10 +14,11 @@ require_once('inc/meta.php');
 class Data extends Meta {
 	public $files = '';
 	public $courses = [];
-	public function __construct($files) {
-		$this->files = $files;
-		$this->_log(1,"new Data from files: $files");
-		foreach ( glob($files) as $file ) {
+	public function __construct($config,$files=NULL) {
+		$this->config = $config;
+		$this->files = $files !== NULL ? $files : $config->files;
+		$this->_log(1,"new Data from files: $this->files");
+		foreach ( glob($this->files) as $file ) {
 			$this->_readData($file);
 		}
 	}
@@ -37,16 +38,16 @@ class Data extends Meta {
 		// reverse processing the data file!
 		foreach ( array_reverse(file($file)) as $line ) { $line = trim($line);
 			if ( preg_match('/^\#{3}\s+(.*)$/',$line,$result) ) { ### answer
-				$answer = new Answer($result[1]);
-				$answer->$markup = implode("\n",array_reverse($markup));
+				$answer = new Answer($this->config,$result[1]);
+				$answer->markup = implode("\n",array_reverse($markup));
 				$answers[] = $answer; $markup = [];
 			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$line,$result) ) { ## question
-				$question = new Question($result[1]);
+				$question = new Question($this->config,$result[1]);
 				$question->answers = array_reverse($answers);
 				$question->markup = implode("\n",array_reverse($markup));
 				$questions[] = $question; $answers = []; $markup = [];
 			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$line,$result) ) { # course
-				$course = new Course($result[1]);
+				$course = new Course($this->config,$result[1]);
 				$course->questions = array_reverse($questions);
 				$course->markup = implode("\n",array_reverse($markup));
 				$courses[] = $course; $questions = []; $markup = [];
@@ -61,9 +62,9 @@ class Data extends Meta {
 				print("\t* [q] $question->topic\n");
 				foreach ( $question->answers as $answer ) {
 					print("\t\t* [a] $answer->topic\n");
-				}
-			}
-		}
+				} // end printing answers
+			} // end printing questions
+		} // end printing courses
 	}
 } // end of class Data
 
@@ -71,7 +72,8 @@ class Course extends Meta {
 	public $topic = '';
 	public $markup = '';
 	public $questions = [];
-	public function __construct($topic='') {
+	public function __construct($config,$topic='') {
+		$this->config = $config;
 		$this->topic = $topic;
 		$this->_log(1,"new Course: $topic");
 	}
@@ -81,9 +83,10 @@ class Question extends Meta {
 	public $topic = '';
 	public $markup = '';
 	public $answers = [];
-	public function __construct($topic='') {
+	public function __construct($config,$topic='') {
+		$this->config = $config;
 		$this->topic = $topic;
-		$this->_log(1,"new Question: $topic");
+		$this->_log(2,"new Question: $topic");
 	}
 } // end of class Question
 
@@ -91,12 +94,11 @@ class Answer extends Meta {
 	public $topic = '';
 	public $markup = '';
 	public $correct = False;
-	public function __construct($topic='') {
+	public function __construct($config,$topic='') {
+		$this->config = $config;
 		$this->topic = $topic;
-		$this->_log(1,"new Answer: $topic");
+		$this->_log(4,"new Answer: $topic");
 	}
 } // end of class Answer
-
-// $data = new Data('data/exams.md');
 
 ?>

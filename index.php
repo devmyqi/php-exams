@@ -1,23 +1,26 @@
 <?php
-	require_once('inc/site.php');
-	$site = new Site();
+	require_once('inc/meta.php');
+	require_once('inc/page.php');
+	$config = new Config();
+	$config->loglevel = 63 - 4;
+	$config->logtarget = 'console';
+	$config->files = 'data/exams.md';
+	$page = new Page($config);
 ?>
 <!DOCTYPE html>
 <html lang="de"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>exams - test your knowledge</title>
+    <title><?php echo $page->name, " - ", $page->title; ?></title>
     <link rel="stylesheet" type="text/css" href="css/styles.css"/>
 	<!-- favicon -->
 </head><body>
 	<header>
-		<h1>exams - test your knowledge</h1>
+		<h1><?php echo $page->name, " - ", $page->title; ?></h1>
 	</header>
-	<main>
-		main
+	<main> <!-- <h2>main</h2> -->
+		<?php echo $page->content; ?>
 	</main>
-	<footer>
-		footer
-	</footer>
+	<footer><?php echo $page->getFooter(); ?></footer>
 </body></html>

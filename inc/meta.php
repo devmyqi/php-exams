@@ -10,11 +10,14 @@
 */
 
 class Config {
+	// logging
 	public $loglevel = 63;
 	public $logdate = 'H:i:s.u';
 	public $logtypes = [1=>'info',2=>'info',4=>'info',8=>'warning',16=>'error',32=>'debug'];
 	public $logformat = '$created [$logtype] ($level) $message';
 	public $logtarget = 'terminal'; // console,website,terminal
+	// data
+	public $files = 'data/test.md';
 }
 
 class Meta {

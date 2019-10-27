@@ -8,6 +8,11 @@
 
 // variables
 
+@widthMain: 66rem;
+@colorText: #666;
+@colorMain: #966;
+@marginBox: 1rem;
+
 // reset
 
 *, ::before, ::after {
@@ -16,6 +21,33 @@
 	padding: 0px;
 }
 
-ht
+// design
 
+html {
+	font-family: Arial, helvetica, sans-serif;
+	font-size: 1em;
+	color: @colorText;
+	body {
+		font-size: 100%;
+		width: @widthMain;
+		margin: 0px auto;
+	}
+	h1, h2, h3, h4, h5, h6, p, ul, ol {
+		margin-bottom: @marginBox;
+	}
+}
+
+// header
+
+// main
+
+// footer
+
+footer {
+	font-size: 0.9rem;
+	border-top: solid 1px;
+	margin-top: @marginBox;
+}
+
+// hacks
 
