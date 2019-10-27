@@ -9,14 +9,20 @@
 	modified: 2019-10-27
 */
 
+// require_once('inc/config.php');
+
 require_once('inc/meta.php');
 
 class Program extends Meta {
 	public $name = 'exams';
 	public $version = 'v0.0.1';
-	public function __construct() {
+	public function __construct($config) {
+		$this->config = $config;
 		$this->_log(1,'new <Program> object initialized');
 	}
 } // end of class Program
+
+$config = new Config();
+$program = new Program($config);
 
 ?>
