@@ -1,14 +1,25 @@
-# exams - test your knowledge (v0.0.1)
+# `exams` Prüfungs-System (v0.0.1)
 
-## features
+* Slogan: exams - test your knowledge
 
-* courses with questions, answers, solutions and hints
-* data strorage in database, json or text files
-* admin interface (added later)
-* parse markdown
+## Funktionen (features)
 
-## organisation
+* Kurse in Markup-Dateien gespeichert
+	einfach zu bearbeiten und zu betrachten
+* Kurse mit Fragen, Antworten und Hinweisen
+* Tests für nicht angemeldete Benutzer
+* Prüfungen für angemeldete Benutzer
+* Benutzer und Ergebnisse in JSON-Dateien
+
+## Versionen (versions)
+
+* v0.0.1 (alpha1)
+	* Daten aus Markup-Datein einlesen
+* v0.0.5 (beta1)
+* v0.1.0 (release1)
+* v1.0.0 (stable1)
+
+## Organisation (organisation)
 
 * repo: git@github.com:devmyqi/php-exams.git
 * Dropbox: /learn/aside/exams/
-

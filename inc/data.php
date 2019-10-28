@@ -6,7 +6,7 @@
 	version: v0.0.1
 	author: Michael Wronna, Konstanz
 	created: 2019-10-25
-	modified: 2019-10-27
+	modified: 2019-10-28
 */
 
 require_once('inc/meta.php');
@@ -22,14 +22,16 @@ class Data extends Meta {
 			$this->_readData($file);
 		}
 	}
-	protected function _getCourse($topic) {
-		if ( is_int($topic) and $topic < count($this->courses) ) {
-			return $this->courses[$topic];
-		} elseif ( ! count($this->courses) ) { return NULL; }
-		foreach ( $this->courses as $course ) {
-			if ( $course->topic == $topic ) { return $course; }
-		} return NULL;
+	// static functions
+	static function getID($keys,$topic) {
+		preg_match('/^([\w\-]+)\s*\:\s*(.*)\s*$/',$topic,$result);
+		if ( ! count($result) ) { $number = count($keys); // no id given
+			while ( True ) { $number += 1; $uid = sprintf('_%03d',$number);
+				if ( ! in_array($uid,$keys) ) { break; }
+			} return array($uid,$topic);
+		} else { return array($result[1],$result[2]); }
 	}
+	// protected functions
 	protected function _readData($file) {
 		if ( ! is_file($file) or ! is_readable($file) ) {
 			$this->_log(2,"unable to read file: $file");
@@ -38,22 +40,26 @@ class Data extends Meta {
 		// reverse processing the data file!
 		foreach ( array_reverse(file($file)) as $line ) { $line = trim($line);
 			if ( preg_match('/^\#{3}\s+(.*)$/',$line,$result) ) { ### answer
-				$answer = new Answer($this->config,$result[1]);
+				list($aid,$topic) = Data::getID(array_keys($answers),$result[1]);
+				$answer = new Answer($this->config,$aid,$topic);
 				$answer->markup = implode("\n",array_reverse($markup));
-				$answers[] = $answer; $markup = [];
+				$answers[$aid] = $answer; $markup = [];
 			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$line,$result) ) { ## question
-				$question = new Question($this->config,$result[1]);
+				list($qid,$topic) = Data::getID(array_keys($questions),$result[1]);
+				$question = new Question($this->config,$qid,$topic);
 				$question->answers = array_reverse($answers);
 				$question->markup = implode("\n",array_reverse($markup));
-				$questions[] = $question; $answers = []; $markup = [];
+				$questions[$qid] = $question; $answers = []; $markup = [];
 			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$line,$result) ) { # course
-				$course = new Course($this->config,$result[1]);
+				list($cid,$topic) = Data::getID(array_keys($courses),$result[1]);
+				$course = new Course($this->config,$cid,$topic);
 				$course->questions = array_reverse($questions);
 				$course->markup = implode("\n",array_reverse($markup));
-				$courses[] = $course; $questions = []; $markup = [];
+				$courses[$cid] = $course; $questions = []; $markup = [];
 			} else { $markup[] = $line; }
 		} $this->courses = array_reverse($courses);
 	}
+	// output functions
 	public function printTree() {
 		$this->_log(2,"printing the data object tree");
 		foreach ( $this->courses as $course ) {
@@ -81,33 +87,39 @@ class Data extends Meta {
 } // end of class Data
 
 class Course extends Meta {
+	public $cid = '';
 	public $topic = '';
 	public $markup = '';
 	public $questions = [];
-	public function __construct($config,$topic='') {
+	public function __construct($config,$cid='',$topic='') {
 		$this->config = $config;
+		$this->cid = $cid;
 		$this->topic = $topic;
 		$this->_log(1,"new Course: $topic");
 	}
 } // end of class Course
 
 class Question extends Meta {
+	public $qid = '';
 	public $topic = '';
 	public $markup = '';
 	public $answers = [];
-	public function __construct($config,$topic='') {
+	public function __construct($config,$qid='',$topic='') {
 		$this->config = $config;
+		$this->qid = $qid;
 		$this->topic = $topic;
 		$this->_log(2,"new Question: $topic");
 	}
 } // end of class Question
 
 class Answer extends Meta {
+	public $aid = '';
 	public $topic = '';
 	public $markup = '';
 	public $correct = False;
-	public function __construct($config,$topic='') {
+	public function __construct($config,$aid='',$topic='') {
 		$this->config = $config;
+		$this->aid = $aid;
 		$this->topic = $topic;
 		$this->_log(4,"new Answer: $topic");
 	}

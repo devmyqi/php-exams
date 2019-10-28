@@ -6,7 +6,7 @@
 	version: v0.0.1
 	author: Michael Wronna, Konstanz
 	created: 2019-10-27
-	modified: 2019-10-27
+	modified: 2019-10-28
 */
 
 require_once('inc/meta.php');
@@ -23,7 +23,11 @@ class Program extends Meta {
 		while ( count($_SERVER['argv']) ) {
 			$argument = array_shift($_SERVER['argv']);
 			if ( preg_match('/^\-\w+$/',$argument) ) { $this->options($argument);
+			// program arguments
 			} elseif ( $argument == '--version' ) { $this->printVersion();
+			// config arguments
+			// course arguments
+			// question arguments
 			} else { $this->_log(8,"undefined program argument: $argument"); }
 		} // end processing arguments
 	}
@@ -32,7 +36,17 @@ class Program extends Meta {
 		$prefix = array_shift($options);
 		while ( count($options) ) {
 			$option = array_shift($options);
+			// program options
 			if ( $option == 'v' ) { $this->printVersion();
+			} elseif ( $option == 'h' and count($_SERVER['argv']) ) {
+				$this->printHelp(array_shift($_SERVER['argv']));
+			} elseif ( $option == 'h' ) { $this->printHelp();
+			// config options
+			// course options
+			// question options
+			// debug options
+			} elseif ( $option == 'd' ) {
+				print_r($this->data->courseID('just a test'));
 			} elseif ( $option == 't' ) { $this->data->printTree();
 			} elseif ( $option == 'T' ) { echo $this->data->htmlTree();
 			} else { $this->_log(8,"undefined program option: $option"); }
@@ -41,6 +55,25 @@ class Program extends Meta {
 	protected function printVersion() {
 		$this->_log(2,"printing the programs version number");
 		printf('%s %s',$this->name,$this->version);
+	}
+	protected function printHelp($section='all') {
+		$sections = ['program','config','course','question'];
+		if ( ! in_array($section,$sections) ) { $section = 'all'; }
+		$this->_log(2,"printing the help page for section: $section");
+		if ( in_array($section,['all','program']) ) { // program help
+			print("program arguments and option (section=program)\n");
+			print("  -v,--version        print the programs version number\n");
+			print("  -h,--help           print this little help page\n");
+		}
+		if ( in_array($section,['all','config']) ) { // config help
+			print("config arguments and option (section=config)\n");
+		}
+		if ( in_array($section,['all','course']) ) { // course help
+			print("course arguments and option (section=course)\n");
+		}
+		if ( in_array($section,['all','question']) ) { // question help
+			print("question arguments and option (section=question)\n");
+		}
 	}
 } // end of class Program
 
