@@ -66,6 +66,18 @@ class Data extends Meta {
 			} // end printing questions
 		} // end printing courses
 	}
+	public function htmlTree($tag="ol") { $html = "<$tag>\n"; 
+		$this->_log(2,"getting the html course tree");
+		foreach ( $this->courses as $course ) {
+			$html .= "\t<li>$course->topic</li><$tag>\n";
+			foreach ( $course->questions as $question ) {
+				$html .= "\t\t<li>$question->topic</li><$tag>\n";
+				foreach ( $question->answers as $answer ) {
+					$html .= "\t\t\t<li>$answer->topic</li>>\n";
+				} $html .= "\t\t</$tag>\n";
+			} $html .= "\t</$tag>\n";
+		} return "$html</$tag>\n";
+	}
 } // end of class Data
 
 class Course extends Meta {

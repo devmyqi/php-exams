@@ -1,1 +1,3 @@
+- parsing ids for data objects (sha?)
 - index data structure by topic
+- no data autoloading

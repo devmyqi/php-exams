@@ -8,7 +8,7 @@
 
 // variables
 
-@widthMain: 66rem;
+@widthMain: 36rem;
 @colorText: #666;
 @colorMain: #966;
 @marginBox: 1rem;
@@ -29,11 +29,14 @@ html {
 	color: @colorText;
 	body {
 		font-size: 100%;
-		width: @widthMain;
+		max-width: @widthMain;
 		margin: 0px auto;
 	}
 	h1, h2, h3, h4, h5, h6, p, ul, ol {
 		margin-bottom: @marginBox;
+	}
+	ul, ol {
+		list-style-type: none;
 	}
 }
 

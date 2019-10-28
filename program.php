@@ -33,6 +33,8 @@ class Program extends Meta {
 		while ( count($options) ) {
 			$option = array_shift($options);
 			if ( $option == 'v' ) { $this->printVersion();
+			} elseif ( $option == 't' ) { $this->data->printTree();
+			} elseif ( $option == 'T' ) { echo $this->data->htmlTree();
 			} else { $this->_log(8,"undefined program option: $option"); }
 		} // end processing options
 	}
