@@ -10,6 +10,7 @@
 */
 
 require_once('inc/meta.php');
+require_once('inc/parsedown.php');
 
 class Data extends Meta {
 	public $files = '';
@@ -34,11 +35,12 @@ class Data extends Meta {
 	// protected functions
 	protected function _readData($file) {
 		if ( ! is_file($file) or ! is_readable($file) ) {
-			$this->_log(2,"unable to read file: $file");
+			return $this->_log(2,"unable to read file: $file");
 		} $this->_log(2,"reading data from file: $file");
 		$answers = []; $questions = []; $courses = []; $markup = [];
 		// reverse processing the data file!
-		foreach ( array_reverse(file($file)) as $line ) { $line = trim($line);
+		foreach ( array_reverse(file($file)) as $line ) {
+			$line = rtrim($line);
 			if ( preg_match('/^\#{3}\s+(.*)$/',$line,$result) ) { ### answer
 				list($aid,$topic) = Data::getID(array_keys($answers),$result[1]);
 				$answer = new Answer($this->config,$aid,$topic);
@@ -84,6 +86,10 @@ class Data extends Meta {
 			} $html .= "\t</$tag>\n";
 		} return "$html</$tag>\n";
 	}
+	public function dumpData() {
+		$this->_log(2,"dumping the complete data array");
+		print_r($this->courses);
+	}
 } // end of class Data
 
 class Course extends Meta {
@@ -96,6 +102,17 @@ class Course extends Meta {
 		$this->cid = $cid;
 		$this->topic = $topic;
 		$this->_log(1,"new Course: $topic");
+	}
+	public function htmlItemInfo() {
+		$parser = new Parsedown();
+		$cid = $this->cid; $topic = $this->topic;
+		$count = count($this->questions);
+		$html = "<li><h3>$this->topic</h3>\n";
+		$html .= $parser->text(trim($this->markup));
+		$html .= "<p class='courselink'>Insgesamt $count Fragen\n";
+		$html .= "<a href='$cid' title='$topic'>Zum Kurs</a>\n";
+		$html .= "</p></li>\n";
+		return $html;
 	}
 } // end of class Course
 

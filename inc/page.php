@@ -14,7 +14,7 @@ require_once('inc/data.php');
 include('_templates.php');
 
 class Page extends Meta {
-	public $name = 'exams';
+	public $name = 'exams?';
 	public $title = 'welcome';
 	public $description = 'test your knowlede';
 	public $content = '';
@@ -23,19 +23,15 @@ class Page extends Meta {
 		$this->_log(1,'new <Page> object initialized');
 		$this->data = new Data($config);
 		// routing
-		if ( ! count($_GET) ) {
-			$this->title = "Startseite";
-			$this->content = "<h2>Es gibt folgende Kurse</h2>\n";
-			$this->content .= "<ol>\n";
-			foreach ( $this->data->courses as $index => $course ) {
-				$number = $index + 1;
-				$this->content .= "<li><h3>$number. $course->topic</h3></li>\n";
-			}
-			$this->content .= "</ol>\n";
+		if ( ! count($_GET) ) { $this->title = "Startseite";
+			$this->content = "<h2>Es gibt folgende Kurse:</h2>\n<ul>\n";
+			foreach ( $this->data->courses as $cid => $course ) {
+				$this->content .= $course->htmlItemInfo();
+			} $this->content .= "</ul>\n";
 		}
 	}
 	public function getFooter() {
-		return " exams - tethis is the footer";
+		return "exams (v0.0.1) &copy; 2019 M.Wronna";
 	}
 } // end of class Site
 

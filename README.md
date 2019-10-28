@@ -14,7 +14,11 @@
 ## Versionen (versions)
 
 * v0.0.1 (alpha1)
-	* Daten aus Markup-Datein einlesen
+	* Daten aus Markup-Dateien einlesen
+	* Assoziative Daten mit Index
+	* Liste aller Kurse anzeigen
+	* Kurs mit Liste der Fragen anzeigen
+	* Liste der Fragen und Antworten anzeigen
 * v0.0.5 (beta1)
 * v0.1.0 (release1)
 * v1.0.0 (stable1)

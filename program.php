@@ -45,8 +45,7 @@ class Program extends Meta {
 			// course options
 			// question options
 			// debug options
-			} elseif ( $option == 'd' ) {
-				print_r($this->data->courseID('just a test'));
+			} elseif ( $option == 'd' ) { $this->data->dumpData();
 			} elseif ( $option == 't' ) { $this->data->printTree();
 			} elseif ( $option == 'T' ) { echo $this->data->htmlTree();
 			} else { $this->_log(8,"undefined program option: $option"); }

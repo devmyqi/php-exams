@@ -1,4 +1,5 @@
 <?php
+
 /*	meta information
 	filename: _templates.php
 	description: templates for exams
@@ -7,11 +8,5 @@
 	created: 2019-10-27
 	modified: 2019-10-27
 */
-
-$templates = [];
-
-$templates['courseListItem'] = """
-	<li>$topic
-""";
 
 ?>

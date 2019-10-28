@@ -1,10 +1,14 @@
-# course1: the h1 title defines an course
+# php7basics: Grundlagen der PHP7 Programmierung
 
-The course description ends with the first question.
+In diesem Kurs findest Du die Fragen der Lernkontrolle aus dem
+gleichnamigen Buch von Jan Teriete (v7.2.0).
 
-The description can have multiple paragaphs.
+Der praktische Einstieg in die Entwicklung von Webanwendungen
 
-The discription will be saved at the first answer.
+* Schritt für Schritt, ausführlich erklärt
+* Vom 3-Zeiler zur kompletten `PHP-Anwendung`
+* Mit vielen Übungen und Codebeispielen
+* Praxisprojekt: Wir programmieren einen Weblog
 
 ## q001: the h2 title inside a course is the topic of a question
  
@@ -14,9 +18,11 @@ The discription will be saved at the first answer.
  
 ## q002: a course can have multiple questions of course
  
-## _002: question already exists
+## question already exists
 
 ## a question without a give id
+
+## Noch eine blöde Frage
 
 # course2: you can have multiple courses in one file
 

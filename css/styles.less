@@ -4,27 +4,30 @@
 //	version: v0.0.1
 //	author: Michael Wronna, Konstanz
 //	created: 2019-10-26
-//	modified: 2019-10-26
+//	modified: 2019-10-28
+
+// imports
+
+@import url('https://fonts.googleapis.com/css?family=Nunito&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Code|Fira+Sans&display=swap');
 
 // variables
 
 @widthMain: 36rem;
 @colorText: #666;
-@colorMain: #966;
+@colorMain: #66f;
 @marginBox: 1rem;
 
 // reset
 
 *, ::before, ::after {
 	box-sizing: border-box;
-	margin: 0px;
-	padding: 0px;
 }
 
 // design
 
 html {
-	font-family: Arial, helvetica, sans-serif;
+	font-family: "Fira Sans", Arial, helvetica, sans-serif;
 	font-size: 1em;
 	color: @colorText;
 	body {
@@ -35,14 +38,32 @@ html {
 	h1, h2, h3, h4, h5, h6, p, ul, ol {
 		margin-bottom: @marginBox;
 	}
-	ul, ol {
-		list-style-type: none;
+	a {
+		color: @colorMain;
+	}
+	pre {
+		font-family: "Fira Mono", 'Courier New', Courier, monospace;
+		padding: 1rem;
+		background-color: #eee;
 	}
 }
 
 // header
 
+header {
+	background-image: url(../img/logo.png);
+	background-repeat: no-repeat;
+	background-size: 2rem;
+	background-position: top right;
+}
+
 // main
+
+main {
+	p.courselink {
+		text-align: right;
+	}
+}
 
 // footer
 

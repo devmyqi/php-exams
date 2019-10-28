@@ -14,12 +14,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title><?php echo $page->name, " - ", $page->title; ?></title>
     <link rel="stylesheet" type="text/css" href="css/styles.css"/>
-	<!-- favicon -->
 </head><body>
 	<header>
 		<h1><?php echo $page->name, " - ", $page->title; ?></h1>
 	</header>
-	<main> <!-- <h2>main</h2> -->
+	<main>
 		<?php echo $page->content; ?>
 	</main>
 	<footer><?php echo $page->getFooter(); ?></footer>
