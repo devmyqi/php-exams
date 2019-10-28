@@ -103,16 +103,35 @@ class Course extends Meta {
 		$this->topic = $topic;
 		$this->_log(1,"new Course: $topic");
 	}
-	public function htmlItemInfo() {
+	public function htmlTitle($tag='h3') {
+		return "<$tag>$this->topic</$tag>";
+	}
+	public function htmlDetails() {
 		$parser = new Parsedown();
+		return $parser->text(trim($this->markup));
+	}
+	public function htmlLink() {
+		$url = $_SERVER['PHP_SELF']; $count = count($this->questions);
 		$cid = $this->cid; $topic = $this->topic;
+		$html = "<p class='courselink'>\n";
+		$html .= "<a href='$url?c=$cid&details' title='Kurs-Details'>Details</a> des Kurses\n";
+		return $html .= "(<a href='$url?c=$cid' title='$topic'>$count Fragen</a>)</p>\n";
+	}
+	public function htmlPager($qid) {
+		$qkeys = array_keys($this->questions);
+		$url = $_SERVER['PHP_SELF'];
+		$url .= "?c=$this->cid";
 		$count = count($this->questions);
-		$html = "<li><h3>$this->topic</h3>\n";
-		$html .= $parser->text(trim($this->markup));
-		$html .= "<p class='courselink'>Insgesamt $count Fragen\n";
-		$html .= "<a href='$cid' title='$topic'>Zum Kurs</a>\n";
-		$html .= "</p></li>\n";
-		return $html;
+		$index = array_search($qid,$qkeys);
+		$prev = $index > 0 ? $qkeys[$index-1] : NULL;
+		$next = $index < $count ? $qkeys[$index+1] : NULL;
+		$html = "<p class='pager'>\n";
+		if ( $prev !== NULL ) {
+			$html .= "<a title='zurück' href='$url&q=$prev'>zurück</a>\n";
+		} $html .= $index+1 . "/" . count($qkeys). "\n";
+		if ( $next !== NULL ) {
+			$html .= "<a title='weiter' href='$url&q=$next'>weiter</a>\n";
+		} return $html .= "</p>\n";
 	}
 } // end of class Course
 
@@ -127,6 +146,13 @@ class Question extends Meta {
 		$this->topic = $topic;
 		$this->_log(2,"new Question: $topic");
 	}
+	public function htmlTitle($tag='h3') {
+		return "<$tag>$this->topic</$tag>";
+	}
+	public function htmlDetails() {
+		$parser = new Parsedown();
+		return $parser->text(trim($this->markup));
+	}
 } // end of class Question
 
 class Answer extends Meta {
@@ -139,6 +165,13 @@ class Answer extends Meta {
 		$this->aid = $aid;
 		$this->topic = $topic;
 		$this->_log(4,"new Answer: $topic");
+	}
+	public function htmlTitle($tag='h3') {
+		return "<$tag>$this->topic</$tag>";
+	}
+	public function htmlDetails() {
+		$parser = new Parsedown();
+		return $parser->text(trim($this->markup));
 	}
 } // end of class Answer
 
