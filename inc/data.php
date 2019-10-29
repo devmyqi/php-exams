@@ -6,7 +6,7 @@
 	version: v0.0.1
 	author: Michael Wronna, Konstanz
 	created: 2019-10-25
-	modified: 2019-10-28
+	modified: 2019-10-29
 */
 
 require_once('inc/meta.php');
