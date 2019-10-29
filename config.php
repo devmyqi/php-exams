@@ -17,7 +17,7 @@ class Config {
 	public $logformat = '$created [$logtype] ($level) $message';
 	public $logtarget = 'terminal'; // console,website,terminal
 	// data
-	public $files = 'data/test.md';
+	public $files = 'exams/01*.md';
 }
 
 ?>

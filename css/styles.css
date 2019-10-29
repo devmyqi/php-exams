@@ -55,6 +55,12 @@ html ol {
 html a {
   color: #66f;
 }
+html code {
+  font-family: "Fira Mono", 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  background-color: #eee;
+  padding: 0px 0.3rem;
+}
 html pre {
   font-family: "Fira Mono", 'Courier New', Courier, monospace;
   padding: 1rem;

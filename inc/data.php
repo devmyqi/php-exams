@@ -59,17 +59,17 @@ class Data extends Meta {
 				$course->markup = implode("\n",array_reverse($markup));
 				$courses[$cid] = $course; $questions = []; $markup = [];
 			} else { $markup[] = $line; }
-		} $this->courses = array_reverse($courses);
+		} $this->courses = array_merge($this->courses,array_reverse($courses));
 	}
 	// output functions
 	public function printTree() {
 		$this->_log(2,"printing the data object tree");
 		foreach ( $this->courses as $course ) {
-			print("* [c] $course->topic\n");
+			print("* [$course->cid] $course->topic\n");
 			foreach ( $course->questions as $question ) {
-				print("\t* [q] $question->topic\n");
+				print("\t* [$question->qid] $question->topic\n");
 				foreach ( $question->answers as $answer ) {
-					print("\t\t* [a] $answer->topic\n");
+					print("\t\t* [$answer->aid] $answer->topic\n");
 				} // end printing answers
 			} // end printing questions
 		} // end printing courses

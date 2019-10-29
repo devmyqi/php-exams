@@ -4,7 +4,6 @@
 	$config = new Config();
 	$config->loglevel = 63 - 4;
 	$config->logtarget = 'console';
-	$config->files = 'data/exams.md';
 	$page = new Page($config);
 ?>
 <!DOCTYPE html>

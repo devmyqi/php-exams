@@ -19,7 +19,7 @@ class Program extends Meta {
 	public function __construct($config) {
 		$this->config = $config;
 		$this->_log(1,'new <Program> object initialized');
-		$this->data = new Data($config,'data/exams.md');
+		$this->data = new Data($config);
 		array_shift($_SERVER['argv']);
 		while ( count($_SERVER['argv']) ) {
 			$argument = array_shift($_SERVER['argv']);

@@ -28,7 +28,7 @@ The first answer of the first question
 
 ## Noch eine blöde Frage
 
-# course2: you can have multiple courses in one file
+## course2: you can have multiple courses in one file
 
 You can have same courses in different files.
 
