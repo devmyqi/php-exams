@@ -106,6 +106,11 @@ class Course extends Meta {
 	public function htmlTitle($tag='h3') {
 		return "<$tag>$this->topic</$tag>";
 	}
+	public function htmlPreview($lines=4) {
+		$parser = new Parsedown();
+		$markup = array_slice(explode("\n",trim($this->markup)),0,$lines);
+		return $parser->text(implode("\n",$markup));
+	}
 	public function htmlDetails() {
 		$parser = new Parsedown();
 		return $parser->text(trim($this->markup));
@@ -124,7 +129,7 @@ class Course extends Meta {
 		$count = count($this->questions);
 		$index = array_search($qid,$qkeys);
 		$prev = $index > 0 ? $qkeys[$index-1] : NULL;
-		$next = $index < $count ? $qkeys[$index+1] : NULL;
+		$next = $index < $count-1 ? $qkeys[$index+1] : NULL;
 		$html = "<p class='pager'>\n";
 		if ( $prev !== NULL ) {
 			$html .= "<a title='zurück' href='$url&q=$prev'>zurück</a>\n";

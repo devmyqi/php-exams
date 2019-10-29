@@ -6,7 +6,7 @@ gleichnamigen Buch von Jan Teriete (v7.2.0).
 Der praktische Einstieg in die Entwicklung von Webanwendungen
 
 * Schritt für Schritt, ausführlich erklärt
-* Vom 3-Zeiler zur kompletten `PHP-Anwendung`
+* Vom 3-Zeiler zur kompletten PHP-Anwendung
 * Mit vielen Übungen und Codebeispielen
 * Praxisprojekt: Wir programmieren einen Weblog
 

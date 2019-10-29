@@ -17,6 +17,9 @@
 </head><body>
 	<header>
 		<h1><?php echo $page->name, " - ", $page->title; ?></h1>
+		<ul id="navmain">
+			<li><a title="Startseite" href=".">Startseite</a></li>
+		</ul>
 	</header>
 	<main>
 		<?php echo $page->content; ?>

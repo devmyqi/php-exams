@@ -19,6 +19,7 @@
 	* Liste aller Kurse anzeigen
 	* Kurs mit Liste der Fragen anzeigen
 	* Liste der Fragen und Antworten anzeigen
+	* Fragen eines Kurses durchblättern
 * v0.0.5 (beta1)
 * v0.1.0 (release1)
 * v1.0.0 (stable1)
