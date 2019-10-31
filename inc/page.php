@@ -9,19 +9,21 @@
 	modified: 2019-10-29
 */
 
+// requires
 require_once('config.php');
-require_once('inc/meta.php');
-require_once('inc/data.php');
+require_once('inc/data2.php');
 
-class Page extends Meta {
+$config = isset($_SESSION['config']) ? $_SESSION['config'] : new Config();
+$data = isset($_SESSION['data']) ? $_SESSION['data'] : new Data();
+
+class Page {
 	public $name = 'exams?';
 	public $title = '';
 	public $description = 'test your knowlede';
 	public $content = '';
-	public function __construct($config) {
-		$this->config = $config;
-		$this->_log(1,'new <Page> object initialized');
-		$this->data = new Data($config);
+	public function __construct() { global $config;
+		$config->_log(1,'new <Page> object initialized');
+		$this->data = new Data();
 		$this->routing();
 	}
 	public function errorPage() { $this->title = "Fehler";

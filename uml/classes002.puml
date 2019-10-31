@@ -1,0 +1,78 @@
+@startuml app
+
+class App {
+    config [object]
+    site [object]
+    data [object]
+    is_SESSION()
+}
+
+class Config {
+    loglevel [integer]
+    logdate [string]
+    logtypes [[array]]
+    logformat [string]
+    logtarger [string]
+    _log(level,message)
+}
+
+package test <<rectangle>> {
+    [[Config]]
+    class Test
+}
+
+@enduml
+
+@startuml persisent
+
+class Data {
+    files [string]
+    courses [array]
+    static getID(keys,topic)
+    _readData()
+    printTree()
+}
+
+class Course {
+    cid [string]
+    topic [string]
+    markup [string]
+    questions [array]
+    preview()
+    content()
+}
+
+class Question {
+    qid [string]
+    topic [string]
+    markup [string]
+    tags [array]
+    answers [array]
+}
+
+class Answer {
+    aid [string]
+    topic [string]
+    markup [string]
+    correct [bool]
+}
+
+Data -{ Course
+Course --{ Question
+Answer }- Question
+
+@enduml
+
+@startuml interface
+
+class Site {
+    getFooter()
+}
+
+class Page {
+}
+
+class content {
+}
+
+@enduml

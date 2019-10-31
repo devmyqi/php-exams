@@ -1,4 +1,10 @@
-<?php session_start();
+<?php
+	session_start();
+	unset($_SESSION);
+
+	require_once('inc/site.php');
+
+/*
 	require_once('config.php');
 	require_once('inc/data2.php');
 	$config = new Config();
@@ -6,13 +12,15 @@
 	$_SESSION['config'] = $config;
 	$_SESSION['data'] = new Data();
 	$prefix = $_SERVER['CONTEXT_PREFIX'];
+*/
+
 ?>
 <!DOCTYPE html>
 <html lang="de"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>exams - Startseite</title>
+    <title>exams - site test</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css"/>
 </head><body>
 	<header>
@@ -21,21 +29,10 @@
 			<li><a title="Startseite" href=".">Startseite</a></li>
 		</ul>
 	</header>
-	<main><h2>Liste der Kurse</h2><ul>
-	<?php
-		$url = $_SERVER['PHP_SELF'];
-		foreach ( $_SESSION['data']->courses as $course): ; ?>
-		<li><h3><?php echo $course->topic; ?></h3>
-			<?php echo $course->preview(); ?>
-			<p class="courselink">
-				<a title="Kurs-Details" href="<?php
-					echo "$prefix/courseDetails.php?c=$course->cid"; ?>">Details</a>
-				des Kurses (<a title="Kurs starten" href="<?php
-					echo "$prefix/questio.php?c=$course->cid"; ?>"><?php
-					echo count($course->questions); ?> Fragen</a>)
-			</p>
-		</li>
-	<?php endforeach; ?></ul></main>
+	<main>
+		<h2>site test</h2>
+		<pre><?php echo Site::getHtml(Null,'test'); ?></pre><hr/>
+		<pre><?php print_r($_SESSION); ?></pre><hr/>
+	</main>
 	<footer>Fusszeile</footer>
 </body></html>
-

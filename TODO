@@ -3,6 +3,8 @@ todo:
 ☐ parsing ids for data objects (sha?)
 ✔ index data structure by topic @done(19-10-29 14:00)
 ☐ no data autoloading
+☐ avoid config recursion
+☐ store data in _SESSION
 ☐ static pages
 ☐ improve design
 ☐ finish version v0.0.1
