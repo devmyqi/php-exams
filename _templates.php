@@ -14,5 +14,18 @@ $templates = [];
 // test templates
 
 $templates['testOne'] = '<p>i am only: $var1 ($var2) [$invalid]</p>\n';
+$templates['testTwo'] = 'template: $name (id=$id) [?$invalid]';
+
+// site templates
+
+$templates['siteFooter'] = 'exams (v0.0.2) &copy; $modified (M.Wronna)';
+
+// course templates
+
+$templates['coursePreview'] = <<<'EOS'
+	<h3>$topic</h3>
+	$content
+	<p class='courselink'>links</p>
+EOS;
 
 ?>

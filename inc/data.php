@@ -1,27 +1,28 @@
 <?php
 
 /*	meta information
-	filename: inc/data.php
-	description: data classes for exams
-	version: v0.0.1
+	filename: inc/data2.php
+	description: data classes v2 for exams
+	version: v0.0.2
 	author: Michael Wronna, Konstanz
-	created: 2019-10-25
-	modified: 2019-10-29
+	created: 2019-10-30
+	modified: 2019-10-30
+	notes: put data into _SESSION
 */
 
-require_once('inc/meta.php');
+// requires in _init
 require_once('inc/parsedown.php');
 
-class Data extends Meta {
+// get config
+$config = isset($_SESSION['config']) ? $_SESSION['config'] : new Config();
+
+class Data {
 	public $files = '';
 	public $courses = [];
-	public function __construct($config,$files=NULL) {
-		$this->config = $config;
+	public function __construct($files=NULL) {
+		global $config;
 		$this->files = $files !== NULL ? $files : $config->files;
-		$this->_log(1,"new Data from files: $this->files");
-		foreach ( glob($this->files) as $file ) {
-			$this->_readData($file);
-		}
+		$config->_log(1,"new Data from files: $this->files");
 	}
 	// static functions
 	static function getID($keys,$topic) {
@@ -32,151 +33,94 @@ class Data extends Meta {
 			} return array($uid,$topic);
 		} else { return array($result[1],$result[2]); }
 	}
+	// public functions
+	public function getCourses() {
+		global $config;
+		$config->_log(2,'getting the course list');
+		foreach ( glob($this->files) as $file ) {
+			$this->_readData($file);
+		} return $this->courses;
+	}
 	// protected functions
-	protected function _readData($file) {
+	protected function _readData($file) { global $config;
 		if ( ! is_file($file) or ! is_readable($file) ) {
 			return $this->_log(2,"unable to read file: $file");
-		} $this->_log(2,"reading data from file: $file");
+		} $config->_log(2,"reading data from file: $file");
 		$answers = []; $questions = []; $courses = []; $markup = [];
 		// reverse processing the data file!
-		foreach ( array_reverse(file($file)) as $line ) {
-			$line = rtrim($line);
+		foreach ( array_reverse(file($file)) as $line ) { $line = rtrim($line);
 			if ( preg_match('/^\#{3}\s+(.*)$/',$line,$result) ) { ### answer
 				list($aid,$topic) = Data::getID(array_keys($answers),$result[1]);
-				$answer = new Answer($this->config,$aid,$topic);
+				$answer = new Answer($aid,$topic);
 				$answer->markup = implode("\n",array_reverse($markup));
 				$answers[$aid] = $answer; $markup = [];
 			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$line,$result) ) { ## question
 				list($qid,$topic) = Data::getID(array_keys($questions),$result[1]);
-				$question = new Question($this->config,$qid,$topic);
+				$question = new Question($qid,$topic);
 				$question->answers = array_reverse($answers);
-				$question->markup = implode("\n",array_reverse($markup));
+
+				# $question->markup = implode("\n",array_reverse($markup));
 				$questions[$qid] = $question; $answers = []; $markup = [];
 			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$line,$result) ) { # course
 				list($cid,$topic) = Data::getID(array_keys($courses),$result[1]);
-				$course = new Course($this->config,$cid,$topic);
+				$course = new Course($cid,$topic);
+				$course->setMarkup(trim(implode("\n",array_reverse($markup))));
 				$course->questions = array_reverse($questions);
-				$course->markup = implode("\n",array_reverse($markup));
 				$courses[$cid] = $course; $questions = []; $markup = [];
 			} else { $markup[] = $line; }
 		} $this->courses = array_merge($this->courses,array_reverse($courses));
 	}
 	// output functions
-	public function printTree() {
-		$this->_log(2,"printing the data object tree");
-		foreach ( $this->courses as $course ) {
-			print("* [$course->cid] $course->topic\n");
-			foreach ( $course->questions as $question ) {
-				print("\t* [$question->qid] $question->topic\n");
-				foreach ( $question->answers as $answer ) {
-					print("\t\t* [$answer->aid] $answer->topic\n");
-				} // end printing answers
-			} // end printing questions
-		} // end printing courses
-	}
-	public function htmlTree($tag="ol") { $html = "<$tag>\n"; 
-		$this->_log(2,"getting the html course tree");
-		foreach ( $this->courses as $course ) {
-			$html .= "\t<li>$course->topic</li><$tag>\n";
-			foreach ( $course->questions as $question ) {
-				$html .= "\t\t<li>$question->topic</li><$tag>\n";
-				foreach ( $question->answers as $answer ) {
-					$html .= "\t\t\t<li>$answer->topic</li>>\n";
-				} $html .= "\t\t</$tag>\n";
-			} $html .= "\t</$tag>\n";
-		} return "$html</$tag>\n";
-	}
-	public function dumpData() {
-		$this->_log(2,"dumping the complete data array");
-		print_r($this->courses);
-	}
 } // end of class Data
 
-class Course extends Meta {
+class Course {
 	public $cid = '';
 	public $topic = '';
-	public $markup = '';
+	public $preview = '';
+	public $content = '';
+	# public $markup = '';
 	public $questions = [];
-	public function __construct($config,$cid='',$topic='') {
-		$this->config = $config;
+	public function __construct($cid,$topic) {
+		global $config;
 		$this->cid = $cid;
 		$this->topic = $topic;
-		$this->_log(1,"new Course: $topic");
+		# $this->content = $this->getContent();
+		$config->_log(1,"new Course: $topic");
 	}
-	public function htmlTitle($tag='h3') {
-		return "<$tag>$this->topic</$tag>";
-	}
-	public function htmlPreview($lines=4) {
+	public function setMarkup($markup,$lines=4) {
+		$previewLines = explode("\n",$markup);
+		$previewLines = array_slice($previewLines,0,$lines);
 		$parser = new Parsedown();
-		$markup = array_slice(explode("\n",trim($this->markup)),0,$lines);
-		return $parser->text(implode("\n",$markup));
-	}
-	public function htmlDetails() {
-		$parser = new Parsedown();
-		return $parser->text(trim($this->markup));
-	}
-	public function htmlLink() {
-		$url = $_SERVER['PHP_SELF']; $count = count($this->questions);
-		$cid = $this->cid; $topic = $this->topic;
-		$html = "<p class='courselink'>\n";
-		$html .= "<a href='$url?c=$cid&details' title='Kurs-Details'>Details</a> des Kurses\n";
-		return $html .= "(<a href='$url?c=$cid' title='$topic'>$count Fragen</a>)</p>\n";
-	}
-	public function htmlPager($qid) {
-		$qkeys = array_keys($this->questions);
-		$url = $_SERVER['PHP_SELF'];
-		$url .= "?c=$this->cid";
-		$count = count($this->questions);
-		$index = array_search($qid,$qkeys);
-		$prev = $index > 0 ? $qkeys[$index-1] : NULL;
-		$next = $index < $count-1 ? $qkeys[$index+1] : NULL;
-		$html = "<p class='pager'>\n";
-		if ( $prev !== NULL ) {
-			$html .= "<a title='zurück' href='$url&q=$prev'>zurück</a>\n";
-		} $html .= $index+1 . "/" . count($qkeys). "\n";
-		if ( $next !== NULL ) {
-			$html .= "<a title='weiter' href='$url&q=$next'>weiter</a>\n";
-		} return $html .= "</p>\n";
+		$this->preview = $parser->text(implode("\n",$previewLines));
+		$this->content = $parser->text($markup);
 	}
 } // end of class Course
 
-class Question extends Meta {
+class Question {
 	public $qid = '';
 	public $topic = '';
 	public $markup = '';
+	public $tags = [];
 	public $answers = [];
-	public function __construct($config,$qid='',$topic='') {
-		$this->config = $config;
+	public function __construct($qid='',$topic='') {
+		global $config;
 		$this->qid = $qid;
 		$this->topic = $topic;
-		$this->_log(2,"new Question: $topic");
-	}
-	public function htmlTitle($tag='h3') {
-		return "<$tag>$this->topic</$tag>";
-	}
-	public function htmlDetails() {
-		$parser = new Parsedown();
-		return $parser->text(trim($this->markup));
+		$config->_log(2,"new Question: $topic");
 	}
 } // end of class Question
 
-class Answer extends Meta {
+class Answer {
 	public $aid = '';
 	public $topic = '';
 	public $markup = '';
 	public $correct = False;
-	public function __construct($config,$aid='',$topic='') {
+	public function __construct($aid='',$topic='') {
+		global $config;
 		$this->config = $config;
 		$this->aid = $aid;
 		$this->topic = $topic;
-		$this->_log(4,"new Answer: $topic");
-	}
-	public function htmlTitle($tag='h3') {
-		return "<$tag>$this->topic</$tag>";
-	}
-	public function htmlDetails() {
-		$parser = new Parsedown();
-		return $parser->text(trim($this->markup));
+		$config->_log(4,"new Answer: $topic");
 	}
 } // end of class Answer
 

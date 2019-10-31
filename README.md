@@ -10,6 +10,7 @@
 * Tests für nicht angemeldete Benutzer
 * Prüfungen für angemeldete Benutzer
 * Benutzer und Ergebnisse in JSON-Dateien
+* Templates für Kurse, Fragen und Antworten
 
 ## Versionen (versions)
 
@@ -20,6 +21,8 @@
 	* Kurs mit Liste der Fragen anzeigen
 	* Liste der Fragen und Antworten anzeigen
 	* Fragen eines Kurses durchblättern
+* v0.0.2 (alpha2)
+	* Templates für Kurse, Fragen und Antworten
 * v0.0.5 (beta1)
 * v0.1.0 (release1)
 * v1.0.0 (stable1)
