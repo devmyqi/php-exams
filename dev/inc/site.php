@@ -38,6 +38,7 @@ class Site {
 		$this->skindir = $config->skindir;
 		$config->_log(1,"new <Site> object initialized: $this->sitename");
 		$this->users = new Users();
+		$this->courses = new Courses();
 	}
 } // end of class Site
 

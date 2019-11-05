@@ -19,11 +19,13 @@ class Config {
 	public $logtarget = 'console'; // console,website,terminal
 	// site
 	public $sitename = 'exams';
-	public $skindir = 'skins';
+	public $skindir = 'skins'; # unused
 	// users
 	public $userfile = 'users.json';
 	public $encrypt = True;
 	// courses
+	public $coursefiles = 'courses/test.md'; # globbing
+	public $hashlength = 6;
 	// pages
 	public function __construct($logtarget='console') {
 		$this->logtarget = $logtarget;

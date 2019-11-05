@@ -37,6 +37,6 @@ function authenticate() { global $config, $site;
 // register();
 // authenticate();
 
-print_r($site);
+print_r($site->courses);
 	
 ?>
