@@ -19,10 +19,8 @@
     <title><?php echo "$site->name - $site->title"; ?></title>
     <link rel="stylesheet" type="text/css" href="css/styles.css"/>
 </head><body>
-	<header><h1><?php echo $site->name; ?></h1>
-		<ul id="navmain">
-			<li><a title="Startseite" href=".">Startseite</a></li>
-		</ul>
+	<header>
+		<?php echo Site::getHtml($site,'siteHeader'); ?>
 	</header>
 	<main>
 		<?php echo $site->content; ?>

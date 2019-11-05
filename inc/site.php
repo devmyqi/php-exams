@@ -49,43 +49,28 @@ class Site {
 		// print "<pre>\n"; print_r($_GET); print "</pre>\n";
 		// print "<pre>\n"; print_r($_SESSION); print "</pre>\n";
 		$cid = isset($_GET['c']) ? $_GET['c'] : NULL;
-		if ( $cid !== NULL ) {
-			// processing courses
-		} else { $this->title = 'Starteite';
+		if ( $cid !== NULL and isset($_GET['details']) ) {
+			if ( array_key_exists($cid,$_SESSION['courses']) ) {
+				$course = $_SESSION['courses'][$cid];
+				$this->title = 'Kurs-Details';
+				$this->content = Site::getHtml($course,'courseDetails');
+			} else {
+				$this->title = 'Fehler';
+				$this->content = Site::getHtml($this,'courseMissing');
+			}
+		} elseif ( $cid !== NULL ) { // course questions
+			$this->title = 'Fragen';
+		} elseif ( count($_GET) === 0 ) {
+			$this->title = 'Startseite';
 			$this->content = "<h2>Es gibt folgende Kurse:</h2>\n";
 			foreach ( $_SESSION['courses'] as $course ) {
 				$this->content .= Site::getHtml($course,'coursePreview') . "\n";
 			}
+		} else {
+			$this->title = 'Fehler';
+			$this->content = Site::getHtml($this,'siteMissing');
 		}
 	}
 } // end of class Site
-
-/* test cases for Site::getHtml() #todo remove test cases later
-
-class Test {
-	public $id = 0; public $name = 'default';
-	public function __construct($id=0,$name='default') {
-		$this->id = $id; $this->name = $name;
-	}
-}
-
-$test = new Test();
-$test1 = new Test(1,'one');
-$test2 = new Test(2,'two');
-$test3 = new Test(3,'three');
-
-// object
-echo Site::getHtml(new Test(),'object: $name (id=$id) [?$invalid] -')."\n";
-// object template
-echo Site::getHtml(new Test(),'testTwo')."\n";
-// string and number
-echo Site::getHtml('what','<p>%s else</p>')."\n";
-echo Site::getHtml(2,'<p>number %d/p>')."\n";
-// array
-echo Site::getHtml([1,2,3],"- %d -\n");
-// object array
-echo Site::getHtml([$test1,$test2,$test3],'object $name - (id=$id) [?$missing]'."\n");
-
-*/
 
 ?>

@@ -1,12 +1,12 @@
 <?php
 
 /*	meta information
-	filename: inc/data2.php
-	description: data classes v2 for exams
+	filename: inc/data.php
+	description: data classes for exams
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-10-30
-	modified: 2019-10-30
+	modified: 2019-10-31
 	notes: put data into _SESSION
 */
 
@@ -57,15 +57,16 @@ class Data {
 			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$line,$result) ) { ## question
 				list($qid,$topic) = Data::getID(array_keys($questions),$result[1]);
 				$question = new Question($qid,$topic);
+				$question->setMarkup(trim(implode("\n",array_reverse($markup))));
+
 				$question->answers = array_reverse($answers);
 
-				# $question->markup = implode("\n",array_reverse($markup));
 				$questions[$qid] = $question; $answers = []; $markup = [];
 			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$line,$result) ) { # course
 				list($cid,$topic) = Data::getID(array_keys($courses),$result[1]);
 				$course = new Course($cid,$topic);
 				$course->setMarkup(trim(implode("\n",array_reverse($markup))));
-				$course->questions = array_reverse($questions);
+				$course->setQuestions(array_reverse($questions));
 				$courses[$cid] = $course; $questions = []; $markup = [];
 			} else { $markup[] = $line; }
 		} $this->courses = array_merge($this->courses,array_reverse($courses));
@@ -78,8 +79,8 @@ class Course {
 	public $topic = '';
 	public $preview = '';
 	public $content = '';
-	# public $markup = '';
 	public $questions = [];
+	public $count = 0;
 	public function __construct($cid,$topic) {
 		global $config;
 		$this->cid = $cid;
@@ -94,20 +95,29 @@ class Course {
 		$this->preview = $parser->text(implode("\n",$previewLines));
 		$this->content = $parser->text($markup);
 	}
+	public function setQuestions($questions) {
+		$this->questions = $questions; $this->count = count($questions);
+	}
 } // end of class Course
 
 class Question {
 	public $qid = '';
 	public $topic = '';
-	public $markup = '';
+	public $content = '';
 	public $tags = [];
 	public $answers = [];
+	public $count = 0;
 	public function __construct($qid='',$topic='') {
 		global $config;
 		$this->qid = $qid;
 		$this->topic = $topic;
 		$config->_log(2,"new Question: $topic");
 	}
+	public function setMarkup($markup) {
+		$parser = new Parsedown();
+		$this->content = $parser->text($markup);
+	}
+	
 } // end of class Question
 
 class Answer {
