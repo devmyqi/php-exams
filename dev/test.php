@@ -2,10 +2,15 @@
 
 session_start();
 
-// config loaded in site.php
+// config
+require_once('inc/config.php');
+$config = new Config('terminal');
+$_SESSION['config'] = $config;
+
+// site
 require_once('inc/site.php');
-$site = new Site(); $_SESSION['site'] = $site;
-$config = $_SESSION['config'];
+$site = new Site();
+$_SESSION['site'] = $site;
 
 // user test functions
 

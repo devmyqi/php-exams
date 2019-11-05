@@ -1,13 +1,19 @@
 <?php
+// index.php, init and load skin
+	
+session_start();
 
-/*	meta information
-	filename: dev/index.php
-	description: index of new approach
-	version: v0.0.2
-	author: Michael Wronna, Konstanz
-	created: 2019-11-05
-	modified: 2019-11-05
-*/
+// config
+require_once('inc/config.php');
+$config = new Config();
+$_SESSION['config'] = $config;
 
+// site
+require_once('inc/site.php');
+$site = new Site();
+$_SESSION['site'] = $site;
+
+// skin
+require_once("$site->skindir/index.php");
 
 ?>
