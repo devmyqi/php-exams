@@ -10,10 +10,9 @@
 		href="<?php echo $site->skindir; ?>/css/dark.css"/>
 </head><body>
 	<header>
-		<h1><?php echo $site->name; ?></h1>
+		<h1><?php echo "$site->name - $site->title"; ?></h1>
 	</header>
 	<main>
-		<h2><?php echo $site->title; ?></h2>
 		<?php echo $site->content; ?>
 	</main>
 	<footer>

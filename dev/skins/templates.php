@@ -8,7 +8,22 @@
 	created: 2019-11-05
 	modified: 2019-11-05
 */
+$test = 'set';
 
-$test = 12;
+$templates = [];
+
+// site templates
+
+// course templates
+
+$templates['coursePreview'] = 'you<br/>';
+
+// question templates
+
+// answer templates
+
+// page templates
+
+// test templates
 
 ?>

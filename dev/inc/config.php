@@ -6,8 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-05
-	notes: static copy of config.php
+	modified: 2019-11-06
 */
 
 class Config {
@@ -18,7 +17,7 @@ class Config {
 	public $logformat = '$created [$logtype] ($level) $message';
 	public $logtarget = 'console'; // console,website,terminal
 	// site
-	public $sitename = 'exams';
+	public $sitename = 'exams?';
 	public $skindir = 'skins'; # unused
 	// users
 	public $userfile = 'users.json';

@@ -6,6 +6,7 @@ session_start();
 // config
 require_once('inc/config.php');
 $config = new Config();
+$config->loglevel = 63 -4;
 $_SESSION['config'] = $config;
 
 // site
