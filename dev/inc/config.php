@@ -25,6 +25,7 @@ class Config {
 	// courses
 	public $coursefiles = 'courses/test.md'; # globbing
 	public $hashlength = 6;
+	public $previewlines = 4;
 	// pages
 	public function __construct($logtarget='console') {
 		$this->logtarget = $logtarget;

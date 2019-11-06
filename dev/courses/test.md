@@ -1,6 +1,13 @@
 # first course
 
 text of first course
+for testing, we have
+multiple lines in the
+markup of the first course.
+we should have more than
+four line of course, to
+test the preview function
+woth a line parameter of 4.
 
 ## first question in first course
 

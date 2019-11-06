@@ -1,16 +1,15 @@
 //	meta information
 //	filename: skins/css/dark.less
-//	description: default skin, dark style
+//	description: default skin style for exams
 //	version: v0.0.2
 //	author: Michael Wronna, Konstanz
-//	created: 2019-11-05
-//	modified: 2019-11-05
+//	created: 2019-11-06
+//	modified: 2019-11-06
 
 // variables
 
 @widthMain: 36rem;
-@colorText: #fff;
-@colorBack: #666;
+@colorText: #666;
 @colorMain: #66f;
 @marginMain: 1rem;
 
@@ -26,7 +25,6 @@ html {
 	font-family: Arial, helvetica, sans-serif;
 	font-size: 1em;
 	color: @colorText;
-	background-color: @colorBack;
 	body {
 		font-size: 100%;
 		width: @widthMain;
@@ -39,6 +37,17 @@ html {
 }
 
 // header
+
+header {
+	ul {
+		margin: 0px;
+		padding: 0px;
+		list-style-type: none; 
+	}
+	ul > li {
+		display: inline-block;
+	}
+}
 
 // main
 

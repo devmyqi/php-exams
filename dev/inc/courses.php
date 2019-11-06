@@ -43,18 +43,18 @@ class Courses {
 			$dataline = trim($dataline);
 			if ( preg_match('/^\#{3}\s+(.*)$/',$dataline,$result) ) { // answer
 				$answer = new Answer($result[1]);
-				$answer->content = trim(join("\n",$markup));
+				$answer->markup = trim(join("\n",$markup));
 				$answers[$answer->aid] = $answer;
 				$markup = [];
 			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$dataline,$result) ) { // question
 				$question = new Question($result[1]);
-				$question->content = trim(join("\n",$markup));
+				$question->markup = trim(join("\n",$markup));
 				$question->answers = array_reverse($answers,True);
 				$questions[$question->qid] = $question;
 				$answers = $markup = [];
 			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$dataline,$result) ) {
 				$course = new Course($result[1]);
-				$course->content = trim(join("\n",$markup));
+				$course->markup = trim(join("\n",$markup));
 				$course->questions = array_reverse($questions,True);
 				$courses[$course->cid] = $course;
 				$questions = $markup = [];
@@ -66,20 +66,33 @@ class Courses {
 class Course extends Getter {
 	public $cid = '';
 	public $title = '';
-	public $content = '';
+	public $markup = '';
 	public $questions = [];
 	public function __construct($title) { global $config;
 		$this->cid = substr(md5($title),0,$config->hashlength);
 		$this->title = $title;
 		$config->_log(2,"new Course [$this->cid]: $title");
 	}
-	public function gen() { return 'generated'; }
+	public function __get($prop) {
+		if ( $prop === 'count' ) { return count($this->questions);
+		} else { return parent::__get($prop); }
+	}
+	public function preview() { global $config;
+		$lines = $config->previewlines; $parsedown = new Parsedown();
+		$preview = array_slice(explode("\n",$this->markup),0,$lines);
+		return $parsedown->text(implode("\n",$preview));
+		print_r($preview);
+	}
+	public function content() {
+		$parsedown = new Parsedown();
+		return $parsedown->text($this->markup);
+	}
 } // end of class Course
 
 class Question extends Getter {
 	public $qid = '';
 	public $title = '';
-	public $content = '';
+	public $markup = '';
 	public $answers = [];
 	public function __construct($title) { global $config;
 		$this->qid = substr(md5($title),0,$config->hashlength);
@@ -91,7 +104,7 @@ class Question extends Getter {
 class Answer extends Getter {
 	public $aid = '';
 	public $title = '';
-	public $content = '';
+	public $markup = '';
 	public function __construct($title) { global $config;
 		$this->aid = substr(md5($title),0,$config->hashlength);
 		$this->title = $title;

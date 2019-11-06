@@ -45,7 +45,16 @@ function authenticate() { global $config, $site;
 
 // site test functions
 
-echo Site::_format(1,'one.tmpl.html') . "\n";
+# echo Site::_format(1,'one.tmpl.html') . "\n";
+
+// string tests
+
+$data = "one\ntwo\nthree\nfour\nfive\nsix\nseven\neight\nnine\nten";
+preg_match_all('/^(.*?)\n/',$data,$result);
+
+print_r($result);
+
+print $data;
 
 // data tests
 

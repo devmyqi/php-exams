@@ -6,8 +6,7 @@
 html {
   font-family: Arial, helvetica, sans-serif;
   font-size: 1em;
-  color: #fff;
-  background-color: #666;
+  color: #666;
 }
 html body {
   font-size: 100%;
@@ -17,6 +16,14 @@ html body {
 html a {
   color: #66f;
   text-decoration: underline dashed;
+}
+header ul {
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+header ul > li {
+  display: inline-block;
 }
 footer {
   font-size: 0.9rem;

@@ -71,15 +71,29 @@ class Site {
 		if ( empty($_GET) ) { // homepage
 			$this->title = 'Kurs-Liste';
 			$this->content = "<h2>Übersicht der Kurse</h2>\n<ul>\n";
-			$this->content .= Site::_format($this->courses->courselist,'coursePreview');
-			$this->content .="</ul>\n";
+			foreach ( $this->courses->courselist as $cid => $course ) {
+				$this->content .= Site::_format($course,'coursePreview');
+				$this->content .= Site::_format($course,'courseLinks');
+			} $this->content .="</ul>\n";
 			// echo $this->_format(1,'tei%sst');
+		} elseif ( isset($_GET['c']) ) { // corses
+			if ( array_key_exists($_GET['c'],$this->courses->courselist) ) {
+				$course = $this->courses->courselist[$_GET['c']];
+				$this->title = 'Kurs-Details';
+				$this->content = "<h2>$course->title</h2>\n";
+				$this->content .= $course->content();
+				$this->content .= "<h3>Fragen dieses Kurses</h3>\n";
+				foreach ( $course->questions as $qid => $question ) {
+					$this->content .= Site::_format($question,'questionListItem');
+				}
+			} else { $this->title = 'Fehler';
+				$this->content = Site::_format($this,'errorPage');
+			}
 		} elseif ( isset($_GET['register']) ) {
 			$this->title = 'register';
 			$this->content = 'form';
-		} else {
-			$this->title = 'error';
-			$this->content = 'oops';
+		} else { $this->title = 'Fehler';
+			$this->content = Site::_format($this,'errorPage');
 		}
 	}
 } // end of class Site

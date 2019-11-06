@@ -1,3 +1,11 @@
+next:
+
+- cleanup unneeeded files
+- reading env file into config
+- form data tests
+- install web- and icon-font
+- use exams-log on website
+
 todo:
 
 ☐ parsing ids for data objects (sha?)
