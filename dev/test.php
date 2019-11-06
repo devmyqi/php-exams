@@ -39,9 +39,20 @@ function authenticate() { global $config, $site;
 	print("$status: $message\n");
 }
 
-// register();
-// authenticate();
 
-print_r($site->courses);
+# register();
+# authenticate();
+
+// site test functions
+
+function format() { global $config, $site;
+	echo Site::_format(1,'test %s!');
+}
+
+format();
+
+// data tests
+
+# print_r($site->courses);
 	
 ?>
