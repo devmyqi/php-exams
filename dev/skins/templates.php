@@ -16,7 +16,11 @@ $templates = [];
 
 // course templates
 
-$templates['coursePreview'] = 'you<br/>';
+$templates['coursePreview'] = <<<'EOS'
+	<li><h3>$title</h3>
+		$gen
+	</li>
+EOS;
 
 // question templates
 
@@ -25,5 +29,7 @@ $templates['coursePreview'] = 'you<br/>';
 // page templates
 
 // test templates
+
+$templates['one'] = 'template one in templates';
 
 ?>

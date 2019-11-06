@@ -45,11 +45,7 @@ function authenticate() { global $config, $site;
 
 // site test functions
 
-function format() { global $config, $site;
-	echo Site::_format(1,'test %s!');
-}
-
-format();
+echo Site::_format(1,'one.tmpl.html') . "\n";
 
 // data tests
 

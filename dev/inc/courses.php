@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-05
+	modified: 2019-11-06
 */
 
 // requires config in _SESSION
@@ -17,6 +17,15 @@ require_once('../inc/parsedown.php');
 
 # $config->loglevel = 63 - 4; // debug
 
+class Getter {
+	public function __get($prop) {
+		$object_vars = get_object_vars($this); $class_vars = get_class_vars('Course');
+		if ( property_exists($this,$prop) ) { return $this->$prop;
+		} elseif ( method_exists($this,$prop) ) { return $this->$prop();
+		} elseif ( array_key_exists($prop,$class_vars) ) { return $class_vars[$prop];
+		} else { return Null; }
+	}
+}
 class Courses {
 	public $courselist = [];
 	public function __construct() { global $config;
@@ -54,7 +63,7 @@ class Courses {
 	}
 } // end of class Courses
 
-class Course {
+class Course extends Getter {
 	public $cid = '';
 	public $title = '';
 	public $content = '';
@@ -64,9 +73,10 @@ class Course {
 		$this->title = $title;
 		$config->_log(2,"new Course [$this->cid]: $title");
 	}
+	public function gen() { return 'generated'; }
 } // end of class Course
 
-class Question {
+class Question extends Getter {
 	public $qid = '';
 	public $title = '';
 	public $content = '';
@@ -78,7 +88,7 @@ class Question {
 	}
 } // end of class Question
 
-class Answer {
+class Answer extends Getter {
 	public $aid = '';
 	public $title = '';
 	public $content = '';

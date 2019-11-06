@@ -43,7 +43,26 @@ class Site {
 		$this->routing();
 	}
 	// static functions
-	static function _nformat($object,$template) {
+	static function _getTemplate($template) { global $config, $templates;
+		if ( array_key_exists($template,$templates) ) { $template = $templates[$template]; }
+		if ( is_readable("$config->skindir/$template") ) {
+			$template = file_get_contents("$config->skindir/$template");
+		} elseif ( is_readable($template) ) { $template = file_get_contents($template);
+		} return $template;
+	}
+	static function _format($object,$template) {
+		$template = Site::_getTemplate($template);
+		if ( is_array($object) ) { $formatted = "";
+			foreach ( $object as $item ) {
+				$formatted .= Site::_format($item,$template);
+			} return $formatted;
+		} elseif ( is_object($object) ) {
+			preg_match_all('/\$(\w+)/',$template,$result); $replace = [];
+			foreach ( $result[1] as $key ) {
+				try { $replace['$'.$key] = $object->$key;
+				} catch ( exception $e ) { $replace['$'.$key] = '-'; }
+			} return strtr($template,$replace);
+		} else { return sprintf($template,$object); }
 	}
 	// protected functions
 	// private functions
@@ -51,8 +70,9 @@ class Site {
 	public function routing() {
 		if ( empty($_GET) ) { // homepage
 			$this->title = 'Kurs-Liste';
-			$this->content = "<h2>Übersicht der Kurse</h2>\n";
-			$this->content .= Site::_format($this->courses->courselist,'coursePreview<br/>');
+			$this->content = "<h2>Übersicht der Kurse</h2>\n<ul>\n";
+			$this->content .= Site::_format($this->courses->courselist,'coursePreview');
+			$this->content .="</ul>\n";
 			// echo $this->_format(1,'tei%sst');
 		} elseif ( isset($_GET['register']) ) {
 			$this->title = 'register';
@@ -61,31 +81,6 @@ class Site {
 			$this->title = 'error';
 			$this->content = 'oops';
 		}
-	}
-	public function _format($object,$template) { global $templates;
-		print_r($templates);
-		if ( array_key_exists($template,$templates) ) {
-			$template = $templates[$template];
-			if ( is_readable("$this->skindir/$template") ) {
-				$template = file_get_contents("$this->skindir/$template");
-			}
-		print ("format template: $template");
-		}
-		if ( is_array($object) ) { $formatted = "";
-			foreach ( $object as $item ) {
-				$formatted .= Site::_format($item,$template);
-			} return $formatted;
-		} elseif ( is_object($object) ) {
-			preg_match_all('/\$(\w+)/',$template,$result);
-			$objarray = (array)$object; $replace = [];
-			foreach ( $result[1] as $key ) {
-				if ( array_key_exists($key,$objarray) ) {
-					$replace['$'.$key] = $objarray[$key];
-				} else {
-					$replace['$'.$key] = '';
-				}
-			} return strtr($template,$replace);
-		} else { return sprintf($template,$object); }
 	}
 } // end of class Site
 
