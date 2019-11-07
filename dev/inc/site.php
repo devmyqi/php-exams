@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-06
+	modified: 2019-11-07
 */
 
 // config
@@ -24,6 +24,16 @@ require_once('inc/courses.php');
 
 // pages
 
+class Post extends Getter {
+	public $fields = ['email','username','password','firstname','lastname'];
+	public $_message = 'ohne Nachricht';
+	public function __construct($postdata) {
+		foreach ( $postdata as $key => $value ) {
+			if ( in_array($key,$this->fields) ) { $this->$key = $value; }
+		}
+	}
+} // end of class Post
+
 class Site {
 	// properties
 	public $name = 'exams?';
@@ -40,6 +50,7 @@ class Site {
 		$config->_log(1,"new <Site> object initialized: $this->name");
 		$this->users = new Users();
 		$this->courses = new Courses();
+		$this->formhandler();
 		$this->routing();
 	}
 	// static functions
@@ -67,7 +78,10 @@ class Site {
 	// protected functions
 	// private functions
 	// public functions
-	public function routing() {
+	public function formhandler() {
+		# print_r($_POST);
+	}
+	public function routing() { global $config;
 		if ( empty($_GET) ) { // homepage
 			$this->title = 'Kurs-Liste';
 			$this->content = "<h2>Übersicht der Kurse</h2>\n<ul>\n";
@@ -75,8 +89,7 @@ class Site {
 				$this->content .= Site::_format($course,'coursePreview');
 				$this->content .= Site::_format($course,'courseLinks');
 			} $this->content .="</ul>\n";
-			// echo $this->_format(1,'tei%sst');
-		} elseif ( isset($_GET['c']) ) { // corses
+		} elseif ( isset($_GET['c']) ) { // courses
 			if ( array_key_exists($_GET['c'],$this->courses->courselist) ) {
 				$course = $this->courses->courselist[$_GET['c']];
 				$this->title = 'Kurs-Details';
@@ -90,9 +103,32 @@ class Site {
 				$this->content = Site::_format($this,'errorPage');
 			}
 		} elseif ( isset($_GET['register']) ) {
-			$this->title = 'register';
-			$this->content = 'form';
-		} else { $this->title = 'Fehler';
+			list($status,$message) = $this->users->checkRegData($_POST);
+			if ( $status === 'passed' ) { $postdata = $_POST;
+				if ( $config->encrypt ) { $postdata['password'] = md5($postdata['password']); }	
+				$this->users->addUser(new User($postdata));
+				$this->users->saveUsers($config->userfile);
+				$this->title = 'Dankeschön';
+				$this->content .= Site::_format($this,'userRegConfirm');
+			} else {
+				$this->title = 'Registration';
+				$this->content = Site::_format(new Post($_POST),'userRegister');
+				$this->content .= "<p class='message $status'>$message</p>\n";
+			}
+		} elseif ( isset($_GET['login']) ) {
+			list($status,$message) = $this->users->checkAuthData($_POST);
+			if ( $status === 'passed' ) {
+				$this->title = 'Willkommen';
+				$this->content = "<h2>Du hast Dich erfolgreich angemeldet!</h2>\n";
+				$this->content .= "<p>Mach was!</p>\n";
+			} else {
+				$this->title = 'Anmelden';
+				$this->content = "<h3>Melde Dich hier mit Deinen Zugangs-Daten an</h3>\n";
+				$this->content .= Site::_format(new Post($_POST),'userLogin');
+				$this->content .= "<p class='message $status'>$message</p>\n";
+			}
+		} else {
+			$this->title = 'Fehler';
 			$this->content = Site::_format($this,'errorPage');
 		}
 	}

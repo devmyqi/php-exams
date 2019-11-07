@@ -40,22 +40,16 @@ function authenticate() { global $config, $site;
 }
 
 
-# register();
+# register()
 # authenticate();
 
 // site test functions
 
 # echo Site::_format(1,'one.tmpl.html') . "\n";
 
-// string tests
+# print_r($site->users);
 
-$data = "one\ntwo\nthree\nfour\nfive\nsix\nseven\neight\nnine\nten";
-preg_match_all('/^(.*?)\n/',$data,$result);
-
-print_r($result);
-
-print $data;
-
+# echo md5('q');
 // data tests
 
 # print_r($site->courses);

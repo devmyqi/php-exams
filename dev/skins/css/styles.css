@@ -15,7 +15,17 @@ html body {
 }
 html a {
   color: #66f;
-  text-decoration: underline dashed;
+  text-decoration: underline dotted;
+}
+html form label {
+  display: inline-block;
+  width: 9rem;
+}
+html form label::after {
+  content: ':';
+}
+html form input {
+  margin-bottom: 0.5rem;
 }
 header ul {
   margin: 0px;

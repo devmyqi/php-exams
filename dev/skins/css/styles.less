@@ -4,7 +4,7 @@
 //	version: v0.0.2
 //	author: Michael Wronna, Konstanz
 //	created: 2019-11-06
-//	modified: 2019-11-06
+//	modified: 2019-11-07
 
 // variables
 
@@ -12,6 +12,7 @@
 @colorText: #666;
 @colorMain: #66f;
 @marginMain: 1rem;
+@marginSmall: 0.5rem;
 
 // reset
 
@@ -32,7 +33,20 @@ html {
 	}
 	a {
 		color: @colorMain;
-		text-decoration: underline dashed;
+		text-decoration: underline dotted;
+	}
+	form {
+		label {
+			display: inline-block;
+			width: 9rem;
+			// font-weight: bold;
+			&::after {
+				content: ':'
+			}
+		}
+		input {
+			margin-bottom: @marginSmall;
+		}
 	}
 }
 

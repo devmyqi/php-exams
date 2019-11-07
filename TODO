@@ -1,6 +1,6 @@
 next:
 
-- cleanup unneeeded files
+- cleanup unneeded files
 - reading env file into config
 - form data tests
 - install web- and icon-font

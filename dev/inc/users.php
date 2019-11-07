@@ -2,11 +2,11 @@
 
 /*	meta information
 	filename: dev/inc/users.php
-	description: users class new approach
+	description: users classes for exams
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-05
+	modified: 2019-11-07
 */
 
 // requires config in _SESSION
@@ -16,6 +16,7 @@ class Users {
 	public $regcheck = ['email','username','password','confirm'];
 	public $authcheck = ['email','password'];
 	public $userlist = [];
+	public $active = False;
 	public function __construct() { global $config;
 		$config->_log(1,'new <Users> object initialized');
 		$this->readUsers($config->userfile);
@@ -26,16 +27,26 @@ class Users {
 			return ['warning','Bitte fülle alle Felder aus!'];
 		} elseif ( array_key_exists($postdata['email'],$this->userlist) ) {
 			return ['warning','Die E-Mail-Adresse ist bereits registriert!'];
+		} elseif ( empty($postdata['email']) ) {
+			return ['warning','Bitte gebe eine E-Mail-Adresse ein!'];
+		} elseif ( empty($postdata['username']) ) {
+			return ['warning','Bitte gebe einen Benutzernamen ein!'];
+		} elseif ( empty($postdata['password']) ) {
+			return ['warning','Bitte gebe einen Passwort ein!'];
 		} elseif ( $postdata['password'] !== $postdata['confirm'] ) {
 			return ['warning','Das Passwort muss korrekt wiederholt werden!'];
 		} else { return ['passed','Die Benutzer-Daten wurden korrekt eingegeben!']; }
 	}
 	public function checkAuthData($postdata) { global $config;
 		$config->_log(2,'checking authentication data in class Users');
-		if ( isset($postdata['password']) and $config->encrypt ) {
+		if ( ! empty($postdata['password']) and $config->encrypt ) {
 			$postdata['password'] = md5($postdata['password']); }
 		if ( ! empty(array_diff($this->authcheck,array_keys($postdata))) ) {
 			return ['warning','Bitte fülle alle Felder aus!'];
+		} elseif ( empty($postdata['email']) ) {
+			return ['warning','Bitte gebe Deine E-Mail-Adresse ein!'];
+		} elseif ( empty($postdata['password']) ) {
+			return ['warning','Bitte gebe Dein Passwort ein!'];
 		} elseif ( ! array_key_exists($postdata['email'],$this->userlist) ) {
 			return ['warning','Es gibt keinen Benutzer mit dieser E-Mail-Adresse!'];
 		} elseif ( $this->userlist[$postdata['email']]->password != $postdata['password'] ) {
