@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-06
+	modified: 2019-11-08
 */
 
 // requires config in _SESSION
@@ -105,9 +105,12 @@ class Answer extends Getter {
 	public $aid = '';
 	public $title = '';
 	public $markup = '';
+	public $correct = False;
 	public function __construct($title) { global $config;
 		$this->aid = substr(md5($title),0,$config->hashlength);
-		$this->title = $title;
+		if ( preg_match('/^(.*)\s*\!$/',$title,$result) ) {
+			$title = $result[1]; $this->correct = True; 
+		} $this->title = $title;
 		$config->_log(4,"new Answer [$this->aid]: $title");
 	}
 } // end of class Answer

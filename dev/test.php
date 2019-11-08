@@ -52,6 +52,6 @@ function authenticate() { global $config, $site;
 # echo md5('q');
 // data tests
 
-# print_r($site->courses);
+print_r($site->courses);
 	
 ?>
