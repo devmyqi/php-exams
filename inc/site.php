@@ -1,74 +1,135 @@
 <?php
 
 /*	meta information
-	filename: inc/site.php
-	description: website classes for exams
+	filename: dev/inc/site.php
+	description: site class new approach
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
-	created: 2019-10-31
-	modified: 2019-10-31
+	created: 2019-11-05
+	modified: 2019-11-07
 */
 
-// config, use global
-require_once('config.php');
-$config = isset($_SESSION['config']) ? $_SESSION['config'] : new Config();
-$_SESSION['config'] = $config;
+// config
+$config = $_SESSION['config'];
+
+// templates
+require_once("$config->skindir/templates.php"); global $templates;
+
+// users
+require_once('inc/users.php');
+# $users = new Users();
+
+// courses
+require_once('inc/courses.php');
+
+// pages
+
+class Post extends Getter {
+	public $fields = ['email','username','password','firstname','lastname'];
+	public $_message = 'ohne Nachricht';
+	public function __construct($postdata) {
+		foreach ( $postdata as $key => $value ) {
+			if ( in_array($key,$this->fields) ) { $this->$key = $value; }
+		}
+	}
+} // end of class Post
 
 class Site {
+	// properties
 	public $name = 'exams?';
 	public $title = 'homepage';
 	public $content = '';
-	public $modified = 'Oktober 2019';
+	public $skindir = 'skins';
+	// data objects
+	public $users = False;
+	public $courses = False;
+	public $pages = False;
 	public function __construct() { global $config;
-		$config->_log(1,'new <Site> object initialized');
-		$this->url = $_SERVER['PHP_SELF'];
-		$this->route();
+		$this->name = $config->sitename;
+		$this->skindir = $config->skindir;
+		$config->_log(1,"new <Site> object initialized: $this->name");
+		$this->users = new Users();
+		$this->courses = new Courses();
+		$this->formhandler();
+		$this->routing();
 	}
 	// static functions
-	static function getHtml($object,$template) {
-		require('_templates.php');
-		$template = array_key_exists($template,$templates)
-			? $templates[$template] : $template;
-		if ( is_array($object) ) { $html = "";
+	static function _getTemplate($template) { global $config, $templates;
+		if ( array_key_exists($template,$templates) ) { $template = $templates[$template]; }
+		if ( is_readable("$config->skindir/$template") ) {
+			$template = file_get_contents("$config->skindir/$template");
+		} elseif ( is_readable($template) ) { $template = file_get_contents($template);
+		} return $template;
+	}
+	static function _format($object,$template) {
+		$template = Site::_getTemplate($template);
+		if ( is_array($object) ) { $formatted = "";
 			foreach ( $object as $item ) {
-				$html .= Site::getHtml($item,$template);
-			} return $html;
+				$formatted .= Site::_format($item,$template);
+			} return $formatted;
 		} elseif ( is_object($object) ) {
-			preg_match_all('/\$(\w+)/',$template,$result);
-			$objarray = (array)$object; $replace = [];
+			preg_match_all('/\$(\w+)/',$template,$result); $replace = [];
 			foreach ( $result[1] as $key ) {
-				if ( array_key_exists($key,$objarray) ) {
-					$replace['$'.$key] = $objarray[$key];
-				} else { $replace['$'.$key] = ''; }
+				try { $replace['$'.$key] = $object->$key;
+				} catch ( exception $e ) { $replace['$'.$key] = '-'; }
 			} return strtr($template,$replace);
 		} else { return sprintf($template,$object); }
 	}
-	// public functions
 	// protected functions
-	protected function route() {
-		// print "<pre>\n"; print_r($_GET); print "</pre>\n";
-		// print "<pre>\n"; print_r($_SESSION); print "</pre>\n";
-		$cid = isset($_GET['c']) ? $_GET['c'] : NULL;
-		if ( $cid !== NULL and isset($_GET['details']) ) {
-			if ( array_key_exists($cid,$_SESSION['courses']) ) {
-				$course = $_SESSION['courses'][$cid];
+	// private functions
+	// public functions
+	public function formhandler() {
+		# print_r($_POST);
+	}
+	public function routing() { global $config;
+		if ( empty($_GET) ) { // homepage
+			$this->title = 'Kurs-Liste';
+			$this->content = "<h2>Übersicht der Kurse</h2>\n<ul>\n";
+			foreach ( $this->courses->courselist as $cid => $course ) {
+				$this->content .= Site::_format($course,'coursePreview');
+				$this->content .= Site::_format($course,'courseLinks');
+			} $this->content .="</ul>\n";
+		} elseif ( isset($_GET['c']) ) { // courses
+			if ( array_key_exists($_GET['c'],$this->courses->courselist) ) {
+				$course = $this->courses->courselist[$_GET['c']];
 				$this->title = 'Kurs-Details';
-				$this->content = Site::getHtml($course,'courseDetails');
-			} else {
-				$this->title = 'Fehler';
-				$this->content = Site::getHtml($this,'courseMissing');
+				$this->content = "<h2>$course->title</h2>\n";
+				$this->content .= $course->content();
+				$this->content .= "<h3>Fragen dieses Kurses</h3>\n";
+				foreach ( $course->questions as $qid => $question ) {
+					$this->content .= Site::_format($question,'questionListItem');
+				}
+			} else { $this->title = 'Fehler';
+				$this->content = Site::_format($this,'errorPage');
 			}
-		} elseif ( $cid !== NULL ) { // course questions
-			$this->title = 'Fragen';
-		} elseif ( count($_GET) === 0 ) {
-			$this->title = 'Startseite';
-			$this->content = "<h2>Es gibt folgende Kurse:</h2>\n";
-			foreach ( $_SESSION['courses'] as $course ) {
-				$this->content .= Site::getHtml($course,'coursePreview') . "\n";
+		} elseif ( isset($_GET['register']) ) {
+			list($status,$message) = $this->users->checkRegData($_POST);
+			if ( $status === 'passed' ) { $postdata = $_POST;
+				if ( $config->encrypt ) { $postdata['password'] = md5($postdata['password']); }	
+				$this->users->addUser(new User($postdata));
+				$this->users->saveUsers($config->userfile);
+				$this->title = 'Dankeschön';
+				$this->content .= Site::_format($this,'userRegConfirm');
+			} else {
+				$this->title = 'Registration';
+				$this->content = Site::_format(new Post($_POST),'userRegister');
+				$this->content .= "<p class='message $status'>$message</p>\n";
+			}
+		} elseif ( isset($_GET['login']) ) {
+			list($status,$message) = $this->users->checkAuthData($_POST);
+			if ( $status === 'passed' ) {
+				$this->title = 'Willkommen';
+				$this->content = "<h2>Du hast Dich erfolgreich angemeldet!</h2>\n";
+				$this->content .= "<p>Mach was!</p>\n";
+			} else {
+				$this->title = 'Anmelden';
+				$this->content = "<h3>Melde Dich hier mit Deinen Zugangs-Daten an</h3>\n";
+				$this->content .= Site::_format(new Post($_POST),'userLogin');
+				$this->content .= "<p class='message $status'>$message</p>\n";
 			}
 		} else {
 			$this->title = 'Fehler';
-			$this->content = Site::getHtml($this,'siteMissing');
+			$this->content = Site::_format($this,'errorPage');
 		}
 	}
 } // end of class Site

@@ -21,3 +21,7 @@
 	* view
 	* status
 * __design__
+	* grid
+	* templates
+	* styles
+	* responsive
