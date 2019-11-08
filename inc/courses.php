@@ -1,7 +1,7 @@
 <?php
 
 /*	meta information
-	filename: dev/inc/courses.php
+	filename: inc/courses.php
 	description: courses classes for exams
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
@@ -13,7 +13,7 @@
 $config = $_SESSION['config'];
 
 // requires parsedown
-require_once('../inc/parsedown.php');
+require_once('inc/parsedown.php');
 
 # $config->loglevel = 63 - 4; // debug
 

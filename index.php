@@ -1,5 +1,12 @@
 <?php
-// index.php, init and load skin
+/*	meta information
+	filename: index.php
+	description: web index for exams
+	version: v0.0.2
+	author: Michael Wronna, Konstanz
+	created: 2019-11-08
+	modified: 2019-11-08
+*/
 	
 session_start();
 

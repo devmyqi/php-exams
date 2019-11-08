@@ -10,6 +10,8 @@
 */
 
 class Config {
+	// environment
+	public $configfile = 'settings.config';
 	// logging
 	public $loglevel = 63;
 	public $logdate = 'H:i:s.u';
@@ -27,9 +29,29 @@ class Config {
 	public $hashlength = 6;
 	public $previewlines = 4;
 	// pages
-	public function __construct($logtarget='console') {
-		$this->logtarget = $logtarget;
-		$this->_log(1,'new <Config> object initialized');
+	public function __construct($configdata) {
+		$props = array_keys(get_object_vars($this));
+		foreach ( $configdata as $prop => $value ) {
+			if ( in_array($prop,$props) ) { $this->$prop = $value; }
+		}
+		if ( is_readable($this->configfile) and is_file($this->configfile) ) {
+			$this->readConfig($this->configfile);
+		}
+		$this->_log(1,"new Config: $this->configfile [$this->loglevel] ($this->logtarget)");
+	}
+	protected function readConfig($configfile) { // only error logging in there
+		if ( ! is_readable($this->configfile) or ! is_file($this->configfile) ) {
+			return $this->_log(8,"unable to read config settings from: $configfile");
+		}
+		foreach ( file($configfile) as $configline ) {
+			$configline = preg_replace('/\s*\#+\s+.*$/','',trim($configline));
+			if ( strlen($configline) <= 3 ) { continue; }
+			if ( preg_match('/^([\w\-]+)\s*\:\s*(.*)$/',$configline,$result) ) {
+				$prop = $result[1]; $value = $result[2];
+				$props = array_keys(get_object_vars($this));
+				if ( in_array($prop,$props) ) { $this->$prop = $value; }
+			} else { $this->_log(8,"unable to parse config: $configline"); }
+		}
 	}
 	public function _log($level,$message) {
 		$now = new DateTime(); $created = $now->format($this->logdate);

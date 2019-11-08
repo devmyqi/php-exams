@@ -1,5 +1,10 @@
 # notes
 
+## design
+
+* body=header,nav,main,footer
+* main=aside,section,article
+
 ## data classes
 
 models

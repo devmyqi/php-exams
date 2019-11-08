@@ -1,10 +1,21 @@
 <?php
 
+/*	meta information
+	filename: test.php
+	description: test script for exams
+	version: v0.0.2
+	author: Michael Wronna, Konstanz
+	created: 2019-11-08
+	modified: 2019-11-08
+*/
+
 session_start();
 
 // config
 require_once('inc/config.php');
-$config = new Config('terminal');
+$configdata = ['logtarget'=>'terminal','loglevel'=>63-4];
+$configdata = ['logtarget'=>'terminal'];
+$config = new Config($configdata);
 $_SESSION['config'] = $config;
 
 // site
@@ -52,6 +63,6 @@ function authenticate() { global $config, $site;
 # echo md5('q');
 // data tests
 
-print_r($site->courses);
+# print_r($site->courses);
 	
 ?>
