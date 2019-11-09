@@ -2,20 +2,39 @@
 ::before,
 ::after {
   box-sizing: content-box;
+  margin: 0px;
+  padding: 0px;
 }
 html {
   font-family: Montserrat, Arial, helvetica, sans-serif;
-  font-size: 1em;
   color: #666;
 }
 html body {
-  font-size: 100%;
-  width: 36rem;
+  max-width: 66rem;
+  min-height: 100vh;
   margin: 0px auto;
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 12rem 1fr;
+  grid-template-areas: "header header" "nav main" "footer footer";
+  grid-template-rows: auto 1fr auto;
 }
-html a {
+html body > * {
+  border: solid 1px #ccc;
+}
+html a,
+html a:visited {
   color: #66f;
-  text-decoration: underline dotted;
+}
+html a:hover,
+html a:visited:hover {
+  color: #666;
+}
+html h2,
+html h3,
+html p {
+  margin-bottom: 0.5rem;
 }
 html form label {
   display: inline-block;
@@ -27,16 +46,35 @@ html form label::after {
 html form input {
   margin-bottom: 0.5rem;
 }
-header ul {
+header {
+  grid-area: header;
+  margin-top: 1rem;
+  background-image: url(../../img/logo.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: 2rem;
+}
+nav {
+  grid-area: nav;
+}
+nav ul {
   margin: 0px;
   padding: 0px;
   list-style-type: none;
 }
-header ul > li {
+nav ul > li {
   display: inline-block;
+  margin-bottom: 0.5rem;
+}
+main {
+  grid-area: main;
+}
+aside {
+  grid-area: aside;
 }
 footer {
+  grid-area: footer;
+  margin-bottom: 1rem;
   font-size: 0.9rem;
   border-top: solid 1px;
-  margin-top: 1rem;
 }

@@ -8,7 +8,8 @@
 
 // variables
 
-@widthMain: 36rem;
+@widthMain: 66rem;
+@widthCols: 12rem;
 @colorText: #666;
 @colorMain: #66f;
 @marginMain: 1rem;
@@ -18,22 +19,37 @@
 
 *, ::before, ::after {
 	box-sizing: content-box;
+	margin: 0px;
+	padding: 0px;
 }
 
 // design
 
 html {
 	font-family: Montserrat, Arial, helvetica, sans-serif;
-	font-size: 1em;
 	color: @colorText;
 	body {
-		font-size: 100%;
-		width: @widthMain;
+		max-width: @widthMain;
+		min-height: 100vh;
 		margin: 0px auto;
+		position: relative; // for #status
+		display: grid;
+		gap: @marginMain;
+		grid-template-columns: @widthCols 1fr;
+		grid-template-areas: "header header" "nav main" "footer footer";
+		grid-template-rows: auto 1fr auto;
+		& > * { // children
+			border: solid 1px #ccc; // debug
+		}
 	}
-	a {
+	a, a:visited {
 		color: @colorMain;
-		text-decoration: underline dotted;
+		&:hover {
+			color: @colorText;
+		}
+	}
+	h2, h3, p {
+		margin-bottom: @marginSmall;
 	}
 	form {
 		label {
@@ -53,6 +69,17 @@ html {
 // header
 
 header {
+	grid-area: header;
+	margin-top: @marginMain;
+	background-image: url(../../img/logo.png);
+	background-repeat: no-repeat;
+	background-position: top right;
+	background-size: 2rem;
+}
+
+// nav
+nav {
+	grid-area: nav;
 	ul {
 		margin: 0px;
 		padding: 0px;
@@ -60,19 +87,29 @@ header {
 	}
 	ul > li {
 		display: inline-block;
+		margin-bottom: 0.5rem;
 	}
 }
 
 // main
 
+main {
+	grid-area: main;
+}
+
 // aside
+
+aside {
+	grid-area: aside;
+}
 
 // footer
 
 footer {
+	grid-area: footer;
+	margin-bottom: @marginMain;
 	font-size: 0.9rem;
 	border-top: solid 1px;
-	margin-top: @marginMain;
 }
 
 // hacks

@@ -6,6 +6,7 @@ next:
 + install web- and icon-font
 - use exams-log on website
 - update uml diagrams
+- read data only on demand
 
 todo:
 

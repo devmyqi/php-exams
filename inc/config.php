@@ -29,7 +29,7 @@ class Config {
 	public $hashlength = 6;
 	public $previewlines = 4;
 	// pages
-	public function __construct($configdata) {
+	public function __construct($configdata=[]) {
 		$props = array_keys(get_object_vars($this));
 		foreach ( $configdata as $prop => $value ) {
 			if ( in_array($prop,$props) ) { $this->$prop = $value; }

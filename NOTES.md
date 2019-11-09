@@ -1,5 +1,16 @@
 # notes
 
+## abbreviations
+
+* s = site
+* p = page
+* e = exam
+* r = result
+* u = user
+* c = course
+* q = question
+* a = answer
+
 ## design
 
 * body=header,nav,main,footer
