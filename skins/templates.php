@@ -13,6 +13,11 @@ $templates = [];
 
 // site templates
 
+$templates['siteMenuMain'] = <<<'EOS'
+	<li><a class="link_home" href="." title="Startseite">Startseite</a></li>
+
+EOS;
+
 $templates['errorPage'] = <<<'EOS'
 	<h2>Es ist leider ein Fehler aufgetreten</h2>
 	<p>Die von Dir aufgerufene Seite konnte hier leider nicht gefunden
@@ -21,6 +26,16 @@ $templates['errorPage'] = <<<'EOS'
 EOS;
 
 // user templates
+
+$templates['userMenuAuth'] = <<<'EOS'
+	<li><a class="link_register" href="?register" title="Registrieren">Registrieren</a></li>
+	<li><a class="link_login" href="?login" title="Anmelden">Anmelden</a></li>
+EOS;
+
+$templates['userMenuActive'] = <<<'EOS'
+	<li><a class="link_profile" href="?profile" title="Profil">Profil</a></li>
+	<li><a class="link_logout" href="?logout" title="Abmelden">Abmelden</a></li>
+EOS;
 
 $templates['userRegister'] = <<<'EOS'
 	<h2>Hier kannst Du Dich kostenlos registrieren</h2>
@@ -45,11 +60,18 @@ $templates['userRegConfirm'] = <<<'EOS'
 EOS;
 
 $templates['userLogin'] = <<<'EOS'
+	<h2>Melde Dich hier mit Deinen Zugangs-Daten an</h2>
 	<form action="?login" method="post">
 		<input name="email" type="email" value="$email" placeholder="email@adresse.de"/>
 		<input name="password" type="password" value="$password"/>
 		<input type="submit" value="anmelden"/>
 	</form>
+	<p class="message $status">$message</p>
+EOS;
+
+$templates['userWelcome'] = <<<'EOS'
+	<h2>Willkommen, $username</h2>
+	<p>Du hast Dich erfolgreich angemeldet und kannst nun hier loslegen!</p>
 EOS;
 
 // course templates

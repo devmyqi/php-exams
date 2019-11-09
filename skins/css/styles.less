@@ -11,7 +11,7 @@
 @widthMain: 66rem;
 @widthCols: 12rem;
 @colorText: #666;
-@colorMain: #66f;
+@colorMain: #090;
 @marginMain: 1rem;
 @marginSmall: 0.5rem;
 
@@ -39,17 +39,21 @@ html {
 		grid-template-areas: "header header" "nav main" "footer footer";
 		grid-template-rows: auto 1fr auto;
 		& > * { // children
-			border: solid 1px #ccc; // debug
+			// border: solid 1px #eee; // debug
 		}
 	}
 	a, a:visited {
 		color: @colorMain;
 		&:hover {
 			color: @colorText;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 		}
 	}
-	h2, h3, p {
+	h2, h3, ul, li, p {
 		margin-bottom: @marginSmall;
+	}
+	ul {
+		padding-left: @marginMain;
 	}
 	form {
 		label {
@@ -61,10 +65,30 @@ html {
 			}
 		}
 		input {
+			font-family: Montserrat, Arial, helvetica, sans-serif;
+			font-size: 0.9rem;
+			color: @colorText;
+			padding: 0.2rem 0.4rem;
+			border: solid 1px @colorMain;
+			border-radius: 0.4rem;
 			margin-bottom: @marginSmall;
 		}
+		input[type=submit] {
+			font-weight: bold;
+			padding: 0.2rem 0.4rem;
+			color: #fff;
+			background-color: @colorMain;
+			cursor: pointer;
+			&:hover {
+				background-color: @colorText;
+				border-color: @colorText;
+				box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+			}
+		}
+		
 	}
 }
+
 
 // header
 
@@ -75,6 +99,9 @@ header {
 	background-repeat: no-repeat;
 	background-position: top right;
 	background-size: 2rem;
+	h1 a {
+		text-decoration: none;
+	}
 }
 
 // nav
@@ -86,7 +113,6 @@ nav {
 		list-style-type: none; 
 	}
 	ul > li {
-		display: inline-block;
 		margin-bottom: 0.5rem;
 	}
 }
@@ -109,8 +135,28 @@ footer {
 	grid-area: footer;
 	margin-bottom: @marginMain;
 	font-size: 0.9rem;
-	border-top: solid 1px;
+	padding-top: 0.2rem;
+	border-top: solid 2px @colorMain;
 }
+
+// font awesome icons
+
+*[class^=link_]::before {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	margin-right: @marginSmall;
+}
+
+// navig icons
+.link_home::before { content: "\f4b8"; } // fa-couch
+// users icons
+.link_register::before { content: "\f234"; } // fa-user-plus
+.link_login::before { content: "\f2f6"; } // fa-sign-in-alt
+.link_profile::before { content: "\f007"; } // fa-user
+.link_logout::before { content: "\f2f5"; } // fa-sign-out-alt
+// course icons
+.link_courses::before { content: "\f02d"; } // fa-book
+.link_course::before { content: "\f518"; } // fa-book-open
 
 // hacks
 

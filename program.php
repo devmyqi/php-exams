@@ -18,9 +18,8 @@ $_SESSION['config'] = $config;
 
 // site
 require_once('inc/site.php');
-# $site = new Site();
-# $_SESSION['site'] = $site;
-
+$site = new Site();
+$_SESSION['site'] = $site;
 
 class Program {
 	public $progname = 'exams';
@@ -44,8 +43,15 @@ class Program {
 			// program options
 			if ( $option == 'v' ) { $this->printVersion();
 			} elseif ( $option == 'h' ) { $this->printHelp();
+			// config options
+			// users options
+			// course options
+			} elseif ( $option == 'l' ) { $this->courseList();
 			} else { $config->_log(8,"undefined program option: $option"); }
 		}
+	}
+	public function startShell() { global $config;
+		$config->_log(2,"starting the interactive program shell");
 	}
 	public function printVersion() { global $config;
 		$config->_log(2,"printing the programs version number");
@@ -59,6 +65,14 @@ class Program {
 			print("program arguments and options (section=program)\n");
 			print("  -v,--version        print the programs version numbers\n");
 			print("  -h,--help [<sec>]   print the help page for section sec\n");
+		}
+	}
+	// users functions
+	// course functions
+	public function courseList() { global $config, $site;
+		$config->_log(2,"printing the formatted course list");
+		foreach ( $site->courses->courselist as $course ) {
+			print("$course->cid: $course->title\n");
 		}
 	}
 }

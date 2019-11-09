@@ -20,21 +20,24 @@ html body {
   grid-template-areas: "header header" "nav main" "footer footer";
   grid-template-rows: auto 1fr auto;
 }
-html body > * {
-  border: solid 1px #ccc;
-}
 html a,
 html a:visited {
-  color: #66f;
+  color: #090;
 }
 html a:hover,
 html a:visited:hover {
   color: #666;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 html h2,
 html h3,
+html ul,
+html li,
 html p {
   margin-bottom: 0.5rem;
+}
+html ul {
+  padding-left: 1rem;
 }
 html form label {
   display: inline-block;
@@ -44,7 +47,25 @@ html form label::after {
   content: ':';
 }
 html form input {
+  font-family: Montserrat, Arial, helvetica, sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  padding: 0.2rem 0.4rem;
+  border: solid 1px #090;
+  border-radius: 0.4rem;
   margin-bottom: 0.5rem;
+}
+html form input[type=submit] {
+  font-weight: bold;
+  padding: 0.2rem 0.4rem;
+  color: #fff;
+  background-color: #090;
+  cursor: pointer;
+}
+html form input[type=submit]:hover {
+  background-color: #666;
+  border-color: #666;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 header {
   grid-area: header;
@@ -53,6 +74,9 @@ header {
   background-repeat: no-repeat;
   background-position: top right;
   background-size: 2rem;
+}
+header h1 a {
+  text-decoration: none;
 }
 nav {
   grid-area: nav;
@@ -63,7 +87,6 @@ nav ul {
   list-style-type: none;
 }
 nav ul > li {
-  display: inline-block;
   margin-bottom: 0.5rem;
 }
 main {
@@ -76,5 +99,32 @@ footer {
   grid-area: footer;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  border-top: solid 1px;
+  padding-top: 0.2rem;
+  border-top: solid 2px #090;
+}
+*[class^=link_]::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  margin-right: 0.5rem;
+}
+.link_home::before {
+  content: "\f4b8";
+}
+.link_register::before {
+  content: "\f234";
+}
+.link_login::before {
+  content: "\f2f6";
+}
+.link_profile::before {
+  content: "\f007";
+}
+.link_logout::before {
+  content: "\f2f5";
+}
+.link_courses::before {
+  content: "\f02d";
+}
+.link_course::before {
+  content: "\f518";
 }

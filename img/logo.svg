@@ -8,7 +8,7 @@
 <style type="text/css"><![CDATA[
 path { stroke-linecap: round; stroke-linejoin: round; }
 .back { stroke-width: 0px; stroke: #fff; fill: #fff; }
-.line { stroke-width: 18px; stroke: #66f; fill: none; }
+.line { stroke-width: 18px; stroke: #090; fill: none; }
 ]]></style>
 <!-- <path class="back" d="m 0,0 h 128 v 128 h -128 v -128 z"/> -->
 <!-- 24/sqrt(2) = 16.97 -= 24 = 7.03 -->

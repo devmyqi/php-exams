@@ -26,7 +26,8 @@ require_once('inc/courses.php');
 
 class Post extends Getter {
 	public $fields = ['email','username','password','firstname','lastname'];
-	public $_message = 'ohne Nachricht';
+	public $status = 'normal';
+	public $message = 'ohne Nachricht';
 	public function __construct($postdata) {
 		foreach ( $postdata as $key => $value ) {
 			if ( in_array($key,$this->fields) ) { $this->$key = $value; }
@@ -37,6 +38,7 @@ class Post extends Getter {
 class Site {
 	// properties
 	public $name = 'exams?';
+	public $sid = 'exams';
 	public $title = 'homepage';
 	public $content = '';
 	public $skindir = 'skins';
@@ -81,15 +83,23 @@ class Site {
 	public function formhandler() {
 		# print_r($_POST);
 	}
+	public function getMenuMain() { global $config;
+		return Site::_format($this,'siteMenuMain');
+	}
+	public function getMenuUsers() { global $config;
+		if ( $this->users->active ) {
+			return Site::_format($this->users->active,'userMenuActive');
+		} else { return Site::_format($this,'userMenuAuth'); }
+	}
 	public function routing() { global $config;
-		if ( empty($_GET) ) { // homepage
+		if ( empty($_GET) ) { $this->sid = 'courselist';
 			$this->title = 'Kurs-Liste';
 			$this->content = "<h2>Übersicht der Kurse</h2>\n<ul>\n";
 			foreach ( $this->courses->courselist as $cid => $course ) {
 				$this->content .= Site::_format($course,'coursePreview');
 				$this->content .= Site::_format($course,'courseLinks');
 			} $this->content .="</ul>\n";
-		} elseif ( isset($_GET['c']) ) { // courses
+		} elseif ( isset($_GET['c']) ) { $this->sid = 'course'; // courses
 			if ( array_key_exists($_GET['c'],$this->courses->courselist) ) {
 				$course = $this->courses->courselist[$_GET['c']];
 				$this->title = 'Kurs-Details';
@@ -102,7 +112,7 @@ class Site {
 			} else { $this->title = 'Fehler';
 				$this->content = Site::_format($this,'errorPage');
 			}
-		} elseif ( isset($_GET['register']) ) {
+		} elseif ( isset($_GET['register']) ) { $this->sid = 'register';
 			list($status,$message) = $this->users->checkRegData($_POST);
 			if ( $status === 'passed' ) { $postdata = $_POST;
 				if ( $config->encrypt ) { $postdata['password'] = md5($postdata['password']); }	
@@ -115,19 +125,22 @@ class Site {
 				$this->content = Site::_format(new Post($_POST),'userRegister');
 				$this->content .= "<p class='message $status'>$message</p>\n";
 			}
-		} elseif ( isset($_GET['login']) ) {
+		} elseif ( isset($_GET['login']) ) { $this->sid = 'login';
 			list($status,$message) = $this->users->checkAuthData($_POST);
 			if ( $status === 'passed' ) {
-				$this->title = 'Willkommen';
-				$this->content = "<h2>Du hast Dich erfolgreich angemeldet!</h2>\n";
-				$this->content .= "<p>Mach was!</p>\n";
-			} else {
-				$this->title = 'Anmelden';
-				$this->content = "<h3>Melde Dich hier mit Deinen Zugangs-Daten an</h3>\n";
-				$this->content .= Site::_format(new Post($_POST),'userLogin');
-				$this->content .= "<p class='message $status'>$message</p>\n";
+				$this->users->active = $this->users->userlist[$_POST['email']];
+				$this->sid = 'welcome'; $this->title = 'Willkommen';
+				$this->content = Site::_format($this->users->active,'userWelcome');
+			} else { $post = new Post($_POST);
+				$this->sid = 'login'; $this->title = 'Anmelden';
+				$post->status = $status; $post->message = $message;
+				$this->content .= Site::_format($post,'userLogin');
 			}
+		} elseif ( isset($_GET['logout']) ) { $this->sid = 'logout';
+			$this->title = 'Abmelden';
+			$this->content = Site::_format($this,'userLogout');
 		} else {
+			$this->sid = 'error';
 			$this->title = 'Fehler';
 			$this->content = Site::_format($this,'errorPage');
 		}

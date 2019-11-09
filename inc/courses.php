@@ -70,7 +70,9 @@ class Course extends Getter {
 	public $questions = [];
 	public function __construct($title) { global $config;
 		$this->cid = substr(md5($title),0,$config->hashlength);
-		$this->title = $title;
+		if ( preg_match('/^(\w+)\s*\:\s*(.*)$/',$title,$result) ) {
+			$this->cid = $result[1]; $this->title = $result[2];
+		} else { $this->title = $title; }
 		$config->_log(2,"new Course [$this->cid]: $title");
 	}
 	public function __get($prop) {
