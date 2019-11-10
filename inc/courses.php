@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-08
+	modified: 2019-11-10
 */
 
 // requires config in _SESSION
@@ -49,13 +49,13 @@ class Courses {
 			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$dataline,$result) ) { // question
 				$question = new Question($result[1]);
 				$question->markup = trim(join("\n",$markup));
-				$question->answers = array_reverse($answers,True);
+				$question->addAnswer(array_reverse($answers,True));
 				$questions[$question->qid] = $question;
 				$answers = $markup = [];
-			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$dataline,$result) ) {
+			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$dataline,$result) ) { // course
 				$course = new Course($result[1]);
 				$course->markup = trim(join("\n",$markup));
-				$course->questions = array_reverse($questions,True);
+				$course->addQuestion(array_reverse($questions,True));
 				$courses[$course->cid] = $course;
 				$questions = $markup = [];
 			} else { array_unshift($markup,$dataline); }
@@ -79,6 +79,17 @@ class Course extends Getter {
 		if ( $prop === 'count' ) { return count($this->questions);
 		} else { return parent::__get($prop); }
 	}
+	public function addQuestion($question) { // multiple or single
+		if ( is_array($question) ) {
+			foreach ( $question as $qid => $singleQ ) {
+				$singleQ->cid = $this->cid;
+				$this->questions[$qid] = $singleQ;
+			}
+		} else {
+			$question->cid = $this->cid;
+			$this->questions[$question->qid] = $question;
+		}
+	}
 	public function preview() { global $config;
 		$lines = $config->previewlines; $parsedown = new Parsedown();
 		$preview = array_slice(explode("\n",$this->markup),0,$lines);
@@ -92,6 +103,7 @@ class Course extends Getter {
 } // end of class Course
 
 class Question extends Getter {
+	public $cid = '';
 	public $qid = '';
 	public $title = '';
 	public $markup = '';
@@ -101,9 +113,28 @@ class Question extends Getter {
 		$this->title = $title;
 		$config->_log(4,"new Question [$this->qid]: $title");
 	}
+	public function addAnswer($answer) {
+		if ( is_array($answer) ) {
+			foreach ( $answer as $aid => $singleA ) {
+				$singleA->cid = $this->cid;
+				$singleA->qid = $this->qid;
+				$this->answers[$aid] = $singleA;
+			}
+		} else {
+			$answer->cid = $this->cid;
+			$answer->qid = $this->qid;
+			$this->answers[$answer->aid] = $answer;
+		}
+	}
+	public function content() {
+		$parsedown = new Parsedown();
+		return $parsedown->text($this->markup);
+	}
 } // end of class Question
 
 class Answer extends Getter {
+	public $cid = '';
+	public $qid = '';
 	public $aid = '';
 	public $title = '';
 	public $markup = '';
@@ -114,6 +145,10 @@ class Answer extends Getter {
 			$title = $result[1]; $this->correct = True; 
 		} $this->title = $title;
 		$config->_log(4,"new Answer [$this->aid]: $title");
+	}
+	public function content() {
+		$parsedown = new Parsedown();
+		return $parsedown->text($this->markup);
 	}
 } // end of class Answer
 

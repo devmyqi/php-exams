@@ -6,16 +6,32 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-07
+	modified: 2019-11-10
 */
 
 $templates = [];
+
+// error pages
 
 // site templates
 
 $templates['siteMenuMain'] = <<<'EOS'
 	<li><a class="link_home" href="." title="Startseite">Startseite</a></li>
+	<li><a class="link_courses" href="?courses"
+		title="Kurs-Übersicht">Kurs-Übersicht</a></li>
+EOS;
 
+$templates['siteHomepage'] = <<<'EOS'
+	<h2>Willkommen auf der Website von <code>exams?</code></h2>
+	<p>Hier kannst Du Dich mit Fragen und Antworten eines Kurses auf eine
+		Prüfung vorbereiten oder auch einfach nur üben!</p>
+	<p>Wenn Du Dich als Benutzer registrierst und dann anmeldest, hast Du
+		die Möglichkeit Deine Ergebisse einer Prüfung abzuspeicher und dann
+		später einzusehen!</p>
+	<p>Diese Webseite und das dahinter liegende System befindet sich noch
+		in der Entwicklung und es stehen noch nicht alle Funktionen zur
+		Verfügung. Die Weiterentwicklung läuft stetig und Du kannst unten
+		in der Fusszeile die derzeitige Version des Systems erkennen.</p>
 EOS;
 
 $templates['errorPage'] = <<<'EOS'
@@ -76,6 +92,13 @@ EOS;
 
 // course templates
 
+$templates['courseMissing'] = <<<'EOS'
+	<h2>Der angeforderte Kurs konnte nicht gefunden werden</h2>
+	<p>Der von Dir angeforderte Kurs konnte leider nicht gefunden werden.
+		Du kannst Dir die Liste der Kurse nochmal auf der
+		<a title="Zur Statseite" href=".">Startseite</a> anschauen.</p>
+EOS;
+
 $templates['coursePreview'] = <<<'EOS'
 	<li><h3><a title="zum Kurs" href="?c=$cid">$title</a></h3>
 		$preview
@@ -90,11 +113,28 @@ EOS;
 
 // question templates
 
+$templates['questionMissing'] = <<<'EOS'
+	<h2>Die angeforderte Frage konnte nicht gefunden werden</h2>
+	<p>Die von Dir angeforderte Frage konnte leider nicht gefunden werden.
+		Du kannst Dir die Liste der Kurse nochmal auf der
+		<a title="Zur Statseite" href=".">Startseite</a> anschauen.</p>
+EOS;
+
+$templates['questionDisplay'] = <<<'EOS'
+	<h2>$title</h2>
+	$content
+EOS;
+
 $templates['questionListItem'] = <<<'EOS'
-	<li>$title</li>
+	<li><a title="Zur Frage" href="?q=$cid.$qid">$title</a></li>
 EOS;
 
 // answer templates
+
+$templates['answerDisplay'] = <<<'EOS'
+	<h3>$title</h3>
+	$content
+EOS;
 
 // page templates
 

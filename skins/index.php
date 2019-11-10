@@ -15,9 +15,10 @@
 	<!-- stylesheets -->
 	<link rel="stylesheet" type="text/css"
 		href="<?php echo $site->skindir; ?>/css/styles.css"/>
-</head><body>
+</head><body class="<?php echo $site->sid; ?>">
 	<header>
-		<h1><a title="Startseite" href="."><?php echo "$site->name</a> $site->title"; ?></h1>
+		<h1><a title="Startseite" href="."><?php echo $site->name; ?></a>
+			<?php echo $site->title; ?></h1>
 	</header>
 	<nav>
 		<ul class="menu-user">
@@ -31,7 +32,7 @@
 		<?php echo $site->content; ?>
 	</main>
 	<footer>
-		footer of the default skin <?php echo "(sid=$site->sid)"; ?>
+		exams? version v0.0.2 (alpha2) November 2019 <?php echo "(sid=$site->sid)"; ?>
 	</footer>
 	<!--
 	<pre><?php print_r($site); ?></pre>

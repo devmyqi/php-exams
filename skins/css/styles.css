@@ -7,6 +7,7 @@
 }
 html {
   font-family: Montserrat, Arial, helvetica, sans-serif;
+  line-height: 1.5rem;
   color: #666;
 }
 html body {
@@ -32,12 +33,11 @@ html a:visited:hover {
 html h2,
 html h3,
 html ul,
-html li,
 html p {
   margin-bottom: 0.5rem;
 }
 html ul {
-  padding-left: 1rem;
+  padding-left: 0.5rem;
 }
 html form label {
   display: inline-block;
@@ -70,6 +70,7 @@ html form input[type=submit]:hover {
 header {
   grid-area: header;
   margin-top: 1rem;
+  height: 3rem;
   background-image: url(../../img/logo.png);
   background-repeat: no-repeat;
   background-position: top right;
@@ -82,12 +83,10 @@ nav {
   grid-area: nav;
 }
 nav ul {
-  margin: 0px;
-  padding: 0px;
   list-style-type: none;
 }
-nav ul > li {
-  margin-bottom: 0.5rem;
+nav ul li a {
+  text-decoration: none;
 }
 main {
   grid-area: main;

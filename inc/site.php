@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-07
+	modified: 2019-11-10
 */
 
 // config
@@ -91,9 +91,18 @@ class Site {
 			return Site::_format($this->users->active,'userMenuActive');
 		} else { return Site::_format($this,'userMenuAuth'); }
 	}
+	public function errorPage($template) {
+		$this->sid = 'error'; $this->title = 'Fehler';
+		$this->content = Site::_format($this,$template);
+	}
 	public function routing() { global $config;
-		if ( empty($_GET) ) { $this->sid = 'courselist';
-			$this->title = 'Kurs-Liste';
+		// default route
+		if ( empty($_GET) ) {
+			$this->sid = 'homepage'; $this->title = 'Startseite';
+			$this->content = Site::_format($this,'siteHomepage');
+		// course routes
+		} elseif ( isset($_GET['courses']) ) {
+			$this->sid = 'courses'; $this->title = 'Kurs-Übersicht';
 			$this->content = "<h2>Übersicht der Kurse</h2>\n<ul>\n";
 			foreach ( $this->courses->courselist as $cid => $course ) {
 				$this->content .= Site::_format($course,'coursePreview');
@@ -109,16 +118,31 @@ class Site {
 				foreach ( $course->questions as $qid => $question ) {
 					$this->content .= Site::_format($question,'questionListItem');
 				}
-			} else { $this->title = 'Fehler';
+			} else { $this->sid = 'error'; $this->title = 'Fehler';
 				$this->content = Site::_format($this,'errorPage');
 			}
+		// question routes
+		} elseif ( isset($_GET['q']) ) {
+			if ( ! preg_match('/^([\w\-]+)\.([\w\-]+)$/',$_GET['q'],$result) ) {
+				return $this->errorPage('errorPage');
+			} $cid = $result[1]; $qid = $result[2];
+			if ( ! in_array($cid,array_keys($this->courses->courselist)) ) {
+				return $this->errorPage('courseMissing');
+			} $course = $this->courses->courselist[$cid];
+			if ( ! in_array($qid,array_keys($course->questions)) ) {
+				return $this->errorPage('questionMissing');
+			} $question = $course->questions[$qid];
+			$this->sid = 'question'; $this->title = 'Frage';
+			$this->content = Site::_format($question,'questionDisplay');
+			$this->content .= Site::_format($question->answers,'answerDisplay');
+		// user routes
 		} elseif ( isset($_GET['register']) ) { $this->sid = 'register';
 			list($status,$message) = $this->users->checkRegData($_POST);
 			if ( $status === 'passed' ) { $postdata = $_POST;
 				if ( $config->encrypt ) { $postdata['password'] = md5($postdata['password']); }	
 				$this->users->addUser(new User($postdata));
 				$this->users->saveUsers($config->userfile);
-				$this->title = 'Dankeschön';
+				$rhis->sid = 'thanks'; $this->title = 'Dankeschön';
 				$this->content .= Site::_format($this,'userRegConfirm');
 			} else {
 				$this->title = 'Registration';
@@ -139,9 +163,8 @@ class Site {
 		} elseif ( isset($_GET['logout']) ) { $this->sid = 'logout';
 			$this->title = 'Abmelden';
 			$this->content = Site::_format($this,'userLogout');
-		} else {
-			$this->sid = 'error';
-			$this->title = 'Fehler';
+		// defaults error page
+		} else { $this->sid = 'error'; $this->title = 'Fehler';
 			$this->content = Site::_format($this,'errorPage');
 		}
 	}

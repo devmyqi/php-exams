@@ -11,6 +11,7 @@
 
 class Config {
 	// environment
+	public $created = False;
 	public $configfile = 'settings.config';
 	// logging
 	public $loglevel = 63;
@@ -31,14 +32,14 @@ class Config {
 	public $previewlines = 4;
 	// pages
 	public function __construct($configdata=[]) {
+		$this->created = date('Y-m-d H:i:s');
 		$props = array_keys(get_object_vars($this));
 		foreach ( $configdata as $prop => $value ) {
 			if ( in_array($prop,$props) ) { $this->$prop = $value; }
 		}
 		if ( is_readable($this->configfile) and is_file($this->configfile) ) {
 			$this->readConfig($this->configfile);
-		}
-		$this->_log(1,"new Config: $this->configfile [$this->loglevel] ($this->logtarget)");
+		} $this->_log(1,"new Config: $this->configfile [$this->loglevel] ($this->logtarget)");
 	}
 	protected function readConfig($configfile) { // only error logging in there
 		if ( ! is_readable($this->configfile) or ! is_file($this->configfile) ) {

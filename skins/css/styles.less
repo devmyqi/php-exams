@@ -4,7 +4,7 @@
 //	version: v0.0.2
 //	author: Michael Wronna, Konstanz
 //	created: 2019-11-06
-//	modified: 2019-11-08
+//	modified: 2019-11-10
 
 // variables
 
@@ -12,7 +12,7 @@
 @widthCols: 12rem;
 @colorText: #666;
 @colorMain: #090;
-@marginMain: 1rem;
+@marginMain: 1.0rem;
 @marginSmall: 0.5rem;
 
 // reset
@@ -27,6 +27,7 @@
 
 html {
 	font-family: Montserrat, Arial, helvetica, sans-serif;
+	line-height: 1.5rem;
 	color: @colorText;
 	body {
 		max-width: @widthMain;
@@ -49,11 +50,11 @@ html {
 			text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 		}
 	}
-	h2, h3, ul, li, p {
+	h2, h3, ul, p {
 		margin-bottom: @marginSmall;
 	}
 	ul {
-		padding-left: @marginMain;
+		padding-left: @marginSmall;
 	}
 	form {
 		label {
@@ -95,6 +96,7 @@ html {
 header {
 	grid-area: header;
 	margin-top: @marginMain;
+	height: 3rem;
 	background-image: url(../../img/logo.png);
 	background-repeat: no-repeat;
 	background-position: top right;
@@ -108,12 +110,10 @@ header {
 nav {
 	grid-area: nav;
 	ul {
-		margin: 0px;
-		padding: 0px;
 		list-style-type: none; 
 	}
-	ul > li {
-		margin-bottom: 0.5rem;
+	ul li a {
+		text-decoration: none;
 	}
 }
 
