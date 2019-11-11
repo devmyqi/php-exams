@@ -39,13 +39,6 @@ html p {
 html ul {
   padding-left: 0.5rem;
 }
-html form label {
-  display: inline-block;
-  width: 9rem;
-}
-html form label::after {
-  content: ':';
-}
 html form input {
   font-family: Montserrat, Arial, helvetica, sans-serif;
   font-size: 0.9rem;
@@ -66,6 +59,16 @@ html form input[type=submit]:hover {
   background-color: #666;
   border-color: #666;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+html form h2 {
+  color: #fff;
+  background-color: #090;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.4rem;
+}
+html form h3 {
+  color: #090;
+  cursor: pointer;
 }
 header {
   grid-area: header;
@@ -100,6 +103,22 @@ footer {
   font-size: 0.9rem;
   padding-top: 0.2rem;
   border-top: solid 2px #090;
+}
+input[type=checkbox] {
+  display: none;
+}
+input[type=checkbox] + label {
+  cursor: pointer;
+}
+input[type=checkbox] + label::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  margin-right: 0.5rem;
+  content: "\f0c8";
+}
+input[type=checkbox]:checked + label::before {
+  font-weight: 900;
+  content: "\f00c";
 }
 *[class^=link_]::before {
   font-family: "Font Awesome 5 Free";

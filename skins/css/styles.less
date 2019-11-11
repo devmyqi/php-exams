@@ -57,14 +57,6 @@ html {
 		padding-left: @marginSmall;
 	}
 	form {
-		label {
-			display: inline-block;
-			width: 9rem;
-			// font-weight: bold;
-			&::after {
-				content: ':'
-			}
-		}
 		input {
 			font-family: Montserrat, Arial, helvetica, sans-serif;
 			font-size: 0.9rem;
@@ -86,7 +78,16 @@ html {
 				box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 			}
 		}
-		
+		h2 {
+			color: #fff;
+			background-color: @colorMain;
+			padding: 0.2rem 0.4rem;
+			border-radius: 0.4rem;
+		}
+		h3 {
+			color: @colorMain;
+			cursor: pointer;
+		}
 	}
 }
 
@@ -140,6 +141,27 @@ footer {
 }
 
 // font awesome icons
+
+input[type=checkbox] {
+	display: none;
+}
+
+input[type=checkbox] + label {
+	cursor: pointer;
+}
+
+input[type=checkbox] + label::before {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 400;
+	margin-right: @marginSmall;
+	content: "\f0c8";
+}
+
+input[type=checkbox]:checked + label::before {
+	font-weight: 900;
+	content: "\f00c";
+}
+
 
 *[class^=link_]::before {
 	font-family: "Font Awesome 5 Free";

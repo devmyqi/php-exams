@@ -34,7 +34,7 @@ $templates['siteHomepage'] = <<<'EOS'
 		in der Fusszeile die derzeitige Version des Systems erkennen.</p>
 EOS;
 
-$templates['errorPage'] = <<<'EOS'
+$templates['siteMissing'] = <<<'EOS'
 	<h2>Es ist leider ein Fehler aufgetreten</h2>
 	<p>Die von Dir aufgerufene Seite konnte hier leider nicht gefunden
 		werden. Du kannst aber ganz entspannt wieder zur
@@ -111,6 +111,11 @@ $templates['courseLinks'] = <<<'EOS'
 	</p>
 EOS;
 
+$templates['courseDetails'] = <<<'EOS'
+	<h2>$title</h2>
+	$content
+EOS;
+
 // question templates
 
 $templates['questionMissing'] = <<<'EOS'
@@ -125,7 +130,25 @@ $templates['questionDisplay'] = <<<'EOS'
 	$content
 EOS;
 
+$templates['questionForm'] = <<<'EOS'
+	<form action="?next" method="post">
+	<h2>
+		<input type="checkbox" id="$qid" name="$qid"/>
+		<label for="$qid">$title</label>
+	</h3>
+	$content
+EOS;
+
+$templates['questionSubmit'] = <<<'EOS'
+	<input type="submit" value="weiter"/>
+	</form>
+EOS;
+
 $templates['questionListItem'] = <<<'EOS'
+	<li><a title="Zur Frage" href="?q=$cid.$qid&answer">$title</a></li>
+EOS;
+
+$templates['questionListItemOld'] = <<<'EOS'
 	<li><a title="Zur Frage" href="?q=$cid.$qid">$title</a></li>
 EOS;
 
@@ -133,8 +156,17 @@ EOS;
 
 $templates['answerDisplay'] = <<<'EOS'
 	<h3>$title</h3>
-	$content
+	$content<br/>
 EOS;
+
+$templates['answerForm'] = <<<'EOT'
+	<h3>
+		<input type="checkbox" id="$aid" name="$aid"/>
+		<label for="$aid">$title</label>
+	</h3>
+	$content
+
+EOT;
 
 // page templates
 

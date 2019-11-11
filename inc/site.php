@@ -109,32 +109,37 @@ class Site {
 				$this->content .= Site::_format($course,'courseLinks');
 			} $this->content .="</ul>\n";
 		} elseif ( isset($_GET['c']) ) { $this->sid = 'course'; // courses
-			if ( array_key_exists($_GET['c'],$this->courses->courselist) ) {
-				$course = $this->courses->courselist[$_GET['c']];
-				$this->title = 'Kurs-Details';
-				$this->content = "<h2>$course->title</h2>\n";
-				$this->content .= $course->content();
-				$this->content .= "<h3>Fragen dieses Kurses</h3>\n";
-				foreach ( $course->questions as $qid => $question ) {
-					$this->content .= Site::_format($question,'questionListItem');
-				}
-			} else { $this->sid = 'error'; $this->title = 'Fehler';
-				$this->content = Site::_format($this,'errorPage');
+			if ( ! array_key_exists($_GET['c'],$this->courses->courselist) ) {
+				return $this->errorPage('courseMissing');
+			} $course = $this->courses->courselist[$_GET['c']];
+			if ( isset($_GET['start']) ) { // course start
+			} else { $this->title = 'Kurs-Details'; // course details
+				$this->content = Site::_format($course,'courseDetails');
+				$this->content .= "<h3>Fragen dieses Kurses</h3>\n<ul>\n";
+				$this->content .= Site::_format($course->questions,'questionListItem');
+				$this->content .= "</ul>\n";
 			}
 		// question routes
 		} elseif ( isset($_GET['q']) ) {
 			if ( ! preg_match('/^([\w\-]+)\.([\w\-]+)$/',$_GET['q'],$result) ) {
 				return $this->errorPage('errorPage');
 			} $cid = $result[1]; $qid = $result[2];
-			if ( ! in_array($cid,array_keys($this->courses->courselist)) ) {
+			if ( ! array_key_exists($cid,$this->courses->courselist) ) {
 				return $this->errorPage('courseMissing');
 			} $course = $this->courses->courselist[$cid];
-			if ( ! in_array($qid,array_keys($course->questions)) ) {
+			if ( ! array_key_exists($qid,$course->questions) ) {
 				return $this->errorPage('questionMissing');
 			} $question = $course->questions[$qid];
-			$this->sid = 'question'; $this->title = 'Frage';
-			$this->content = Site::_format($question,'questionDisplay');
-			$this->content .= Site::_format($question->answers,'answerDisplay');
+			if ( isset($_GET['answer']) ) {
+				$this->sid = 'question'; $this->title = 'Frage';
+				$this->content = Site::_format($question,'questionForm');
+				$this->content .= Site::_format($question->answers,'answerForm');
+				$this->content .= Site::_format($question,'questionSubmit');
+			} else {
+				$this->sid = 'question'; $this->title = 'Frage';
+				$this->content = Site::_format($question,'questionDisplay');
+				$this->content .= Site::_format($question->answers,'answerDisplay');
+			}
 		// user routes
 		} elseif ( isset($_GET['register']) ) { $this->sid = 'register';
 			list($status,$message) = $this->users->checkRegData($_POST);
@@ -164,9 +169,7 @@ class Site {
 			$this->title = 'Abmelden';
 			$this->content = Site::_format($this,'userLogout');
 		// defaults error page
-		} else { $this->sid = 'error'; $this->title = 'Fehler';
-			$this->content = Site::_format($this,'errorPage');
-		}
+		} else { return $this->errorPage('siteMissing'); }
 	}
 } // end of class Site
 
