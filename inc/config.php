@@ -26,8 +26,8 @@ class Config {
 	public $userfile = 'users.json';
 	public $encrypt = True;
 	// courses
-	public $courseDir = 'courses' ;
-	public $coursefiles = 'courses/test.md'; # globbing
+	public $courseDir = 'courses' ; // unused
+	public $coursefiles = 'data/test/*.md'; # globbing
 	public $hashlength = 6;
 	public $previewlines = 4;
 	// pages

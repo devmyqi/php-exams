@@ -4,7 +4,7 @@
 //	version: v0.0.2
 //	author: Michael Wronna, Konstanz
 //	created: 2019-11-06
-//	modified: 2019-11-10
+//	modified: 2019-11-11
 
 // variables
 
@@ -39,9 +39,6 @@ html {
 		grid-template-columns: @widthCols 1fr;
 		grid-template-areas: "header header" "nav main" "footer footer";
 		grid-template-rows: auto 1fr auto;
-		& > * { // children
-			// border: solid 1px #eee; // debug
-		}
 	}
 	a, a:visited {
 		color: @colorMain;
@@ -81,7 +78,7 @@ html {
 		h2 {
 			color: #fff;
 			background-color: @colorMain;
-			padding: 0.2rem 0.4rem;
+			padding: 0.5rem 0.6rem;
 			border-radius: 0.4rem;
 		}
 		h3 {
@@ -154,14 +151,25 @@ input[type=checkbox] + label::before {
 	font-family: "Font Awesome 5 Free";
 	font-weight: 400;
 	margin-right: @marginSmall;
+	display: inline-block;
+	width: 1.0rem;
 	content: "\f0c8";
+}
+
+input[type=checkbox] + label.question::before {
+	content: "";
+}
+
+input[type=checkbox]:checked + label.question::before {
+	font-weight: bold;
+	font-size: 0.8em;
+	content: "\f02e";
 }
 
 input[type=checkbox]:checked + label::before {
 	font-weight: 900;
 	content: "\f00c";
 }
-
 
 *[class^=link_]::before {
 	font-family: "Font Awesome 5 Free";

@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-10
+	modified: 2019-11-11
 */
 
 // config
@@ -101,6 +101,14 @@ class Site {
 			$this->sid = 'homepage'; $this->title = 'Startseite';
 			$this->content = Site::_format($this,'siteHomepage');
 		// course routes
+		} elseif ( isset($_GET['select']) ) { // courses select
+			$this->sid = 'select'; $this->title = 'Kurs-Auswahl';
+			$this->content = Site::_format($this,'coursesForm');
+			foreach ( $this->courses->courselist as $cid => $course ) {
+				$this->content .= Site::_format($course,'courseSelect');
+			}
+			$this->content .= Site::_format($this->courses->courselist,'courseSelect');
+			$this->content .= Site::_format($this,'coursesSubmit');
 		} elseif ( isset($_GET['courses']) ) {
 			$this->sid = 'courses'; $this->title = 'Kurs-Übersicht';
 			$this->content = "<h2>Übersicht der Kurse</h2>\n<ul>\n";

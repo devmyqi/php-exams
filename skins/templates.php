@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-05
-	modified: 2019-11-10
+	modified: 2019-11-11
 */
 
 $templates = [];
@@ -134,7 +134,7 @@ $templates['questionForm'] = <<<'EOS'
 	<form action="?next" method="post">
 	<h2>
 		<input type="checkbox" id="$qid" name="$qid"/>
-		<label for="$qid">$title</label>
+		<label class="question" for="$qid">$title</label>
 	</h3>
 	$content
 EOS;
@@ -162,7 +162,7 @@ EOS;
 $templates['answerForm'] = <<<'EOT'
 	<h3>
 		<input type="checkbox" id="$aid" name="$aid"/>
-		<label for="$aid">$title</label>
+		<label class="answer" for="$aid">$title</label>
 	</h3>
 	$content
 
