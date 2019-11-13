@@ -9,17 +9,21 @@
 	modified: 2019-11-12
 */
 
-require_once('inc/site.php');
 session_start();
 
-function loadSite() {
-	if ( ! isset($_SESSION['site']) ) {
-		$site = new Site(); $_SESSION['site'] = $site;
-	} else { $site = $_SESSION['site']; }
-}
+// requires
+require_once('inc/config.php');
+require_once('inc/site.php');
 
-$site = new Site(); // test
+// config, init one, use global
+$config = new Config(['logtarget'=>'terminal']);
+global $config; // not needed, just a hint
 
-print_r($site->config);
+// site, stores all data objects
+if ( ! isset($_SESSION['site']) ) {
+	$site = new Site(); $_SESSION['site'] = $site;
+} else { $site = $_SESSION['site']; }
+
+
 
 ?>

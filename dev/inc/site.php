@@ -6,45 +6,39 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-12
-	notes: this is the master class, loading all others
+	modified: 2019-11-13
+	notes: this is the main class, holding all data (config is global)
 */
 
-require_once('inc/config.php');
-require_once('inc/users.php');
+# require_once('inc/users.php');
+# require_once('inc/courses.php'); # not yet implemented
+# require_once('inc/exams.php'); # not yet implemented
 
-class Getter {
-	public function __get($prop) {
-		$objectvars = get_object_vars($this);
-		$classvars = get_class_vars(get_class($this));
-		if ( $property_exists($this,$prop) ) { return $this->$prop;
-		} elseif ( method_exists($this,$prop) ) { return $this->$prop();
-		} elseif ( array_key_exists($prop,$classvars) ) { return $classvars[$prop];
-		} else { return Null; }
-	}
-} // end of class Getter
-
-class Site extends Getter {
-	// debug
-	public $initdate = False;
-	// setting
-	public $skindir = 'skins';
-	// properties
-	public $id = 'home';
-	public $name = 'exams?';
-	public $title = 'homepage';
-	public $content = '';
-	// objects
-	public $config = False;
-	public function __construct($data=[]) {
-		$this->initdate = date('Y-m-d H:i:s');
-		$this->config = new Config();
-	}
-	// defaults
-	protected $defauls = [
+class Site {
+	protected $defaults = [
+		// properties
+		'sid' => 'home_',
+		'name' => 'exams?',
+		'version' => 'v0.0.2 (alpha2) [dev]',
+		'title' => 'homepage',
+		'content' => '',
+		'initdate' => False,
 	];
-	public function __something() {
-		return 'else';
+	public function __construct($data=[]) { global $config;
+		foreach ( $this->defaults as $prop => $value ) {
+			if ( property_exists($config,$prop) ) {
+				$this->$prop = $config->$prop;
+			} elseif ( array_key_exists($prop,$data) ) {
+				$this->$prop = $data[$prop];
+			} else { $this->$prop = $value; }
+		}
+		$config->_log(1,"new Site: $this->name ($this->sid)");
+		$this->initdate = date('Y-m-d H:i:s'); // debug
+	}
+	public function asArray() { $data = []; // stores site data in session
+		foreach ( array_keys($this->defaults) as $prop ) {
+			$data[$prop] = $this->$prop;
+		} return $data;
 	}
 } // end of class Site
 
