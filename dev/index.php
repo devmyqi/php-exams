@@ -14,6 +14,7 @@ session_start();
 
 // requires
 require_once('inc/config.php');
+require_once('inc/request.php');
 require_once('inc/site.php');
 require_once('inc/users.php');
 require_once('inc/courses.php');
@@ -25,23 +26,19 @@ $sitekey = 'site_v02d';
 # session_destroy();
 # $_SESSION = Null;
 
-// config, init one, use global
-$config = new Config(); // logtarget=>console
-global $config; // not needed, just a hint
-
-// site, stores all data objects
+// init once, use global
+$config = new Config();
+$request = new Request($_GET,$_POST);
 $site = new Site();
-if ( ! isset($_SESSION[$sitekey]) ) {
-	$_SESSION[$sitekey] = $site->asArray();
-}
-
-// users
 $users = new Users();
+$courses = new Courses();
+
+// globals (not needed, just a hint)
+global $config, $site, $users, $courses;
 
 // load skin
-
 require_once("$config->skindir/index.php");
 
-echo "<pre>\n"; print_r($_SESSION[$sitekey]); echo "</pre>\n";
+echo "<pre>", print_r($request,True), "</pre>";
 
 ?>

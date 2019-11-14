@@ -1,5 +1,3 @@
-<?php
-?>
 <!DOCTYPE html>
 <html lang="de"><head>
 	<meta charset="utf-8">
@@ -21,6 +19,7 @@
 			<?php echo $site->title; ?></h1>
 	</header>
 	<nav>
+		<?php echo Site::_format($site,'siteMainMenu'); ?>
 		<ul class="menu-user">
 		</ul>
 		<ul class)"menu-main">
