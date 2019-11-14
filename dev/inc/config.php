@@ -10,6 +10,16 @@
 	notes: loaded into a site object
 */
 
+class Getter {
+	public function __get($prop) {
+		$object_vars = get_object_vars($this); $class_vars = get_class_vars('Course');
+		if ( property_exists($this,$prop) ) { return $this->$prop;
+		} elseif ( method_exists($this,$prop) ) { return $this->$prop();
+		} elseif ( array_key_exists($prop,$class_vars) ) { return $class_vars[$prop];
+		} else { return Null; }
+	}
+}
+
 class Config {
 	public $defaults = [
 		// debug

@@ -14,10 +14,10 @@ session_start();
 
 // requires
 require_once('inc/config.php');
-require_once('inc/request.php');
-require_once('inc/site.php');
+require_once('inc/session.php');
 require_once('inc/users.php');
 require_once('inc/courses.php');
+require_once('inc/site.php');
 
 // session keys, to avoic conflicts between versions
 $sitekey = 'site_v02d';
@@ -28,17 +28,19 @@ $sitekey = 'site_v02d';
 
 // init once, use global
 $config = new Config();
-$request = new Request($_GET,$_POST);
-$site = new Site();
+// data objects
 $users = new Users();
 $courses = new Courses();
+// runtime objects
+$session = new Session($_GET,$_POST);
+$site = new Site(); // needs all objects
 
 // globals (not needed, just a hint)
-global $config, $site, $users, $courses;
+global $config, $users, $courses, $session, $site;
 
 // load skin
 require_once("$config->skindir/index.php");
 
-echo "<pre>", print_r($request,True), "</pre>";
+echo "<pre>", print_r($session,True), "</pre>";
 
 ?>

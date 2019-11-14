@@ -9,6 +9,7 @@
 	modified: 2019-11-14
 	notes: this is the main class, holding all data (config is global)
 */
+// global $config, $users, $courses, $session, $site;
 
 class Site {
 	protected $defaults = [
@@ -30,7 +31,6 @@ class Site {
 		}
 		$config->_log(1,"new Site: $this->name ($this->sid)");
 		$this->initdate = date('Y-m-d H:i:s'); // debug
-		$this->formhandler();
 		$this->routing();
 	}
 	// static functions
@@ -64,14 +64,12 @@ class Site {
 		} else { return sprintf($template,$object); }
 	}
 	// protected functions
-	protected function formhandler() {
-		echo "formhandler";
-	}
 	protected function errorPage($template) {
 		$this->sid = 'error'; $this->title = 'Fehler';
 		$this->content = Site::_format($this,'siteMissing');
 	}
 	protected function routing() {
+		global $config, $users, $courses, $session; // all objects!
 		$get = isset($_GET) ? $_GET : [];
 		// default route
 		if ( empty($get) ) {
@@ -81,9 +79,12 @@ class Site {
 		} elseif ( isset($get['register']) ) {
 			$this->sid = 'register'; $this->title = 'Registration';
 			$this->content = Site::_format($_POST,'userRegister',True);
-		} elseif ( isset($get['login']) ) {
+		} elseif ( isset($get['login']) ) { $users->login($session);
 			$this->sid = 'login'; $this->title = 'Anmelden';
-			$this->content = Site::_format($_POST,'userLogin',True);
+			$this->content = Site::_format($session,'userLogin');
+		} elseif ( isset($get['logout']) ) { $users->logout($session);
+			$this->sid = 'logout'; $this->title = 'Abmelden';
+			$this->content = Site::_format($session,'userLogout');
 		// debug routes
 		} else { return $this->errorPage('siteMissing'); }
 	}

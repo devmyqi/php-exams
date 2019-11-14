@@ -25,6 +25,7 @@ $templates['siteMainMenu'] = <<<'EOS'
 		<li><a title="Startseite" href=".">Startseite</a></li>
 		<li><a title="Registration" href="?register">Registration</a></li>
 		<li><a title="Anmelden" href="?login">Anmelden</a></li>
+		<li><a title="Abmelden" href="?logout">Abmelden</a></li>
 	</ul>
 EOS;
 
@@ -48,6 +49,7 @@ $templates['userRegister'] = <<<'EOS'
 		<input type="password" id="confirm" name="confirm" value="$confirm"/><br/>
 		<input type="submit" value="registrieren"/>
 	</form>
+	<p class="message $status">$message</p>
 EOS;
 
 $templates['userLogin'] = <<<'EOS'
@@ -59,6 +61,13 @@ $templates['userLogin'] = <<<'EOS'
 		<input type="password" id="password" name="password" value="$password"/><br/>
 		<input type="submit" value="anmelden"/>
 	</form>
+	<p class="message $status">$message</p>
+EOS;
+
+$templates['userLogout'] = <<<'EOS'
+	<h2>Du bist nun wieder abgemeldet</h2>
+	<p>Du hast Dich erfolgreich abgemeldet</p>
+	<hr/><p class="message $status">$message</p>
 EOS;
 
 // course templates
