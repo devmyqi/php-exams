@@ -41,6 +41,7 @@ class Config {
 		// courses
 		'datadir' => 'data',
 		'files' => '*.md',
+		'hashlength' => 6,
 	];
 	public function __construct($data=[]) {
 		foreach ( $this->defaults as $prop => $value ) {
