@@ -6,10 +6,10 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-14
+	modified: 2019-11-15
 	notes: this is the main class, holding all data (config is global)
 */
-// global $config, $users, $courses, $session, $site;
+// global $config, $users, $courses, $request, $site;
 
 class Site {
 	protected $defaults = [
@@ -69,32 +69,40 @@ class Site {
 		$this->content = Site::_format($this,'siteMissing');
 	}
 	protected function routing() {
-		global $config, $users, $courses, $session; // all objects!
-		$get = isset($_GET) ? $_GET : [];
+		global $config, $users, $courses, $request; // all objects!
+		$get = isset($_GET) ? $_GET : []; // #todo user request
 		// default route
 		if ( empty($get) ) {
 			$this->sid = 'welcome'; $this->title = 'Willkommen';
 			$this->content = Site::_format($this,'siteWelcome');
-		// user routes
-		} elseif ( isset($get['register']) ) {
+		// auth routes
+		} elseif ( isset($get['register']) ) { $users->register($request);
 			$this->sid = 'register'; $this->title = 'Registration';
-			$this->content = Site::_format($_POST,'userRegister',True);
-		} elseif ( isset($get['login']) ) { $users->login($session);
+			$this->content = Site::_format($request,'userRegister');
+		} elseif ( isset($get['login']) ) { $users->login($request);
 			$this->sid = 'login'; $this->title = 'Anmelden';
-			$this->content = Site::_format($session,'userLogin');
-		} elseif ( isset($get['logout']) ) { $users->logout($session);
+			$this->content = Site::_format($request,'userLogin');
+		// user routes
+		} elseif ( isset($get['profile']) ) {
+			$users->profile($request);
+			$this->sid = 'profile'; $this->title = 'Profil';
+			$this->content = Site::_format($request,'userProfile');
+		} elseif ( isset($get['logout']) ) {
+			$users->logout($request);
 			$this->sid = 'logout'; $this->title = 'Abmelden';
-			$this->content = Site::_format($session,'userLogout');
+			$this->content = Site::_format($request,'userLogout');
+		// admin routes
 		// debug routes
 		} else { return $this->errorPage('siteMissing'); }
 	}
 	// public functions
-	// debug functions
-	public function asArray() { $data = []; // stores site data in session
-		foreach ( array_keys($this->defaults) as $prop ) {
-			$data[$prop] = $this->$prop;
-		} return $data;
+	public function getUserMenu() {
+		if ( isset($_SESSION['active']) ) {
+			$userdata = $_SESSION['active'];
+			return Site::_format($userdata,'siteUserMenu',True);
+		} else { return Site::_format($this,'siteAuthMenu'); }
 	}
+	// debug functions
 } // end of class Site
 
 ?>

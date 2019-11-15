@@ -20,12 +20,23 @@ $templates['siteMissing'] = <<<'EOS'
 	</p>
 EOS;
 
+$templates['siteAuthMenu'] = <<<'EOS'
+	<ul>
+		<li><a title="Registration" href="?register">Registration</a></li>
+		<li><a title="Anmelden" href="?login">Anmelden</a></li>
+	</ul>
+EOS;
+
+$templates['siteUserMenu'] = <<<'EOS'
+	<ul>
+		<li><a title="Profil" href="?profile">$username</a></li>
+		<li><a title="Abmelden" href="?logout">Abmelden</a></li>
+	</ul>
+EOS;
+
 $templates['siteMainMenu'] = <<<'EOS'
 	<ul>
 		<li><a title="Startseite" href=".">Startseite</a></li>
-		<li><a title="Registration" href="?register">Registration</a></li>
-		<li><a title="Anmelden" href="?login">Anmelden</a></li>
-		<li><a title="Abmelden" href="?logout">Abmelden</a></li>
 	</ul>
 EOS;
 
@@ -61,6 +72,23 @@ $templates['userLogin'] = <<<'EOS'
 		<input type="password" id="password" name="password" value="$password"/><br/>
 		<input type="submit" value="anmelden"/>
 	</form>
+	<p class="message $status">$message</p>
+EOS;
+
+$templates['userProfile'] = <<<'EOS'
+	<h2>Dein Profil ($email)</h2>
+	<form action="?profile" method="post">
+		<label for="username">Benutzername</label>
+		<input type="text" id="username" name="username" value="$username"/><br/>
+		<label for="current">altes Passwort</label>
+		<input type="password" id="current" name="current" value="$current"/><br/>
+		<label for="password">neues Passwort</label>
+		<input type="password" id="password" name="password" value="$password"/><br/>
+		<label for="confirm">Wiederholen</label>
+		<input type="password" id="confirm" name="confirm" value="$confirm"/><br/>
+		<input type="submit" value="aktualisieren"/>
+	</form>
+	<p>debug: e=$email, u=$username, p=$password</p>
 	<p class="message $status">$message</p>
 EOS;
 

@@ -19,11 +19,8 @@
 			<?php echo $site->title; ?></h1>
 	</header>
 	<nav>
+		<?php echo $site->getUserMenu(); ?>
 		<?php echo Site::_format($site,'siteMainMenu'); ?>
-		<ul class="menu-user">
-		</ul>
-		<ul class)"menu-main">
-		</ul>
 	</nav>
 	<main>
 		<?php echo $site->content; ?>

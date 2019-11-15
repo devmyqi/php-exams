@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-12
+	modified: 2019-11-15
 	notes: loaded into a site object
 */
 
