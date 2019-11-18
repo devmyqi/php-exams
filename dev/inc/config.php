@@ -42,6 +42,7 @@ class Config {
 		'datadir' => 'data',
 		'files' => '*.md',
 		'hashlength' => 6,
+		'previewlines' => 4,
 	];
 	public function __construct($data=[]) {
 		foreach ( $this->defaults as $prop => $value ) {

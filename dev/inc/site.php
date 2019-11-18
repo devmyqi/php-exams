@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-15
+	modified: 2019-11-17
 	notes: this is the main class, holding all data (config is global)
 */
 // global $config, $users, $courses, $request, $site;
@@ -66,31 +66,67 @@ class Site {
 	// protected functions
 	protected function errorPage($template) {
 		$this->sid = 'error'; $this->title = 'Fehler';
-		$this->content = Site::_format($this,'siteMissing');
+		$this->content = Site::_format($this,$template);
 	}
 	protected function routing() {
 		global $config, $users, $courses, $request; // all objects!
-		$get = isset($_GET) ? $_GET : []; // #todo user request
 		// default route
-		if ( empty($get) ) {
+		if ( empty($request->get) ) {
 			$this->sid = 'welcome'; $this->title = 'Willkommen';
 			$this->content = Site::_format($this,'siteWelcome');
 		// auth routes
-		} elseif ( isset($get['register']) ) { $users->register($request);
+		} elseif ( isset($request->get['register']) ) { $users->register($request);
 			$this->sid = 'register'; $this->title = 'Registration';
 			$this->content = Site::_format($request,'userRegister');
-		} elseif ( isset($get['login']) ) { $users->login($request);
+		} elseif ( isset($request->get['login']) ) { $users->login($request);
 			$this->sid = 'login'; $this->title = 'Anmelden';
 			$this->content = Site::_format($request,'userLogin');
 		// user routes
-		} elseif ( isset($get['profile']) ) {
+		} elseif ( isset($request->get['profile']) ) {
 			$users->profile($request);
 			$this->sid = 'profile'; $this->title = 'Profil';
 			$this->content = Site::_format($request,'userProfile');
-		} elseif ( isset($get['logout']) ) {
+		} elseif ( isset($request->get['logout']) ) {
 			$users->logout($request);
 			$this->sid = 'logout'; $this->title = 'Abmelden';
 			$this->content = Site::_format($request,'userLogout');
+		// courses routes
+		} elseif ( isset($request->get['courses']) ) {
+			$this->sid = 'courses'; $this->title = 'Kurs-Übersicht';
+			$this->content = Site::_format($courses,'coursesPreview');
+			foreach ( $courses->courses as $course ) {
+				$this->content .= Site::_format($course,'coursePreview');
+			}
+		} elseif ( isset($request->get['select']) ) {
+			$this->sid = 'select'; $this->title='Kurs-Auswahl';
+			$this->content = Site::_format($courses,'coursesForm');
+			foreach ( $courses->courses as $cid => $course ) {
+				$this->content .= Site::_format($course,'courseSelect');
+			} $this->content .= Site::_format($courses,'coursesSubmit');
+		// course routes
+		} elseif ( ! empty($request->get['c']) ) {
+			if ( ! array_key_exists($request->get['c'],$courses->courses) ) {
+				return $this->errorPage('courseMissing');
+			} $course = $courses->courses[$request->get['c']];
+			// question routes
+			if ( ! empty($request->get['q']) ) {
+				if ( ! array_key_exists($request->get['q'],$course->questions) ) {
+					return $this->errorPage('questionMissing');
+				} $question = $course->questions[$request->get['q']];
+				$this->sid = 'question'; $this->title = 'Frage';
+				$this->content = Site::_format($question,'questionForm');
+				foreach ( $question->answers as $aid => $answer ) {
+					$this->content .= Site::_format($answer,'answerSelect');
+				} $this->content .= Site::_format($question,'questionSubmit');
+			} else { 
+				$this->sid = 'course'; $this->title='Kurs-Details';
+				$this->content = Site::_format($course,'courseDetails');
+				$this->content .= "<h3>Fragen dieses Kurses</h3><ul>\n";
+				foreach ( $course->questions as $qid => $question ) {
+					$this->content .= Site::_format($question,'questionListItem');
+				} $this->content .= "</ul>\n";
+			}
+		// exam routes
 		// admin routes
 		// debug routes
 		} else { return $this->errorPage('siteMissing'); }

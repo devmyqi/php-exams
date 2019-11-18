@@ -6,7 +6,7 @@
 	version: v0.0.2 (dev)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-13
-	modified: 2019-11-13
+	modified: 2019-11-17
 */
 
 $templates = [];
@@ -37,6 +37,8 @@ EOS;
 $templates['siteMainMenu'] = <<<'EOS'
 	<ul>
 		<li><a title="Startseite" href=".">Startseite</a></li>
+		<li><a title="Kurs-Übersicht" href="?courses">Kurs-Übersicht</a></li>
+		<li><a title="Kurs-Auswahl" href="?select">Kurs-Auswahl</a></li>
 	</ul>
 EOS;
 
@@ -98,15 +100,79 @@ $templates['userLogout'] = <<<'EOS'
 	<hr/><p class="message $status">$message</p>
 EOS;
 
+// courses templates
+
+$templates['coursesPreview'] = <<<'EOT'
+	<h2>Die Übersicht unserer $count Kurse</h3>
+EOT;
+
+$templates['coursesForm'] = <<<'EOS'
+	<h2>Wähle die Kurse für die Prüfung</h3>
+	<form action="?select" method="post">
+EOS;
+
+$templates['coursesSubmit'] = <<<'EOS'
+	<br/>
+	<input type="submit" value="Prüfung starten"/>
+	</form>
+EOS;
+
 // course templates
+
+$templates['courseMissing'] = <<<'EOS'
+	<h2>Es ist leider ein Fehler aufgetreten</h2>
+	<p>Der von Dir angeforderte Kurs konnte leider nicht gefunden werden.
+	</p>
+EOS;
+
+$templates['coursePreview'] = <<<'EOT'
+	<li><a title="Zum Kurs" href="?c=$cid">$title</a></li>
+	$preview
+EOT;
+
+$templates['courseDetails'] = <<<'EOT'
+	<h2>$title</h2>
+	$content
+EOT;
+
+$templates['courseSelect'] = <<<'EOS'
+	<label class="course-select">
+		<input type="checkbox" name="courses[]" value="$sid"/>
+		$title
+	</label><br/>
+EOS;
 
 // question templates
 
+$templates['questionListItem'] = <<<'EOS'
+	<li><a title="Zur Frage" href="?c=$cid&q=$qid">$title</a></li>
+EOS;
+
+$templates['questionForm'] = <<<'EOS'
+	<h2>$title</h2>
+	$content
+	<form action="." method="post">
+EOS;
+
+$templates['questionSubmit'] = <<<'EOS'
+		<input type="submit" value="weiter"/>
+	</form>
+EOS;
+
 // answer templates
+
+$templates['answerSelect'] = <<<'EOS'
+		<label>
+			<input type="checkbox" name="answer"/>
+			$title
+		</label>
+		$content
+EOS;
 
 // test templates
 
 $templates['test'] = <<<'EOS'
 	<p>this is a paragraph</p>
 EOS;
+
 ?>

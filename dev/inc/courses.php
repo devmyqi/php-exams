@@ -10,10 +10,13 @@
 	notes: classes copied from inc/courses.php
 */
 
+require_once('../inc/parsedown.php');
+
 class Courses {
 	public $datafiles = '';
 	public $read = False;
 	public $courses = [];
+	public $count = 0;
 	public function __construct() { global $config;
 		$this->datafiles = "$config->datadir/$config->files";
 		$config->_log(1,"new Courses with files: $this->datafiles");
@@ -24,6 +27,7 @@ class Courses {
 		if ( ! count($datafiles) ) {
 			$config->_log(8,"no datafiles to get courses in: $this->datafiles");
 		} foreach ( $datafiles as $datafile ) { $this->readCourses($datafile); }
+		$this->count = count($this->courses);
 	}
 	public function readCourses($datafile) { global $config;
 		if ( ! is_readable($datafile) or ! is_file($datafile) ) {
@@ -50,11 +54,26 @@ class Courses {
 				$courses[$course->cid] = $course;
 				$questions = $markup = [];
 			} else { array_unshift($markup,$dataline); }
-		} $this->courselist = array_reverse($courses,True);
+		} $this->courses = array_reverse($courses,True);
+	}
+	// debug methods
+	public function printTree($level=2) { global $config;
+		$config->_log(2,'printing the courses data tree');
+		foreach ( $this->courses as $cid => $course ) {
+			print("[C] $course->cid: $course->title\n");
+			if ( $level <= 1 ) { continue; }
+			foreach ( $course->questions as $qid => $question ) {
+				print("\t[Q] $question->qid: $question->title\n");
+				if ( $level <= 2 ) { continue; }
+				foreach ( $question->answers as $aid => $answer ) {
+					print("\t\t[A] $answer->aid: $answer->title\n");
+				} // end loop answers
+			} // end loop questions
+		} // end loop courses
 	}
 } // end of class Courses
 
-class Course {
+class Course extends Getter {
 	public $cid = '';
 	public $title = '';
 	public $markup = '';
@@ -93,7 +112,7 @@ class Course {
 	}
 } // end of class Course
 
-class Question {
+class Question extends Getter {
 	public $cid = '';
 	public $qid = '';
 	public $title = '';
@@ -123,7 +142,7 @@ class Question {
 	}
 } // end of class Question
 
-class Answer {
+class Answer extends Getter {
 	public $cid = '';
 	public $qid = '';
 	public $aid = '';
