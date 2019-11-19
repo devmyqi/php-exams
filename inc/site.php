@@ -2,24 +2,26 @@
 
 /*	meta information
 	filename: dev/inc/site.php
-	description: new approach, site class
+	description: site class for exams
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-17
-	notes: this is the main class, holding all data (config is global)
+	modified: 2019-11-19
+	notes: loaded last, all objects loaded before
 */
-// global $config, $users, $courses, $request, $site;
+
+// global $config, $request, $users, $courses, $exam, $site;
 
 class Site {
 	protected $defaults = [
 		// properties
-		'sid' => 'home',
+		'sid' => 'empty',
 		'name' => 'exams?',
 		'version' => 'v0.0.2 (alpha2) [dev]',
 		'title' => 'homepage',
 		'content' => 'empty',
 		'initdate' => False,
+		'debug' => '',
 	];
 	public function __construct($data=[]) { global $config;
 		foreach ( $this->defaults as $prop => $value ) {
@@ -69,7 +71,7 @@ class Site {
 		$this->content = Site::_format($this,$template);
 	}
 	protected function routing() {
-		global $config, $users, $courses, $request; // all objects!
+		global $config, $request, $users, $courses, $exam; // all objects
 		// default route
 		if ( empty($request->get) ) {
 			$this->sid = 'welcome'; $this->title = 'Willkommen';
@@ -90,6 +92,31 @@ class Site {
 			$users->logout($request);
 			$this->sid = 'logout'; $this->title = 'Abmelden';
 			$this->content = Site::_format($request,'userLogout');
+		// exam routes
+		} elseif ( isset($request->get['exam']) ) {
+			$this->sid = 'exam'; $this->title = 'Prüfung';
+			if ( empty($_SESSION['questions']) ) {
+				$this->content = 'start';
+			} else {
+				$this->content = 'questions';
+			}
+		} elseif ( isset($request->get['start']) ) {
+			$this->sid = 'start'; $this->title = 'Start';
+			if ( ! empty($request->get['c']) ) { $cid = $request->get['c'];
+				if ( ! array_key_exists($cid,$courses->courses) ) {
+					return $this->errorPage('courseMissing');
+				} $course = $courses->courses[$cid];
+				# $exam->addQuestions($cid);
+				$exam->addCourse($course);
+				$exam->start();
+				$this->content = Site::_format($exam,'examSplash');
+			} else {
+				return $this->errorPage('examMissing');
+			}
+		} elseif ( isset($request->get['reset']) ) {
+			$exam->reset();
+			$this->sid = 'reset'; $this->title = 'Zurücksetzen';
+			$this->content = Site::_format($exam,'examReset');
 		// courses routes
 		} elseif ( isset($request->get['courses']) ) {
 			$this->sid = 'courses'; $this->title = 'Kurs-Übersicht';
@@ -126,7 +153,6 @@ class Site {
 					$this->content .= Site::_format($question,'questionListItem');
 				} $this->content .= "</ul>\n";
 			}
-		// exam routes
 		// admin routes
 		// debug routes
 		} else { return $this->errorPage('siteMissing'); }
@@ -137,6 +163,10 @@ class Site {
 			$userdata = $_SESSION['active'];
 			return Site::_format($userdata,'siteUserMenu',True);
 		} else { return Site::_format($this,'siteAuthMenu'); }
+	}
+	public function getExamMenu() { global $exam;
+		return Site::_format($exam,'siteExamMenu');
+			$this->content = Site::_format($request,'userLogin');
 	}
 	// debug functions
 } // end of class Site

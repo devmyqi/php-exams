@@ -42,6 +42,8 @@ class Config {
 		'files' => '*.md',
 		'hashlength' => 6,
 		'previewlines' => 4,
+		// exam
+		'questionLimit' => 50,
 	];
 	public function __construct($data=[]) {
 		foreach ( $this->defaults as $prop => $value ) {

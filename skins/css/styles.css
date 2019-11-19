@@ -156,3 +156,9 @@ input[type=checkbox]:checked + label::before {
 .link_course::before {
   content: "\f518";
 }
+.link_exam::before {
+  content: "\f518";
+}
+.link_reset::before {
+  content: "\f1f8";
+}

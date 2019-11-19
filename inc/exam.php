@@ -6,15 +6,15 @@
 	version: v0.0.2 (new approach)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-15
-	modified: 2019-11-18
+	modified: 2019-11-19
 */
 
-class Exam {
+class Exam extends Getter {
 	protected $defaults = [
-		'courses' => [],
 		'questions' => [],
-		'count' => 20, // number of questions
-		'sorting' => 'order', // order, random, etc.
+		'courses' => [],
+		// 'count' => 20, // number of questions, in config
+		// 'sorting' => 'order', // order, random, etc.
 	];
 	public function __construct($data=[]) { global $config;
 		foreach ( $this->defaults as $prop => $value ) {
@@ -23,7 +23,14 @@ class Exam {
 			} else { $this->$prop = $value; }
 		} $config->_log(1,"new <Exam> object initialized");
 	}
-	public function addCourse($cid) { global $config, $courses;
+	public function __get($prop) {
+		if ( $prop === 'courseCount' ) { return count($this->courses);
+		} elseif ( $prop === 'questionCount' ) {
+			return count($this->questions);
+		} else { return parent::__get($prop); }
+	}
+	public function addCourse($course) { global $config, $courses;
+		$this->courses[$course->cid] = $course;
 	}
 	public function addQuestions($cid) { global $config, $courses;
 		if ( ! array_key_exists($cid,$courses->courses) ) {
@@ -35,6 +42,21 @@ class Exam {
 			if ( in_array($cqid,$this->questions) ) { continue; }
 			$this->questions[] = $cqid;
 		}
+	}
+	public function start() { global $config, $request;
+		foreach ( $this->courses as $cid => $course ) {
+			foreach ( $course->questions as $qid => $question ) {
+				$cqid = "$question->cid.$question->qid";
+				$this->questions[$cqid] = $question;
+			}
+		} uksort($this->questions, function() { return rand() > rand(); });
+		$questionLimit = $config->questionLimit;
+		$this->questions = array_slice($this->questions,0,$questionLimit,True);
+		$_SESSION['questions'] = array_keys($this->questions);
+	}
+	public function reset() {
+		unset($_SESSION['questions']);
+		unset($_SESSION['answers']);
 	}
 } // end of class Exam
 

@@ -39,7 +39,13 @@ $templates['siteMainMenu'] = <<<'EOS'
 	<ul>
 		<li><a class="link_home" title="Startseite" href=".">Startseite</a></li>
 		<li><a class="link_courses" title="Kurs-Übersicht" href="?courses">Kurs-Übersicht</a></li>
-		<li><a class="link_course" title="Kurs-Auswahl" href="?select">Kurs-Auswahl</a></li>
+	</ul>
+EOS;
+
+$templates['siteExamMenu'] = <<<'EOS'
+	<ul>
+		<li><a class="link_exam" title="Zur Prüfung" href="?exam">Zur Prüfung</a></li>
+		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
 
@@ -127,13 +133,18 @@ $templates['courseMissing'] = <<<'EOS'
 EOS;
 
 $templates['coursePreview'] = <<<'EOT'
-	<li><a title="Zum Kurs" href="?c=$cid">$title</a></li>
+	<h3>$title</h3>
 	$preview
+	<ul class="course_actions">
+		<li><a title="Kurs-Details" href="?c=$cid">Kurs-Details</a></li>
+		<li><a title="Prüfung starten" href="?start&c=$cid">Prüfung starten</a></li>
+	</ul>
 EOT;
 
 $templates['courseDetails'] = <<<'EOT'
 	<h2>$title</h2>
 	$content
+	<p><a title="Prüfung starten" href="?start&c=$cid">Prüfung starten</a></p>
 EOT;
 
 $templates['courseSelect'] = <<<'EOS'
@@ -168,6 +179,20 @@ $templates['answerSelect'] = <<<'EOS'
 			$title
 		</label>
 		$content
+EOS;
+
+// exam templates
+
+$templates['examSplash'] = <<<'EOS'
+	<h2>Start der Prüfung mit $questionCount Fragen</h2>
+	<p>Kurse: $courseCount</p>
+	<p>Fragen: $questionCount</p>
+	test
+EOS;
+
+$templates['examReset'] = <<<'EOS'
+	<h2>Deine Prüfung wurde zurückgesetzt</h2>
+	<p>Du kannst ja wieder eine neue Prüfung starten</p>
 EOS;
 
 // test templates
