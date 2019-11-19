@@ -1,175 +1,179 @@
 <?php
 
 /*	meta information
-	filename: skins/templates.php
-	description: default skins template file
-	version: v0.0.2
+	filename: dev/skins/template.php
+	description: templates of default skin for exams
+	version: v0.0.2 (dev)
 	author: Michael Wronna, Konstanz
-	created: 2019-11-05
-	modified: 2019-11-11
+	created: 2019-11-13
+	modified: 2019-11-17
 */
 
 $templates = [];
 
-// error pages
-
 // site templates
-
-$templates['siteMenuMain'] = <<<'EOS'
-	<li><a class="link_home" href="." title="Startseite">Startseite</a></li>
-	<li><a class="link_courses" href="?courses"
-		title="Kurs-Übersicht">Kurs-Übersicht</a></li>
-EOS;
-
-$templates['siteHomepage'] = <<<'EOS'
-	<h2>Willkommen auf der Website von <code>exams?</code></h2>
-	<p>Hier kannst Du Dich mit Fragen und Antworten eines Kurses auf eine
-		Prüfung vorbereiten oder auch einfach nur üben!</p>
-	<p>Wenn Du Dich als Benutzer registrierst und dann anmeldest, hast Du
-		die Möglichkeit Deine Ergebisse einer Prüfung abzuspeicher und dann
-		später einzusehen!</p>
-	<p>Diese Webseite und das dahinter liegende System befindet sich noch
-		in der Entwicklung und es stehen noch nicht alle Funktionen zur
-		Verfügung. Die Weiterentwicklung läuft stetig und Du kannst unten
-		in der Fusszeile die derzeitige Version des Systems erkennen.</p>
-EOS;
 
 $templates['siteMissing'] = <<<'EOS'
 	<h2>Es ist leider ein Fehler aufgetreten</h2>
-	<p>Die von Dir aufgerufene Seite konnte hier leider nicht gefunden
-		werden. Du kannst aber ganz entspannt wieder zur
-		<a title="Startseite" href=".">Startseite</a> hüpfen ;-)</p>
+	<p>Die von Dir angeforderte Seite konnte leider nicht gefunden werden.
+		Du kannst aber ga
+	</p>
+EOS;
+
+$templates['siteAuthMenu'] = <<<'EOS'
+	<ul>
+		<li><a class="link_register" title="Registration"
+			href="?register">Registration</a></li>
+		<li><a class="link_login" title="Anmelden" href="?login">Anmelden</a></li>
+	</ul>
+EOS;
+
+$templates['siteUserMenu'] = <<<'EOS'
+	<ul>
+		<li><a class="link_profile" title="Profil" href="?profile">$username</a></li>
+		<li><a class="link_logout" title="Abmelden" href="?logout">Abmelden</a></li>
+	</ul>
+EOS;
+
+$templates['siteMainMenu'] = <<<'EOS'
+	<ul>
+		<li><a class="link_home" title="Startseite" href=".">Startseite</a></li>
+		<li><a class="link_courses" title="Kurs-Übersicht" href="?courses">Kurs-Übersicht</a></li>
+		<li><a class="link_course" title="Kurs-Auswahl" href="?select">Kurs-Auswahl</a></li>
+	</ul>
+EOS;
+
+$templates['siteWelcome'] = <<<'EOS'
+	<h2>Willkommen</h2>
+	<p>... auf der Webseite von <code>exams?</code></p>
 EOS;
 
 // user templates
 
-$templates['userMenuAuth'] = <<<'EOS'
-	<li><a class="link_register" href="?register" title="Registrieren">Registrieren</a></li>
-	<li><a class="link_login" href="?login" title="Anmelden">Anmelden</a></li>
-EOS;
-
-$templates['userMenuActive'] = <<<'EOS'
-	<li><a class="link_profile" href="?profile" title="Profil">Profil</a></li>
-	<li><a class="link_logout" href="?logout" title="Abmelden">Abmelden</a></li>
-EOS;
-
 $templates['userRegister'] = <<<'EOS'
-	<h2>Hier kannst Du Dich kostenlos registrieren</h2>
+	<h2>Hier kannst Du dich kostenlos registrieren</h2>
 	<form action="?register" method="post">
-		<label for="email">E-Mail-Adresse</label><input type="email" id="email"
-			name="email" value="$email"/><br/>
-		<label for="username">Benutzername</label><input type="text" id="username"
-			name="username" value="$username"/><br/>
-		<label for="password">Passwort</label><input type="password" id="password"
-			name="password" value="$password"/><br/>
-		<label for="confirm">Wiederholen</label><input type="password" id="confirm"
-			name="confirm" value="$confirm"/><br/>
+		<label for="email">E-Mail-Adresse</label>
+		<input type="email" id="email" name="email" value="$email"/><br/>
+		<label for="username">Benutzername</label>
+		<input type="text" id="username" name="username" value="$username"/><br/>
+		<label for="password">Passwort</label>
+		<input type="password" id="password" name="password" value="$password"/><br/>
+		<label for="confirm">Wiederholen</label>
+		<input type="password" id="confirm" name="confirm" value="$confirm"/><br/>
 		<input type="submit" value="registrieren"/>
 	</form>
-EOS;
-
-$templates['userRegConfirm'] = <<<'EOS'
-	<h2>Danke Dir für die Registration</h2>
-	<p>Du bist jetzt hier auf der Seite registriert und kannst Dich mit Deiner E-Mail-Adresse
-		und dem gewählten Passwort auf dieser Seite <a title="anmelden" href="?login">anmelden</a>
-		und eine Prüfung absolvieren! Viel Spass!</p>
+	<p class="message $status">$message</p>
 EOS;
 
 $templates['userLogin'] = <<<'EOS'
-	<h2>Melde Dich hier mit Deinen Zugangs-Daten an</h2>
+	<h2>Bitte melde Dich an</h2>
 	<form action="?login" method="post">
-		<input name="email" type="email" value="$email" placeholder="email@adresse.de"/>
-		<input name="password" type="password" value="$password"/>
+		<label for="email">E-Mail-Adresse</label>
+		<input type="email" id="email" name="email" value="$email"/><br/>
+		<label for="password">Passwort</label>
+		<input type="password" id="password" name="password" value="$password"/><br/>
 		<input type="submit" value="anmelden"/>
 	</form>
 	<p class="message $status">$message</p>
 EOS;
 
-$templates['userWelcome'] = <<<'EOS'
-	<h2>Willkommen, $username</h2>
-	<p>Du hast Dich erfolgreich angemeldet und kannst nun hier loslegen!</p>
+$templates['userProfile'] = <<<'EOS'
+	<h2>Dein Profil ($email)</h2>
+	<form action="?profile" method="post">
+		<label for="username">Benutzername</label>
+		<input type="text" id="username" name="username" value="$username"/><br/>
+		<label for="current">altes Passwort</label>
+		<input type="password" id="current" name="current" value="$current"/><br/>
+		<label for="password">neues Passwort</label>
+		<input type="password" id="password" name="password" value="$password"/><br/>
+		<label for="confirm">Wiederholen</label>
+		<input type="password" id="confirm" name="confirm" value="$confirm"/><br/>
+		<input type="submit" value="aktualisieren"/>
+	</form>
+	<p>debug: e=$email, u=$username, p=$password</p>
+	<p class="message $status">$message</p>
+EOS;
+
+$templates['userLogout'] = <<<'EOS'
+	<h2>Du bist nun wieder abgemeldet</h2>
+	<p>Du hast Dich erfolgreich abgemeldet</p>
+	<hr/><p class="message $status">$message</p>
+EOS;
+
+// courses templates
+
+$templates['coursesPreview'] = <<<'EOT'
+	<h2>Die Übersicht unserer $count Kurse</h3>
+EOT;
+
+$templates['coursesForm'] = <<<'EOS'
+	<h2>Wähle die Kurse für die Prüfung</h3>
+	<form action="?select" method="post">
+EOS;
+
+$templates['coursesSubmit'] = <<<'EOS'
+	<br/>
+	<input type="submit" value="Prüfung starten"/>
+	</form>
 EOS;
 
 // course templates
 
 $templates['courseMissing'] = <<<'EOS'
-	<h2>Der angeforderte Kurs konnte nicht gefunden werden</h2>
+	<h2>Es ist leider ein Fehler aufgetreten</h2>
 	<p>Der von Dir angeforderte Kurs konnte leider nicht gefunden werden.
-		Du kannst Dir die Liste der Kurse nochmal auf der
-		<a title="Zur Statseite" href=".">Startseite</a> anschauen.</p>
-EOS;
-
-$templates['coursePreview'] = <<<'EOS'
-	<li><h3><a title="zum Kurs" href="?c=$cid">$title</a></h3>
-		$preview
-	</li>
-EOS;
-
-$templates['courseLinks'] = <<<'EOS'
-	<p class="courselinks">
-		course links
 	</p>
 EOS;
 
-$templates['courseDetails'] = <<<'EOS'
+$templates['coursePreview'] = <<<'EOT'
+	<li><a title="Zum Kurs" href="?c=$cid">$title</a></li>
+	$preview
+EOT;
+
+$templates['courseDetails'] = <<<'EOT'
 	<h2>$title</h2>
 	$content
+EOT;
+
+$templates['courseSelect'] = <<<'EOS'
+	<label class="course-select">
+		<input type="checkbox" name="courses[]" value="$sid"/>
+		$title
+	</label><br/>
 EOS;
 
 // question templates
 
-$templates['questionMissing'] = <<<'EOS'
-	<h2>Die angeforderte Frage konnte nicht gefunden werden</h2>
-	<p>Die von Dir angeforderte Frage konnte leider nicht gefunden werden.
-		Du kannst Dir die Liste der Kurse nochmal auf der
-		<a title="Zur Statseite" href=".">Startseite</a> anschauen.</p>
-EOS;
-
-$templates['questionDisplay'] = <<<'EOS'
-	<h2>$title</h2>
-	$content
+$templates['questionListItem'] = <<<'EOS'
+	<li><a title="Zur Frage" href="?c=$cid&q=$qid">$title</a></li>
 EOS;
 
 $templates['questionForm'] = <<<'EOS'
-	<form action="?next" method="post">
-	<h2>
-		<input type="checkbox" id="$qid" name="$qid"/>
-		<label class="question" for="$qid">$title</label>
-	</h3>
+	<h2>$title</h2>
 	$content
+	<form action="." method="post">
 EOS;
 
 $templates['questionSubmit'] = <<<'EOS'
-	<input type="submit" value="weiter"/>
+		<input type="submit" value="weiter"/>
 	</form>
-EOS;
-
-$templates['questionListItem'] = <<<'EOS'
-	<li><a title="Zur Frage" href="?q=$cid.$qid&answer">$title</a></li>
-EOS;
-
-$templates['questionListItemOld'] = <<<'EOS'
-	<li><a title="Zur Frage" href="?q=$cid.$qid">$title</a></li>
 EOS;
 
 // answer templates
 
-$templates['answerDisplay'] = <<<'EOS'
-	<h3>$title</h3>
-	$content<br/>
+$templates['answerSelect'] = <<<'EOS'
+		<label>
+			<input type="checkbox" name="answer"/>
+			$title
+		</label>
+		$content
 EOS;
 
-$templates['answerForm'] = <<<'EOT'
-	<h3>
-		<input type="checkbox" id="$aid" name="$aid"/>
-		<label class="answer" for="$aid">$title</label>
-	</h3>
-	$content
-
-EOT;
-
-// page templates
-
 // test templates
+
+$templates['test'] = <<<'EOS'
+	<p>this is a paragraph</p>
+EOS;
 
 ?>

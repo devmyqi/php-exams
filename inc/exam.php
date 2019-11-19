@@ -23,6 +23,8 @@ class Exam {
 			} else { $this->$prop = $value; }
 		} $config->_log(1,"new <Exam> object initialized");
 	}
+	public function addCourse($cid) { global $config, $courses;
+	}
 	public function addQuestions($cid) { global $config, $courses;
 		if ( ! array_key_exists($cid,$courses->courses) ) {
 			return $config->_log(8,"unable to add questions for course: $cid");

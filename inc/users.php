@@ -2,87 +2,146 @@
 
 /*	meta information
 	filename: dev/inc/users.php
-	description: users classes for exams
+	description: new approach, user classes
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
-	created: 2019-11-05
-	modified: 2019-11-07
+	created: 2019-11-12
+	modified: 2019-11-15
 */
 
-// requires config in _SESSION
-$config = $_SESSION['config'];
-
 class Users {
-	public $regcheck = ['email','username','password','confirm'];
-	public $authcheck = ['email','password'];
-	public $userlist = [];
-	public $active = False;
-	public function __construct() { global $config;
-		$config->_log(1,'new <Users> object initialized');
-		$this->readUsers($config->userfile);
+	// defaults
+	protected $defaults = [
+		'read' => False,
+		'users' => [],
+		'count' => 0,
+	];
+	public function __construct($data=[]) { global $config;
+		foreach ( $this->defaults as $prop => $value ) {
+			if ( array_key_exists($prop,$data) ) {
+				$this->$prop = $data[$prop];
+			} else { $this->$prop = $this->defaults[$prop]; }
+		} $config->_log(1,"new Users object: $config->userfile");
+		# $this->readUsers($config->userfile); # on demand?
 	}
-	public function checkRegData($postdata) { global $config;
-		$config->_log(2,'checking registration data in class Users');
-		if ( ! empty(array_diff($this->regcheck,array_keys($postdata))) ) {
-			return ['warning','Bitte fülle alle Felder aus!'];
-		} elseif ( array_key_exists($postdata['email'],$this->userlist) ) {
-			return ['warning','Die E-Mail-Adresse ist bereits registriert!'];
-		} elseif ( empty($postdata['email']) ) {
-			return ['warning','Bitte gebe eine E-Mail-Adresse ein!'];
-		} elseif ( empty($postdata['username']) ) {
-			return ['warning','Bitte gebe einen Benutzernamen ein!'];
-		} elseif ( empty($postdata['password']) ) {
-			return ['warning','Bitte gebe einen Passwort ein!'];
-		} elseif ( $postdata['password'] !== $postdata['confirm'] ) {
-			return ['warning','Das Passwort muss korrekt wiederholt werden!'];
-		} else { return ['passed','Die Benutzer-Daten wurden korrekt eingegeben!']; }
-	}
-	public function checkAuthData($postdata) { global $config;
-		$config->_log(2,'checking authentication data in class Users');
-		if ( ! empty($postdata['password']) and $config->encrypt ) {
-			$postdata['password'] = md5($postdata['password']); }
-		if ( ! empty(array_diff($this->authcheck,array_keys($postdata))) ) {
-			return ['warning','Bitte fülle alle Felder aus!'];
-		} elseif ( empty($postdata['email']) ) {
-			return ['warning','Bitte gebe Deine E-Mail-Adresse ein!'];
-		} elseif ( empty($postdata['password']) ) {
-			return ['warning','Bitte gebe Dein Passwort ein!'];
-		} elseif ( ! array_key_exists($postdata['email'],$this->userlist) ) {
-			return ['warning','Es gibt keinen Benutzer mit dieser E-Mail-Adresse!'];
-		} elseif ( $this->userlist[$postdata['email']]->password != $postdata['password'] ) {
-			return ['warning','Das Passwort wurde leider falsch eingegeben!'];
-		} else { return ['passed','Die Benutzer-Daten wurden korrekt authentifiziert!']; }
-	}
-	public function readUsers($userfile) { global $config;
+	public function readUsers($userfile,$force=False) { global $config;
 		if ( ! is_readable($userfile) or ! is_file($userfile) ) {
 			return $config->_log(8,"unable to read users from: $userfile");
-		} $config->_log(2,"reading users from file: $userfile");
-		$userlist = json_decode(file_get_contents($userfile),True);
+		} elseif ( $this->read and ! $force ) {
+			return $config->_log(8,"users aready read from: $userfile");
+		} $userlist = json_decode(file_get_contents($userfile),True);
+		if ( ! $userlist ) {
+			return $config->_log(8,"unable to parse json in: $userfile");
+		} elseif ( ! is_array($userlist) ) {
+			$config->_log(8,"wrong json format in: $userfile");
+		} $this->count = count($userlist);
 		foreach ( $userlist as $userdata ) {
-			$this->userlist[$userdata['email']] = new User($userdata);
-		}
-	}
-	public function addUser($user) { global $config;
-		$this->userlist[$user->email] = $user;
+			$this->users[$userdata['email']] = new User($userdata);
+		} $this->read = True;
+		$config->_log(2,"read $this->count users from file: $userfile");
 	}
 	public function saveUsers($userfile) { global $config; $userlist = [];
-		if ( ! is_writable($userfile) or ! is_file($userfile) ) {
-			return $config->_log(8,"unable to save users to: $userfile");
-		} $config->_log(2,"saving users to file: $userfile");
-		foreach ( $this->userlist as $email => $user ) { $userlist[] = (array) $user; }
-		file_put_contents($userfile,json_encode($userlist,JSON_PRETTY_PRINT));
+		if ( ! is_writeable($userfile) or ! is_file($userfile) ) {
+			return $config->_log(8,"unable to save users to: $config->userfile");
+		} foreach ( $this->users as $user ) {
+			$userlist[] = $user->asArray($password=True);
+		} $count = count($userlist);
+		$userjson = json_encode($userlist,JSON_PRETTY_PRINT);
+		file_put_contents($userfile,$userjson);
+		$config->_log(2,"saved $count users to file: $userfile");
+	}
+	public function register($request) { global $config;
+		if ( ! $this->read and empty($this->users) ) {
+			$this->readUsers($config->userfile);
+		} $email = $request->email; $username = $request->username;
+		$password = $request->password; $confirm = $request->confirm;
+		if ( isset($_SESSION['active']) ) { $request->status = 'warning';
+			$request->message = 'Du bist bereits angemeldet';
+		} elseif ( empty($email) ) { $request->status = 'warning';
+			$request->message = 'Bitte gib eine E-Mail-Adresse ein';
+		} elseif ( array_key_exists($email,$this->users) ) {
+			$request->status = 'warning';
+			$request->message = 'Diese E-Mail-Adresse ist bereits registriert';
+		} elseif ( empty($username) ) { $request->status = 'warning';
+			$request->message = 'Bitte gib einen Benutzername ein';
+		} elseif ( empty($password) ) { $request->status = 'warning';
+			$request->message = 'Bitte gib ein Passwort ein';
+		} elseif ( empty($confirm) ) { $request->status = 'warning';
+			$request->message = 'Bitte wiederhole das Passwort';
+		} elseif ( $confirm !== $password ) { $request->status = 'warning';
+			$request->message = 'Das Passwort wurde nicht korrekt wiederholt';
+		} else { $request->status = 'success';
+			$request->message = 'Du hast Dich erfolgreich registriert';
+		}
+		if ( $request->status !== 'success' ) { return; }
+		if ( $config->encrypt ) { $password = md5($password); }
+		$userdata = ['email'=>$email,'username'=>$username,'password'=>$password];
+		$this->users[$email] = new User($userdata);
+		$this->saveUsers($config->userfile);
+	}
+	public function login($request) { global $config;
+		if ( ! $this->read and empty($this->users) ) {
+			$this->readUsers($config->userfile);
+		} $email = $request->email; $password = $request->password;
+		if ( $config->encrypt ) { $password = md5($password); }
+		if ( isset($_SESSION['active']) ) { $request->status = 'warning';
+			$request->message = 'Du bist bereits angemeldet';
+		} elseif ( empty($email) ) { $request->status = 'warning';
+			$request->message = 'Bitte gib Deine E-Mail-Adresse ein';
+		} elseif ( empty($password) ) { $request->status = 'warning';
+			$request->message = 'Bitte gib Dein Passwort ein';
+		} elseif ( ! array_key_exists($email,$this->users) ) {
+			$request->status = 'warning';
+			$request->message = 'Es gibt keinen Benutzer mit dieser E-Mail-Adresse';
+		} elseif ( $password !== $this->users[$email]->password ) {
+			$request->status = 'warning';
+			$request->message = 'Das eingegebene Passwort ist leider falsch';
+		} else { $request->status = 'success';
+			$request->message = 'Du hast Dich gerade erfolgreich angemeldet';
+		} if ( $request->status === 'success' ) {
+			$_SESSION['active'] = $this->users[$email]->asArray();
+		}
+	}
+	public function profile($request) { global $config;
+		if ( ! $this->read and empty($this->users) ) {
+			$this->readUsers($config->userfile);
+		} if ( ! isset($_SESSION['active']) ) {
+			$request->message = 'Du hast Dich noch nicht angemeldet';
+			return $request->status = 'warning';
+		} else { $email = $_SESSION['active']['email']; }
+		if ( ! array_key_exists($email,$this->users) ) {
+			$request->message = 'Dein Benutzerkonto ist ungültig';
+			return $request->status = 'error';
+		} $request->addData($this->users[$email]->asArray());
+	}
+	public function logout($request) {
+		if ( ! isset($_SESSION['active']) ) {
+			$message = 'Du bist gerade gar nicht angeldet';
+			$request->status = 'warning'; return $request->message = $message;
+		} else { unset($_SESSION['active']);
+			$message = 'Du hast Dich erfolgreich abgemeldet';
+			$request->status = 'success'; return $request->message = $message;
+		}
 	}
 } // end of class Users
 
-class User {
-	public $email = '';
-	public $username = '';
-	public $password = '';
-	public function __construct($userdata) { global $config;
-		$this->email = $userdata['email'];
-		$this->username = $userdata['username'];
-		$this->password = $userdata['password'];
-		$config->_log(4,"new User: $this->username <$this->email>");
+class User { // really required? only associative array?
+	protected $defaults = [
+		'email' => '',
+		'username' => '',
+		'password' => '',
+	];
+	public function __construct($data) { global $config;
+		foreach ( $this->defaults as $prop => $value ) {
+			if ( array_key_exists($prop,$data) ) {
+				$this->$prop = $data[$prop];
+			} else { $this->$prop = $this->defaults[$prop]; }
+		} $config->_log(4,"new User: $this->username <$this->email>");
+	}
+	public function asArray($password=False) {
+		$userarray = ['email'=>$this->email,'username'=>$this->username];
+		if ( $password ) { $userarray['password'] = $this->password; }
+		return $userarray;
 	}
 } // end of class User
 

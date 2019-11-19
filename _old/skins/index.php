@@ -1,3 +1,5 @@
+<?php
+?>
 <!DOCTYPE html>
 <html lang="de"><head>
 	<meta charset="utf-8">
@@ -19,8 +21,12 @@
 			<?php echo $site->title; ?></h1>
 	</header>
 	<nav>
-		<?php echo $site->getUserMenu(); ?>
-		<?php echo Site::_format($site,'siteMainMenu'); ?>
+		<ul class="menu-user">
+			<?php echo $site->getMenuUsers() . "\n"; ?>
+		</ul>
+		<ul class)"menu-main">
+			<?php echo $site->getMenuMain() . "\n"; ?>
+		</ul>
 	</nav>
 	<main>
 		<?php echo $site->content; ?>

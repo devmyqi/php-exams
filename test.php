@@ -1,13 +1,12 @@
 <?php
 
 /*	meta information
-	filename: dev/index.php
-	description: new approch, index file
+	filename: dev/test.php
+	description: new approach, tests
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-17
-	notes: use globals, only data in session!
+	modified: 2019-11-19
 */
 
 session_start();
@@ -24,8 +23,10 @@ require_once('inc/site.php');
 # session_destroy();
 # $_SESSION = Null;
 
+// initial config settings
+$configdata = ['logtarget'=>'terminal','loglevel'=>63-4];
 // init once, use global
-$config = new Config();
+$config = new Config($configdata);
 $request = new Request($_GET,$_POST);
 // data objects
 $users = new Users();
@@ -34,14 +35,17 @@ $exam = new Exam();
 // runtime objects
 $site = new Site(); // needs all objects
 
-// globals (not needed, just a hint)
-global $config, $request, $users, $courses, $exam, $site;
+// formatting assoc arrays (e.g. _POST)
+# $array = ['one'=>'eins','two'=>'zwei','three'=>'drei'];
+# $format = '1: $one, 2: $two, 4: $four, 3: $three';
+# print_r(Site::_format($array,$format."\n",True));
 
-// load skin
-require_once("$config->skindir/index.php");
+// printing the courses tree
+# $courses->printTree();
 
-# echo "<pre>", print_r($request,True), "</pre>";
-# echo "<pre>", print_r($_SESSION,True), "</pre>";
-echo "<pre>", print_r($exam,True), "</pre>";
+// exam tests (e65063,4298f6)
+$exam->addQuestions('e65063');
+# $exam->addQuestions('4298f6');
+print_r($exam);
 
 ?>

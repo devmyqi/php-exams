@@ -1,45 +1,40 @@
 <?php
 
 /*	meta information
-	filename: inc/courses.php
-	description: courses classes for exams
-	version: v0.0.2
+	filename: dev/inc/courses.php
+	description: course classes for exams
+	version: v0.0.2 (new approach)
 	author: Michael Wronna, Konstanz
-	created: 2019-11-05
-	modified: 2019-11-10
+	created: 2019-11-12
+	modified: 2019-11-15
+	notes: classes copied from inc/courses.php
 */
 
-// requires config in _SESSION
-$config = $_SESSION['config'];
-
-// requires parsedown
 require_once('inc/parsedown.php');
 
-# $config->loglevel = 63 - 4; // debug
-
-class Getter {
-	public function __get($prop) {
-		$object_vars = get_object_vars($this); $class_vars = get_class_vars('Course');
-		if ( property_exists($this,$prop) ) { return $this->$prop;
-		} elseif ( method_exists($this,$prop) ) { return $this->$prop();
-		} elseif ( array_key_exists($prop,$class_vars) ) { return $class_vars[$prop];
-		} else { return Null; }
-	}
-}
 class Courses {
-	public $courselist = [];
+	public $datafiles = '';
+	public $read = False;
+	public $courses = [];
+	public $count = 0;
 	public function __construct() { global $config;
-		$config->_log(1,"new Courses from files: $config->coursefiles");
-		foreach ( glob($config->coursefiles) as $coursefile ) {
-			$this->readCourses($coursefile);
-		}
+		$this->datafiles = "$config->datadir/$config->files";
+		$config->_log(1,"new Courses with files: $this->datafiles");
+		$this->getCourses();
 	}
-	public function readCourses($coursefile) { global $config;
-		if ( ! is_readable($coursefile) or ! is_file($coursefile) ) {
-			return $config->_log(8,"unable to read courses from: $coursefile");
-		} $config->_log(2,"reading courses from file: $coursefile");
-		$courses = $this->courselist; $questions = $answers = $markup = [];
-		foreach ( array_reverse(file($coursefile)) as $dataline ) { // reverse processing
+	public function getCourses() { global $config;
+		$datafiles = glob($this->datafiles);
+		if ( ! count($datafiles) ) {
+			$config->_log(8,"no datafiles to get courses in: $this->datafiles");
+		} foreach ( $datafiles as $datafile ) { $this->readCourses($datafile); }
+		$this->count = count($this->courses);
+	}
+	public function readCourses($datafile) { global $config;
+		if ( ! is_readable($datafile) or ! is_file($datafile) ) {
+			$config->_log(8,"unable to read courses from: $datafile");
+		} $config->_log(2,"reading courses from file: $datafile");
+		$courses = $this->courses; $questions = $answers = $markup = [];
+		foreach ( array_reverse(file($datafile)) as $dataline ) { // reverse processing
 			$dataline = trim($dataline);
 			if ( preg_match('/^\#{3}\s+(.*)$/',$dataline,$result) ) { // answer
 				$answer = new Answer($result[1]);
@@ -59,7 +54,22 @@ class Courses {
 				$courses[$course->cid] = $course;
 				$questions = $markup = [];
 			} else { array_unshift($markup,$dataline); }
-		} $this->courselist = array_reverse($courses,True);
+		} $this->courses = array_reverse($courses,True);
+	}
+	// debug methods
+	public function printTree($level=3) { global $config;
+		$config->_log(2,'printing the courses data tree');
+		foreach ( $this->courses as $cid => $course ) {
+			print("[C] $course->cid: $course->title\n");
+			if ( $level <= 1 ) { continue; }
+			foreach ( $course->questions as $qid => $question ) {
+				print("\t[Q] $question->qid: $question->title\n");
+				if ( $level <= 2 ) { continue; }
+				foreach ( $question->answers as $aid => $answer ) {
+					print("\t\t[A] $answer->aid: $answer->title\n");
+				} // end loop answers
+			} // end loop questions
+		} // end loop courses
 	}
 } // end of class Courses
 
@@ -96,8 +106,7 @@ class Course extends Getter {
 		return $parsedown->text(implode("\n",$preview));
 		print_r($preview);
 	}
-	public function content() {
-		$parsedown = new Parsedown();
+	public function content() { $parsedown = new Parsedown();
 		return $parsedown->text($this->markup);
 	}
 } // end of class Course
@@ -126,8 +135,7 @@ class Question extends Getter {
 			$this->answers[$answer->aid] = $answer;
 		}
 	}
-	public function content() {
-		$parsedown = new Parsedown();
+	public function content() { $parsedown = new Parsedown();
 		return $parsedown->text($this->markup);
 	}
 } // end of class Question
@@ -146,10 +154,10 @@ class Answer extends Getter {
 		} $this->title = $title;
 		$config->_log(4,"new Answer [$this->aid]: $title");
 	}
-	public function content() {
-		$parsedown = new Parsedown();
+	public function content() { $parsedown = new Parsedown();
 		return $parsedown->text($this->markup);
 	}
 } // end of class Answer
+
 
 ?>
