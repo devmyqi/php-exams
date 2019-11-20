@@ -11,6 +11,16 @@
 
 $templates = [];
 
+// internal templates
+
+$templates['internalError'] = <<<'EOS'
+	<h2>Es ist leider ein Fehler aufgetreten</h2>
+	<p>Das hat jetzt nichts mit Dir zu tun, irgendwie ist ein interner
+		Fehler aufgetreten. tut uns echt sehr leid. Das System befindet
+		sich noch in der Entwicklung und wir werden natürlich dafür
+		sorgen, dass keine interne Fehler mehr auftreten.</p>
+EOS;
+
 // site templates
 
 $templates['siteMissing'] = <<<'EOS'
@@ -45,6 +55,7 @@ EOS;
 $templates['siteExamMenu'] = <<<'EOS'
 	<ul>
 		<li><a class="link_exam" title="Zur Prüfung" href="?exam">Zur Prüfung</a></li>
+		<li>$status</li>
 		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
@@ -174,14 +185,38 @@ EOS;
 // answer templates
 
 $templates['answerSelect'] = <<<'EOS'
-		<label>
-			<input type="checkbox" name="answer"/>
-			$title
-		</label>
+		<input id="$cid.$qid.$aid" name="$cid.$qid.$aid"
+			type="checkbox" name="answer"/>
+		<label for="$cid.$qid.$aid" class="answer">$title</label>
 		$content
 EOS;
 
 // exam templates
+
+$templates['examMenuStart'] = <<<'EOS'
+	<ul class="exam-menu">
+		<li>Prüfung starten</li>
+	</ul>
+EOS;
+
+$templates['examMenuBegin'] = <<<'EOS'
+	<ul class="exam-menu">
+		<li><a class="link_next" title="Erste Frage" href="?cq=$next">Erste Frage</a></li>
+		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
+	</ul>
+EOS;
+
+$templates['examMenuNext'] = <<<'EOS'
+	<ul class="exam-menu">
+		<li>Prüfung fortsetzen</li>
+	</ul>
+EOS;
+
+$templates['examMenuFinish'] = <<<'EOS'
+	<ul class="exam-menu">
+		<li>Prüfung abschliessen</li>
+	</ul>
+EOS;
 
 $templates['examSplash'] = <<<'EOS'
 	<h2>Start der Prüfung mit $questionCount Fragen</h2>

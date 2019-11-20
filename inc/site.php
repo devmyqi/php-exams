@@ -117,6 +117,23 @@ class Site {
 			$exam->reset();
 			$this->sid = 'reset'; $this->title = 'Zurücksetzen';
 			$this->content = Site::_format($exam,'examReset');
+		// course questions routes
+		} elseif ( ! empty($request->get['cq']) ) {
+			$cqid = $request->get['cq'];
+			if ( ! preg_match('/^([\w\d]+)\.([\w\d]+)$/',$cqid,$result) ) {
+				return $this->errorPage('internalError');
+			} $cid = $result[1]; $qid = $result[2];
+			if ( ! array_key_exists($cid,$courses->courses) ) {
+				return $this->errorPage('courseMissing');
+			} $course = $courses->courses[$cid];
+			if ( ! array_key_exists($qid,$course->questions) ) {
+				return $this->errorPage('questionMissing');
+			} $question = $course->questions[$qid];
+			$this->sid = 'question'; $this->title = 'Frage';
+			$this->content = Site::_format($question,'questionForm');
+			foreach ( $question->answers as $aid => $answer ) {
+				$this->content .= Site::_format($answer,'answerSelect');
+			} $this->content .= Site::_format($question,'questionSubmit');
 		// courses routes
 		} elseif ( isset($request->get['courses']) ) {
 			$this->sid = 'courses'; $this->title = 'Kurs-Übersicht';
@@ -165,8 +182,18 @@ class Site {
 		} else { return Site::_format($this,'siteAuthMenu'); }
 	}
 	public function getExamMenu() { global $exam;
-		return Site::_format($exam,'siteExamMenu');
-			$this->content = Site::_format($request,'userLogin');
+		if ( ! empty($_SESSION['questions']) ) { // exam started
+			if ( empty($_SESSION['previous']) ) {
+				return Site::_format($exam,'examMenuBegin');
+			} elseif ( empty($_SESSION['next']) ) {
+				return Site::_format($exam,'examMenuFinish');
+			} else {
+				return Site::_format($exam,'examMenuNext');
+			}
+		} else { // no exam started
+			return Site::_format($exam,'examMenuStart');
+		}
+		// return Site::_format($exam,'siteExamMenu');
 	}
 	// debug functions
 } // end of class Site

@@ -107,6 +107,23 @@ footer {
 input[type=checkbox] {
   display: none;
 }
+label.answer {
+  background-color: #090;
+  color: white;
+  font-weight: bold;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  display: block;
+  margin: 1rem 0px;
+}
+label.answer::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  margin-right: 0.5rem;
+  width: 1rem;
+  content: "\f0c8";
+}
 input[type=checkbox] + label {
   cursor: pointer;
 }
@@ -158,6 +175,12 @@ input[type=checkbox]:checked + label::before {
 }
 .link_exam::before {
   content: "\f518";
+}
+.link_prev::before {
+  content: "\f060";
+}
+.link_next::before {
+  content: "\f061";
 }
 .link_reset::before {
   content: "\f1f8";

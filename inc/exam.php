@@ -11,8 +11,11 @@
 
 class Exam extends Getter {
 	protected $defaults = [
-		'questions' => [],
 		'courses' => [],
+		'questions' => [],
+		// 'previous' => False,
+		// 'current' => False,
+		// 'next' => False,
 		// 'count' => 20, // number of questions, in config
 		// 'sorting' => 'order', // order, random, etc.
 	];
@@ -27,6 +30,18 @@ class Exam extends Getter {
 		if ( $prop === 'courseCount' ) { return count($this->courses);
 		} elseif ( $prop === 'questionCount' ) {
 			return count($this->questions);
+		} elseif ( $prop === 'previous' ) {
+			if ( ! empty($_SESSION['previous']) ) {
+				return $_SESSION['previous'];
+			} else { return Null; }
+		} elseif ( $prop == 'next' ) {
+			if ( ! empty($_SESSION['next']) ) {
+				return $_SESSION['next'];
+			} else { return Null; }
+		} elseif ( $prop === 'questionCount' ) {
+			if ( ! empty($_SESSION['questions']) ) {
+				return count($_SESSION['questions']);
+			} else { return 0; }
 		} else { return parent::__get($prop); }
 	}
 	public function addCourse($course) { global $config, $courses;
@@ -43,7 +58,24 @@ class Exam extends Getter {
 			$this->questions[] = $cqid;
 		}
 	}
+	public function status() { global $config, $request;
+		if ( isset($_SESSION['question']) ) {
+			return 'x from y';
+		} elseif ( ! empty($_SESSION['questions']) ) {
+			$total = count($_SESSION['questions']);
+			return "$total Fragen";
+		} else {
+			return 'no exam';
+		}
+	}
+	public function prevquestion() {
+	}
+	public function nextquestion() {
+	}
 	public function start() { global $config, $request;
+		if ( ! empty($_SESSION['questions']) ) {
+			return $config->_log(8,"exam has already started");
+		}
 		foreach ( $this->courses as $cid => $course ) {
 			foreach ( $course->questions as $qid => $question ) {
 				$cqid = "$question->cid.$question->qid";
@@ -53,10 +85,15 @@ class Exam extends Getter {
 		$questionLimit = $config->questionLimit;
 		$this->questions = array_slice($this->questions,0,$questionLimit,True);
 		$_SESSION['questions'] = array_keys($this->questions);
+		reset($this->questions); $next = current($this->questions);
+		unset($_SESSION['previous']); $_SESSION['next'] = "$next->cid.$next->qid";
 	}
 	public function reset() {
 		unset($_SESSION['questions']);
 		unset($_SESSION['answers']);
+		unset($_SESSION['previous']);
+		unset($_SESSION['current']);
+		unset($_SESSION['next']);
 	}
 } // end of class Exam
 
