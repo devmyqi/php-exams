@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-19
+	modified: 2019-11-20
 	notes: use globals, only data in session!
 */
 
@@ -39,6 +39,7 @@ global $config, $request, $users, $courses, $exam, $site;
 
 // debugging output
 $site->debug = '<h3>debug</h3>';
+$site->debug .= "<pre>post: " . json_encode($_POST,JSON_PRETTY_PRINT) . "</pre>";
 $site->debug .= "<pre>session: " . json_encode($_SESSION,JSON_PRETTY_PRINT) . "</pre>";
 $site->debug .= "<pre>exam: " . json_encode($exam,JSON_PRETTY_PRINT) . "</pre>";
 

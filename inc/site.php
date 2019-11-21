@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-19
+	modified: 2019-11-20
 	notes: loaded last, all objects loaded before
 */
 
@@ -129,6 +129,7 @@ class Site {
 			if ( ! array_key_exists($qid,$course->questions) ) {
 				return $this->errorPage('questionMissing');
 			} $question = $course->questions[$qid];
+			$exam->saveResult("$question->cid.$question->qid");
 			$this->sid = 'question'; $this->title = 'Frage';
 			$this->content = Site::_format($question,'questionForm');
 			foreach ( $question->answers as $aid => $answer ) {
@@ -183,7 +184,7 @@ class Site {
 	}
 	public function getExamMenu() { global $exam;
 		if ( ! empty($_SESSION['questions']) ) { // exam started
-			if ( empty($_SESSION['previous']) ) {
+			if ( empty($_SESSION['current']) ) {
 				return Site::_format($exam,'examMenuBegin');
 			} elseif ( empty($_SESSION['next']) ) {
 				return Site::_format($exam,'examMenuFinish');

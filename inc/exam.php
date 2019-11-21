@@ -6,7 +6,7 @@
 	version: v0.0.2 (new approach)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-15
-	modified: 2019-11-19
+	modified: 2019-11-20
 */
 
 class Exam extends Getter {
@@ -68,9 +68,23 @@ class Exam extends Getter {
 			return 'no exam';
 		}
 	}
-	public function prevquestion() {
-	}
-	public function nextquestion() {
+	public function saveResult($currentid=False) { global $config;
+		if ( empty($_SESSION['questions']) ) {
+			return $config->_log(8,"unable to save result with no exam started");
+		} $index = array_search($currentid,$_SESSION['questions']);
+		if ( $index === False ) {
+			return $config->_log(8,"unable to find current question: $currentid");
+		}
+		if ( $index >= 1 ) {
+			$_SESSION['previous'] = $_SESSION['questions'][$index-1];
+		} else { $_SESSION['previuos'] = False; }
+		if ( $index < count($_SESSION['questions'])-1 ) {
+			$_SESSION['next'] = $_SESSION['questions'][$index+1];
+		} else { $_SESSION['next'] = False; }
+		$_SESSION['current'] = $currentid;
+		
+		$config->_log(2,"saving result of previous question: $index");
+		
 	}
 	public function start() { global $config, $request;
 		if ( ! empty($_SESSION['questions']) ) {
@@ -85,8 +99,11 @@ class Exam extends Getter {
 		$questionLimit = $config->questionLimit;
 		$this->questions = array_slice($this->questions,0,$questionLimit,True);
 		$_SESSION['questions'] = array_keys($this->questions);
-		reset($this->questions); $next = current($this->questions);
-		unset($_SESSION['previous']); $_SESSION['next'] = "$next->cid.$next->qid";
+		reset($this->questions);
+		$_SESSION['previous'] = False;
+		$_SESSION['current'] = False;
+		$next = current($this->questions);
+		$_SESSION['next'] = "$next->cid.$next->qid";
 	}
 	public function reset() {
 		unset($_SESSION['questions']);

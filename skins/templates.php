@@ -6,7 +6,7 @@
 	version: v0.0.2 (dev)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-13
-	modified: 2019-11-17
+	modified: 2019-11-20
 */
 
 $templates = [];
@@ -172,7 +172,7 @@ $templates['questionListItem'] = <<<'EOS'
 EOS;
 
 $templates['questionForm'] = <<<'EOS'
-	<h2>$title</h2>
+	<h2>$title ($cqid)</h2>
 	$content
 	<form action="." method="post">
 EOS;
@@ -196,6 +196,7 @@ EOS;
 $templates['examMenuStart'] = <<<'EOS'
 	<ul class="exam-menu">
 		<li>Prüfung starten</li>
+		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
 
@@ -208,13 +209,17 @@ EOS;
 
 $templates['examMenuNext'] = <<<'EOS'
 	<ul class="exam-menu">
+		<li><a class="link_prev" title="Zurück" href="?cq=$previous">Zurück</a></li>
 		<li>Prüfung fortsetzen</li>
+		<li><a class="link_next" title="Weiter" href="?cq=$next">Weiter</a></li>
+		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
 
 $templates['examMenuFinish'] = <<<'EOS'
 	<ul class="exam-menu">
 		<li>Prüfung abschliessen</li>
+		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
 

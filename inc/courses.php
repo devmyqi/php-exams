@@ -6,7 +6,7 @@
 	version: v0.0.2 (new approach)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-15
+	modified: 2019-11-20
 	notes: classes copied from inc/courses.php
 */
 
