@@ -6,7 +6,7 @@
 	version: v0.0.2 (new approach)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-14
-	modified: 2019-11-15
+	modified: 2019-11-21
 */
 
 class Request extends Getter {
@@ -15,6 +15,7 @@ class Request extends Getter {
 	// magic methods
 	public function __construct($get=[],$post=[]) { global $config;
 		foreach ( $post as $key => $value ) {
+			if ( is_array($value) ) { continue; }
 			$post[$key] = trim($post[$key]);
 			if ( $key === 'email' ) {
 				$post[$key] = strtolower($post[$key]);

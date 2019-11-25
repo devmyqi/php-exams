@@ -54,7 +54,7 @@ html {
 		padding-left: @marginSmall;
 	}
 	form {
-		input {
+		input, button {
 			font-family: Montserrat, Arial, helvetica, sans-serif;
 			font-size: 0.9rem;
 			color: @colorText;
@@ -63,7 +63,7 @@ html {
 			border-radius: 0.4rem;
 			margin-bottom: @marginSmall;
 		}
-		input[type=submit] {
+		input[type=submit], button[type=submit] {
 			font-weight: bold;
 			padding: 0.2rem 0.4rem;
 			color: #fff;
@@ -212,6 +212,7 @@ input[type=checkbox]:checked + label::before {
 .link_exam::before { content: "\f518"; } // fa-book-open
 .link_prev::before { content: "\f060"; } // fa-arrow-right
 .link_next::before { content: "\f061"; } // fa-arrow-right
+.link_overview::before { content: "\f518"; } // fa-book-open
 .link_reset::before { content: "\f1f8"; } // fa-trash
 
 // hacks

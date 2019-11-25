@@ -6,7 +6,7 @@
 	version: v0.0.2 (dev)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-13
-	modified: 2019-11-20
+	modified: 2019-11-21
 */
 
 $templates = [];
@@ -144,12 +144,16 @@ $templates['courseMissing'] = <<<'EOS'
 EOS;
 
 $templates['coursePreview'] = <<<'EOT'
-	<h3>$title</h3>
-	$preview
-	<ul class="course_actions">
-		<li><a title="Kurs-Details" href="?c=$cid">Kurs-Details</a></li>
-		<li><a title="Prüfung starten" href="?start&c=$cid">Prüfung starten</a></li>
-	</ul>
+	<section class="course-preview">
+		<div>
+			<h3>$title</h3>
+			<ul class="course_actions">
+				<li><a title="Kurs-Details" href="?c=$cid">Kurs-Details</a></li>
+				<li><a title="Prüfung starten" href="?start&c=$cid">Prüfung starten</a></li>
+			</ul>
+		</div>
+		$preview
+	</section>
 EOT;
 
 $templates['courseDetails'] = <<<'EOT'
@@ -174,35 +178,43 @@ EOS;
 $templates['questionForm'] = <<<'EOS'
 	<h2>$title ($cqid)</h2>
 	$content
-	<form action="." method="post">
+	<form action="index.php?cq=$next" method="post">
+		<input type="hidden" name="question" value="$cqid"/>
 EOS;
 
 $templates['questionSubmit'] = <<<'EOS'
-		<input type="submit" value="weiter"/>
 	</form>
 EOS;
 
 // answer templates
 
 $templates['answerSelect'] = <<<'EOS'
-		<input id="$cid.$qid.$aid" name="$cid.$qid.$aid"
-			type="checkbox" name="answer"/>
-		<label for="$cid.$qid.$aid" class="answer">$title</label>
+		<input id="$aid" name="selected[]"
+			type="checkbox" value="$aid"/>
+		<label for="$aid" class="answer">$title</label>
 		$content
 EOS;
 
 // exam templates
 
-$templates['examMenuStart'] = <<<'EOS'
+$templates['examMenuBegin'] = <<<'EOS'
 	<ul class="exam-menu">
-		<li>Prüfung starten</li>
+		<li><a class="link_next" title="Erste Frage" href="?cq=$next">Erste Frage</a></li>
+		<li><a class="link_overview" title="Übersicht" href="?overview">Übersicht</a></li>
 		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
 
-$templates['examMenuBegin'] = <<<'EOS'
+$templates['examMenuStart'] = <<<'EOS'
 	<ul class="exam-menu">
-		<li><a class="link_next" title="Erste Frage" href="?cq=$next">Erste Frage</a></li>
+		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
+	</ul>
+EOS;
+
+$templates['examMenuFirst'] = <<<'EOS'
+	<ul class="exam-menu">
+		<li><a class="link_overview" title="Übersicht" href="?overview">Frage $index von $total</a></li>
+		<li><a class="link_next" title="Weiter" href="?cq=$next">Weiter</a></li>
 		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
@@ -210,24 +222,41 @@ EOS;
 $templates['examMenuNext'] = <<<'EOS'
 	<ul class="exam-menu">
 		<li><a class="link_prev" title="Zurück" href="?cq=$previous">Zurück</a></li>
-		<li>Prüfung fortsetzen</li>
+		<li><a class="link_overview" title="Übersicht" href="?overview">Frage $index von $total</a></li>
 		<li><a class="link_next" title="Weiter" href="?cq=$next">Weiter</a></li>
 		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
 
-$templates['examMenuFinish'] = <<<'EOS'
+$templates['examMenuLast'] = <<<'EOS'
 	<ul class="exam-menu">
-		<li>Prüfung abschliessen</li>
+		<li><a class="link_prev" title="Zurück" href="?cq=$previous">Zurück</a></li>
+		<li><a class="link_overview" title="Übersicht" href="?overview">Frage $index von $total</a></li>
 		<li><a class="link_reset" title="Zurücksetzen" href="?reset">Zurücksetzen</a></li>
 	</ul>
 EOS;
 
+$templates['examNavigFirst'] = <<<'EOS'
+		<button type="submit" formaction="?overview">Frage $index von $total</button>
+		<button type="submit" formaction="?cq=$next">Weiter</button>
+EOS;
+
+$templates['examNavigNext'] = <<<'EOS'
+		<button type="submit" formaction="?cq=$previous">Zurück</button>
+		<button type="submit" formaction="?overview">Frage $index von $total</button>
+		<button type="submit" formaction="?cq=$next">Weiter</button>
+EOS;
+
+$templates['examNavigLast'] = <<<'EOS'
+		<button type="submit" formaction="?cq=$previous">Zurück</button>
+		<button type="submit" formaction="?overview">Frage $index von $total</button>
+		<button type="submit" formaction="?overview">Zur Übersicht</button>
+EOS;
+
 $templates['examSplash'] = <<<'EOS'
-	<h2>Start der Prüfung mit $questionCount Fragen</h2>
+	<h2>Start der Prüfung mit $total Fragen</h2>
 	<p>Kurse: $courseCount</p>
-	<p>Fragen: $questionCount</p>
-	test
+	<p>Fragen: $total</p>
 EOS;
 
 $templates['examReset'] = <<<'EOS'

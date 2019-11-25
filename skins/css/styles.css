@@ -39,7 +39,8 @@ html p {
 html ul {
   padding-left: 0.5rem;
 }
-html form input {
+html form input,
+html form button {
   font-family: Montserrat, Arial, helvetica, sans-serif;
   font-size: 0.9rem;
   color: #666;
@@ -48,14 +49,16 @@ html form input {
   border-radius: 0.4rem;
   margin-bottom: 0.5rem;
 }
-html form input[type=submit] {
+html form input[type=submit],
+html form button[type=submit] {
   font-weight: bold;
   padding: 0.2rem 0.4rem;
   color: #fff;
   background-color: #090;
   cursor: pointer;
 }
-html form input[type=submit]:hover {
+html form input[type=submit]:hover,
+html form button[type=submit]:hover {
   background-color: #666;
   border-color: #666;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -181,6 +184,9 @@ input[type=checkbox]:checked + label::before {
 }
 .link_next::before {
   content: "\f061";
+}
+.link_overview::before {
+  content: "\f518";
 }
 .link_reset::before {
   content: "\f1f8";

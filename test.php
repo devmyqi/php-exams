@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-19
+	modified: 2019-11-21
 */
 
 session_start();
@@ -41,11 +41,11 @@ $site = new Site(); // needs all objects
 # print_r(Site::_format($array,$format."\n",True));
 
 // printing the courses tree
-# $courses->printTree();
+// $courses->printTree();
 
 // exam tests (e65063,4298f6)
-$exam->addQuestions('e65063');
+// $exam->addQuestions('e65063');
 # $exam->addQuestions('4298f6');
-print_r($exam);
+print_r((array) $exam);
 
 ?>

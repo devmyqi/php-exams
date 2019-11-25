@@ -63,10 +63,10 @@ class Courses {
 			print("[C] $course->cid: $course->title\n");
 			if ( $level <= 1 ) { continue; }
 			foreach ( $course->questions as $qid => $question ) {
-				print("\t[Q] $question->qid: $question->title\n");
+				print("\t[Q] ($question->cqid) $question->qid: $question->title\n");
 				if ( $level <= 2 ) { continue; }
 				foreach ( $question->answers as $aid => $answer ) {
-					print("\t\t[A] $answer->aid: $answer->title\n");
+					print("\t\t[A] ($answer->cid) $answer->aid: $answer->title\n");
 				} // end loop answers
 			} // end loop questions
 		} // end loop courses
@@ -121,6 +121,16 @@ class Question extends Getter {
 		$this->qid = substr(md5($title),0,$config->hashlength);
 		$this->title = $title;
 		$config->_log(4,"new Question [$this->qid]: $title");
+	}
+	public function __get($prop) {
+		if ( $prop === 'cqid' ) { return "$this->cid-$this->qid";
+		} elseif ( $prop === 'previous' ) {
+			if ( ! empty($_SESSION['previous']) ) { return $_SESSION['previous'];
+			} else { return False; }
+		} elseif ( $prop === 'next' ) {
+			if ( ! empty($_SESSION['next']) ) { return $_SESSION['next'];
+			} else { return False; }
+		} else { return parent::__get($prop); }
 	}
 	public function addAnswer($answer) {
 		if ( is_array($answer) ) {

@@ -39,6 +39,7 @@ global $config, $request, $users, $courses, $exam, $site;
 
 // debugging output
 $site->debug = '<h3>debug</h3>';
+$site->debug .= "<pre>request: " . json_encode($request,JSON_PRETTY_PRINT) . "</pre>";
 $site->debug .= "<pre>post: " . json_encode($_POST,JSON_PRETTY_PRINT) . "</pre>";
 $site->debug .= "<pre>session: " . json_encode($_SESSION,JSON_PRETTY_PRINT) . "</pre>";
 $site->debug .= "<pre>exam: " . json_encode($exam,JSON_PRETTY_PRINT) . "</pre>";

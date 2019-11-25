@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-20
+	modified: 2019-11-21
 	notes: loaded last, all objects loaded before
 */
 
@@ -106,13 +106,15 @@ class Site {
 				if ( ! array_key_exists($cid,$courses->courses) ) {
 					return $this->errorPage('courseMissing');
 				} $course = $courses->courses[$cid];
-				# $exam->addQuestions($cid);
-				$exam->addCourse($course);
-				$exam->start();
+				$exam->addCourse($course); $exam->start();
 				$this->content = Site::_format($exam,'examSplash');
-			} else {
-				return $this->errorPage('examMissing');
-			}
+			} else { return $this->errorPage('examMissing'); }
+		} elseif ( isset($request->get['overview']) ) {
+			$this->sid = 'overview'; $this->title = 'Übersicht';
+			$this->content = "<h2>Übersicht</h2><ul>";
+			foreach ( $_SESSION['questions'] as $cqid ) {
+				$this->content .= "<li>$cqid</li>\n";
+			} $this->content .= "</ul>\n";
 		} elseif ( isset($request->get['reset']) ) {
 			$exam->reset();
 			$this->sid = 'reset'; $this->title = 'Zurücksetzen';
@@ -120,7 +122,7 @@ class Site {
 		// course questions routes
 		} elseif ( ! empty($request->get['cq']) ) {
 			$cqid = $request->get['cq'];
-			if ( ! preg_match('/^([\w\d]+)\.([\w\d]+)$/',$cqid,$result) ) {
+			if ( ! preg_match('/^([\w\d]+)\-([\w\d]+)$/',$cqid,$result) ) {
 				return $this->errorPage('internalError');
 			} $cid = $result[1]; $qid = $result[2];
 			if ( ! array_key_exists($cid,$courses->courses) ) {
@@ -129,12 +131,16 @@ class Site {
 			if ( ! array_key_exists($qid,$course->questions) ) {
 				return $this->errorPage('questionMissing');
 			} $question = $course->questions[$qid];
-			$exam->saveResult("$question->cid.$question->qid");
+			$exam->saveResult("$question->cid-$question->qid");
+			// $exam->saveResult($question);
 			$this->sid = 'question'; $this->title = 'Frage';
 			$this->content = Site::_format($question,'questionForm');
 			foreach ( $question->answers as $aid => $answer ) {
 				$this->content .= Site::_format($answer,'answerSelect');
-			} $this->content .= Site::_format($question,'questionSubmit');
+			}
+			$this->content .= $this->getExamNavig();
+			# $this->content .= $exam->getNavig();
+			$this->content .= Site::_format($question,'questionSubmit');
 		// courses routes
 		} elseif ( isset($request->get['courses']) ) {
 			$this->sid = 'courses'; $this->title = 'Kurs-Übersicht';
@@ -184,17 +190,30 @@ class Site {
 	}
 	public function getExamMenu() { global $exam;
 		if ( ! empty($_SESSION['questions']) ) { // exam started
-			if ( empty($_SESSION['current']) ) {
+			if ( empty($_SESSION['previous']) and empty($_SESSION['current']) ) {
 				return Site::_format($exam,'examMenuBegin');
+			} elseif ( empty($_SESSION['previous']) ) {
+				return Site::_format($exam,'examMenuFirst');
 			} elseif ( empty($_SESSION['next']) ) {
-				return Site::_format($exam,'examMenuFinish');
-			} else {
-				return Site::_format($exam,'examMenuNext');
-			}
+				return Site::_format($exam,'examMenuLast');
+			} else { return Site::_format($exam,'examMenuNext'); }
 		} else { // no exam started
 			return Site::_format($exam,'examMenuStart');
 		}
 		// return Site::_format($exam,'siteExamMenu');
+	}
+	public function getExamNavig() { global $config, $exam;
+		if ( empty($_SESSION['current']) ) {
+			return $config->_log(8,"no current question to get navigation for");
+		} $index = $exam->getIndex($_SESSION['current']);
+		if ( $index === False ) {
+			return $config->_log(8,"current question not in exam to navigate");
+		} $total = count($_SESSION['questions']);
+		if ( empty($_SESSION['previous']) ) {
+			return Site::_format($exam,'examNavigFirst');
+		} elseif ( empty($_SESSION['next']) ) {
+			return Site::_format($exam,'examNavigLast');
+		} else { return Site::_format($exam,'examNavigNext'); }
 	}
 	// debug functions
 } // end of class Site
