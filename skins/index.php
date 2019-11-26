@@ -25,7 +25,7 @@
 		<?php echo $site->content; ?>
 	</main>
 	<footer>
-		exams? version v0.0.2 (alpha2) November 2019 <?php echo "(sid=$site->sid)"; ?>
+		exams? version v0.0.2 (alpha2) November/Dezember 2019 <?php echo "(sid=$site->sid)"; ?>
 	</footer>
 	<div>
 		<?php echo $site->debug; ?>

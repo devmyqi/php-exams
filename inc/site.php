@@ -6,7 +6,7 @@
 	version: v0.0.2
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-21
+	modified: 2019-11-26
 	notes: loaded last, all objects loaded before
 */
 
@@ -110,15 +110,23 @@ class Site {
 				$this->content = Site::_format($exam,'examSplash');
 			} else { return $this->errorPage('examMissing'); }
 		} elseif ( isset($request->get['overview']) ) {
+			$exam->saveResult($_SESSION['current']);
 			$this->sid = 'overview'; $this->title = 'Übersicht';
 			$this->content = "<h2>Übersicht</h2><ul>";
 			foreach ( $_SESSION['questions'] as $cqid ) {
-				$this->content .= "<li>$cqid</li>\n";
+				$question = $courses->getQuestion($cqid);
+				if ( ! is_object($question) ) {
+					$config->_log(8,"error on getting question for results"); continue;
+				} $this->content .= Site::_format($question,'questionOverview');
 			} $this->content .= "</ul>\n";
+			$this->content .= Site::_format($this,'examResultLink');
 		} elseif ( isset($request->get['reset']) ) {
 			$exam->reset();
 			$this->sid = 'reset'; $this->title = 'Zurücksetzen';
 			$this->content = Site::_format($exam,'examReset');
+		} elseif ( isset($request->get['result']) ) {
+			$this->sid = 'result'; $this->title = 'Ergebnis';
+			$this->content = Site::_format($exam,'examResultSummary');
 		// course questions routes
 		} elseif ( ! empty($request->get['cq']) ) {
 			$cqid = $request->get['cq'];

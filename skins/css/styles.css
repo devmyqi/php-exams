@@ -73,7 +73,7 @@ html form h3 {
   color: #090;
   cursor: pointer;
 }
-header {
+body > header {
   grid-area: header;
   margin-top: 1rem;
   height: 3rem;
@@ -82,30 +82,54 @@ header {
   background-position: top right;
   background-size: 2rem;
 }
-header h1 a {
+body > header h1 a {
   text-decoration: none;
 }
-nav {
+body > nav {
   grid-area: nav;
 }
-nav ul {
+body > nav ul {
   list-style-type: none;
 }
-nav ul li a {
+body > nav ul li a {
   text-decoration: none;
 }
-main {
+body > main {
   grid-area: main;
 }
-aside {
+body > aside {
   grid-area: aside;
 }
-footer {
+body > footer {
   grid-area: footer;
   margin-bottom: 1rem;
   font-size: 0.9rem;
   padding-top: 0.2rem;
   border-top: solid 2px #090;
+}
+.courses main header {
+  background-color: #090;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+.courses main header h3 {
+  margin: 0px;
+}
+.courses main header ul {
+  float: right;
+}
+.courses main header ul li {
+  display: inline;
+  margin-left: 1rem;
+}
+.courses main header ul li a {
+  color: white;
+  text-decoration: none;
+}
+.courses main header ul li a:hover {
+  color: white;
 }
 input[type=checkbox] {
   display: none;
@@ -175,6 +199,12 @@ input[type=checkbox]:checked + label::before {
 }
 .link_course::before {
   content: "\f518";
+}
+.link_details::before {
+  content: "\f129";
+}
+.link_start::before {
+  content: "\f04b";
 }
 .link_exam::before {
   content: "\f518";

@@ -145,13 +145,13 @@ EOS;
 
 $templates['coursePreview'] = <<<'EOT'
 	<section class="course-preview">
-		<div>
-			<h3>$title</h3>
+		<header>
 			<ul class="course_actions">
-				<li><a title="Kurs-Details" href="?c=$cid">Kurs-Details</a></li>
-				<li><a title="Prüfung starten" href="?start&c=$cid">Prüfung starten</a></li>
+				<li><a class="link_details" title="Kurs-Details" href="?c=$cid">Details</a></li>
+				<li><a class="link_start" title="Prüfung starten" href="?start&c=$cid">Start</a></li>
 			</ul>
-		</div>
+			<h3>$title</h3>
+		</header>
 		$preview
 	</section>
 EOT;
@@ -176,7 +176,7 @@ $templates['questionListItem'] = <<<'EOS'
 EOS;
 
 $templates['questionForm'] = <<<'EOS'
-	<h2>$title ($cqid)</h2>
+	<h2>$title</h2>
 	$content
 	<form action="index.php?cq=$next" method="post">
 		<input type="hidden" name="question" value="$cqid"/>
@@ -186,11 +186,19 @@ $templates['questionSubmit'] = <<<'EOS'
 	</form>
 EOS;
 
+$templates['questionOverview'] = <<<'EOS'
+	<li>
+		<a title="Zur Frage" href="?cq=$cqid">
+			<input type="checkbox" $id="$cqid" $answered/>
+			<label for="$cqid">$title</label>
+		</a>
+	</li>
+EOS;
+
 // answer templates
 
 $templates['answerSelect'] = <<<'EOS'
-		<input id="$aid" name="selected[]"
-			type="checkbox" value="$aid"/>
+		<input id="$aid" name="selected[]" type="checkbox" value="$aid" $selected/>
 		<label for="$aid" class="answer">$title</label>
 		$content
 EOS;
@@ -262,6 +270,11 @@ EOS;
 $templates['examReset'] = <<<'EOS'
 	<h2>Deine Prüfung wurde zurückgesetzt</h2>
 	<p>Du kannst ja wieder eine neue Prüfung starten</p>
+EOS;
+
+$templates['examResultLink'] = <<<'EOS'
+	<p><a title="zum Ergebnis" href="?result">Ergebnis</a></p>
+	<button type="submit" formaction="?result">Ergebnis</button>
 EOS;
 
 // test templates

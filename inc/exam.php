@@ -152,6 +152,7 @@ class Exam extends Getter {
 		$this->questions = array_slice($this->questions,0,$questionLimit,True);
 		$_SESSION['questions'] = array_keys($this->questions);
 		reset($this->questions);
+		$_SESSION['answers'] = [];
 		$_SESSION['previous'] = False;
 		$_SESSION['current'] = False;
 		$next = current($this->questions);

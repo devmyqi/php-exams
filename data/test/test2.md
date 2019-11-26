@@ -1,13 +1,25 @@
-# first h1
+# Erster Kurs
 
 text below first h1
 
-## first h2 below first h1
+## Was für ein Wochentag ist heute?
+
+### Freitag
+
+### Montag
+
+### Dienstag!
+
+### Donnerstag
+
+### Feiertag
+
+## Erste Frage
 
 text below first h2
 is below first h1
 
-### first h3 below first h2 below first h1
+### Antwort 1!
 
 text below first h3
 is below first h2

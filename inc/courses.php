@@ -56,6 +56,17 @@ class Courses {
 			} else { array_unshift($markup,$dataline); }
 		} $this->courses = array_reverse($courses,True);
 	}
+	public function getQuestion($cqid) { global $config;
+		if ( ! preg_match('/^([\w\d]+)\-([\w\d]+)$/',$cqid,$result) ) {
+			return $config->_log(8,"wrong format to get question in courses: $cqid");
+		} $cid = $result[1]; $qid = $result[2];
+		if ( ! array_key_exists($cid,$this->courses) ) {
+			return $config->_log(8,"missing course to get question from: $cid");
+		} $course = $this->courses[$cid];
+		if ( ! array_key_exists($qid,$course->questions) ) {
+			return $config->_log(8,"missing question $qid in course $cid to get");
+		} return $course->questions[$qid];
+	}
 	// debug methods
 	public function printTree($level=3) { global $config;
 		$config->_log(2,'printing the courses data tree');
@@ -130,6 +141,10 @@ class Question extends Getter {
 		} elseif ( $prop === 'next' ) {
 			if ( ! empty($_SESSION['next']) ) { return $_SESSION['next'];
 			} else { return False; }
+		} elseif ( $prop === 'answered' ) {
+			$answers = ! empty($_SESSION['answers']) ? $_SESSION['answers'] : [];
+			if ( array_key_exists($this->cqid,$answers) ) { return 'checked';
+			} else { return ''; }
 		} else { return parent::__get($prop); }
 	}
 	public function addAnswer($answer) {
@@ -163,6 +178,16 @@ class Answer extends Getter {
 			$title = $result[1]; $this->correct = True; 
 		} $this->title = $title;
 		$config->_log(4,"new Answer [$this->aid]: $title");
+	}
+	public function __get($prop) {
+		if ( $prop === 'selected' ) {
+			$answers = ! empty($_SESSION['answers']) ? $_SESSION['answers'] : [];
+			foreach ( $answers as $cqid => $aids) {
+				if ( ! preg_match('/\-'.$this->qid.'$/',$cqid) ) { continue; }
+				if (in_array($this->aid,$aids) ) { return 'checked'; }
+			} return '';
+			// return "unsure ($this->cid-$this->qid)";
+		} else { return parent::__get($prop); }
 	}
 	public function content() { $parsedown = new Parsedown();
 		return $parsedown->text($this->markup);

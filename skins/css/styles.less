@@ -4,7 +4,7 @@
 //	version: v0.0.2
 //	author: Michael Wronna, Konstanz
 //	created: 2019-11-06
-//	modified: 2019-11-20
+//	modified: 2019-11-26
 
 // variables
 
@@ -88,10 +88,9 @@ html {
 	}
 }
 
-
 // header
 
-header {
+body > header {
 	grid-area: header;
 	// border: solid 1px;
 	margin-top: @marginMain;
@@ -107,7 +106,7 @@ header {
 
 // nav
 
-nav {
+body > nav {
 	grid-area: nav;
 	ul {
 		list-style-type: none; 
@@ -119,24 +118,50 @@ nav {
 
 // main
 
-main {
+body > main {
 	grid-area: main;
 }
 
 // aside
 
-aside {
+body > aside {
 	grid-area: aside;
 }
 
 // footer
 
-footer {
+body > footer {
 	grid-area: footer;
 	margin-bottom: @marginMain;
 	font-size: 0.9rem;
 	padding-top: 0.2rem;
 	border-top: solid 2px @colorMain;
+}
+
+// sid courses
+.courses main header {
+	background-color: @colorMain;
+	color: white;
+	padding: 0.3rem 0.6rem;
+	border-radius: 0.5rem;
+	margin-bottom: @marginMain;
+	h3 {
+		margin: 0px;
+	}
+	ul {
+		float: right;
+		li {
+			display: inline;
+			margin-left: @marginMain;
+			a {
+				color: white;
+				text-decoration: none;
+				&:hover {
+					color: white;
+				}
+			}
+		}
+	}
 }
 
 // font awesome icons
@@ -208,6 +233,8 @@ input[type=checkbox]:checked + label::before {
 // course icons
 .link_courses::before { content: "\f02d"; } // fa-book
 .link_course::before { content: "\f518"; } // fa-book-open
+.link_details::before { content: "\f129"; } // fa-info
+.link_start::before { content: "\f04b"; } // fa-play
 // exam icons
 .link_exam::before { content: "\f518"; } // fa-book-open
 .link_prev::before { content: "\f060"; } // fa-arrow-right
