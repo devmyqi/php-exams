@@ -126,7 +126,9 @@ class Site {
 			$this->content = Site::_format($exam,'examReset');
 		} elseif ( isset($request->get['result']) ) {
 			$this->sid = 'result'; $this->title = 'Ergebnis';
-			$this->content = Site::_format($exam,'examResultSummary');
+			$result = $exam->getResult();
+			$this->content = Site::_format($result,'examResultSummary',True);
+			$exam->reset();
 		// course questions routes
 		} elseif ( ! empty($request->get['cq']) ) {
 			$cqid = $request->get['cq'];

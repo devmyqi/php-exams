@@ -6,7 +6,7 @@
 	version: v0.0.2 (new approach)
 	author: Michael Wronna, Konstanz
 	created: 2019-11-12
-	modified: 2019-11-20
+	modified: 2019-11-26
 	notes: classes copied from inc/courses.php
 */
 
@@ -162,6 +162,12 @@ class Question extends Getter {
 	}
 	public function content() { $parsedown = new Parsedown();
 		return $parsedown->text($this->markup);
+	}
+	public function isCorrect($selection) { $correct = [];
+		foreach ( $this->answers as $answer ) {
+			if ( $answer->correct ) { $correct[] = $answer->aid; }
+		} if ( empty(array_diff($correct,$selection)) ) { return True; }
+		return False;
 	}
 } // end of class Question
 

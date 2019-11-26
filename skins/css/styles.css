@@ -73,6 +73,16 @@ html form h3 {
   color: #090;
   cursor: pointer;
 }
+html table tr {
+  height: 2rem;
+}
+html table tr th {
+  text-align: left;
+  padding-right: 1rem;
+}
+html table tr th::after {
+  content: ':';
+}
 body > header {
   grid-area: header;
   margin-top: 1rem;

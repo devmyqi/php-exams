@@ -277,6 +277,18 @@ $templates['examResultLink'] = <<<'EOS'
 	<button type="submit" formaction="?result">Ergebnis</button>
 EOS;
 
+$templates['examResultSummary'] = <<<'EOS'
+	<h2>Ergebnis</h2>
+	<table>
+		<tr><th>Anzahl Fragen gesamt</th><td>$total</td></tr>
+		<tr><th>Anzahl beantworterter Fragen</th><td>$answered</td></tr>
+		<tr><th>Anzahl unbeantworterter Fragen</th><td>$open</td></tr>
+		<tr><th>Anzahl richtig beantworteter Fragen</th><td>$correct</td</tr>
+		<tr><th>Anzahl falsch beantworteter Fragen</th><td>$wrong</td></tr>
+		<tr><th>Quote richtig beantworteter Fragen</th><td>$quote</td></tr>
+	</table>
+EOS;
+
 // test templates
 
 $templates['test'] = <<<'EOS'

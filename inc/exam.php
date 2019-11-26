@@ -48,6 +48,8 @@ class Exam extends Getter {
 			if ( ! empty($_SESSION['questions']) ) {
 				return count($_SESSION['questions']);
 			} else { return 0; }
+		} elseif ( $prop === 'open' ) {
+			return 42;
 		} else { return parent::__get($prop); }
 	}
 	public function getIndex($cqid) { global $config;
@@ -58,6 +60,25 @@ class Exam extends Getter {
 		if ( $index === False ) {
 			return $config->_log(8,"current question ($cqid) not in questions");
 		} return $index + 1; // starting to count from 1
+	}
+	public function getResult() { global $config, $courses, $site;
+		if ( empty($_SESSION['questions']) ) {
+			return $config->_log(8,"unable to get results if exam is not started");
+		} $questions = $_SESSION['questions'];
+		$answers = ! empty($_SESSION['answers']) ? $_SESSION['answers'] : [];
+		$result = ['total'=>$this->total,'open'=>0,'answered'=>0,'wrong'=>0,
+			'correct'=>0,'quote'=>0,'missing'=>0];
+		foreach ( $questions as $cqid ) {
+			$question = $courses->getQuestion($cqid);
+			if ( ! is_object($question) ) { $result['missing'] += 1; continue; }
+			if ( array_key_exists($cqid,$answers) ) {
+				$result['answered'] += 1; $selection = $answers[$cqid];
+			} else { $result['open'] += 1; continue; }
+			$correct = $question->isCorrect($selection);
+			if ( $correct ) { $result['correct'] += 1;
+			} else { $result['wrong'] += 1; }
+		} $result['quote'] = $result['correct'] / $result['total'];
+		return $result;
 	}
 	public function addCourse($course) { global $config, $courses;
 		$this->courses[$course->cid] = $course;
