@@ -124,9 +124,9 @@ class Site {
 			$exam->reset();
 			$this->sid = 'reset'; $this->title = 'Zurücksetzen';
 			$this->content = Site::_format($exam,'examReset');
-		} elseif ( isset($request->get['result']) ) {
+		} elseif ( isset($request->get['result']) ) { $result = $exam->getResult();
 			$this->sid = 'result'; $this->title = 'Ergebnis';
-			$result = $exam->getResult();
+			if ( ! is_array($result) ) { return $this->errorPage('examResultFailed'); }
 			$this->content = Site::_format($result,'examResultSummary',True);
 			$exam->reset();
 		// course questions routes

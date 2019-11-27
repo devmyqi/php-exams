@@ -277,6 +277,14 @@ $templates['examResultLink'] = <<<'EOS'
 	<button type="submit" formaction="?result">Ergebnis</button>
 EOS;
 
+$templates['examResultFailed'] = <<<'EOS'
+	<h2>Das Ergebnis kann nicht angezeigt werden</h2>
+	<p>Sorry, vielleicht hast Du gar keine Prüfung gestartet, oder Du
+		hast auf der Ergebnis-Seite die Seite neu geladen. Ist jetzt
+		ja echt blöd, aber nicht so schlimm, Du kannst ja sehr gerne
+		eine neue Prüfung starten!</p>
+EOS;
+
 $templates['examResultSummary'] = <<<'EOS'
 	<h2>Ergebnis</h2>
 	<table>

@@ -23,6 +23,9 @@
 	* Fragen eines Kurses durchblättern
 * v0.0.2 (alpha2)
 	* Templates für Kurse, Fragen und Antworten
+	* Prüfungen für die einzelnenn Kurse
+	* Navigation für die Fragen mit Übersicht
+	* Ergebnis der Prüfung und Zurücksetzen
 * v0.0.5 (beta1)
 * v0.1.0 (release1)
 * v1.0.0 (stable1)
