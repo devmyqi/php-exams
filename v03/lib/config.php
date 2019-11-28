@@ -29,7 +29,7 @@ trait Logger {
 		'terminal' => '$logString' . "\n",
 		'website' => '<p class="log">$logString</p>' . "\n",
 	];
-	private function _log(int $level, string $message) {
+	public function _log(int $level, string $message) {
 		$now = new DateTime(); $logCreated = $now->format($this->logDate);
 		$logType = array_key_exists($level,$this->logTypes) ? $this->logTypes[$level] : 'undef';
 		$logData = ['$logCreated'=>$logCreated,'$logType'=>$logType,
@@ -46,16 +46,18 @@ trait Logger {
 class Config {
 	use Super;
 	use Logger;
-	static protected $iniRead = False;
-	static protected $configs = [];
-	private $defaults = [
+	static private $iniRead = False;
+	static private $configs = [];
+	static private $defaults = [
 		'confid' => 'default',
 		'description' => 'no description for this configuration',
 		'iniFile' => 'settings.ini',
+		'dataFiles' => 'data/03*.md',
+		'dataHashLength' => 4,
 	];
 	// magic methods
 	public function __construct(array $data) {
-		foreach ( array_merge($this->defaults,$data) as $attrib => $value ) {
+		foreach ( array_merge(self::$defaults,$data) as $attrib => $value ) {
 			$this->$attrib = $value;
 		} $this->_log(1,"new Config: $this->confid ($this->logLevel)");
 		self::$configs[$this->confid] = $this;
@@ -66,7 +68,7 @@ class Config {
 		return $printFormat;
 	}
 	// basic methods
-	private function _copy($data) { $config = clone($this);
+	private function _copy(array $data=[]) { $config = clone($this);
 		foreach ( $data as $attrib => $value ) { $config->$attrib = $value; }
 		$this->_log(2,"copied Config '$this->confid' into Config '$config->confid'");
 		self::$configs[] = $config; return $config;
