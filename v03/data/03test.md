@@ -23,3 +23,15 @@ The question can have markup in the text of course.
 ### The first answer
 
 select the right one
+
+### a01: second answer
+
+### correct answer!
+
+### answer with markup
+
+there is markup in the answer
+
+multiple lines and multiple paragraphs
+with senseless text in the markup
+

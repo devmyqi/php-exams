@@ -22,6 +22,5 @@ $data = new Data();
 # echo $config->asJson();
 
 // data tests
-print_r($data)
 
 ?>

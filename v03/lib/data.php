@@ -25,6 +25,31 @@ class Data {
 		} foreach ( $courseFiles as $courseFile ) { $this->readCourses($courseFile); }
 	}
 	private function readCourses(string $courseFile) { global $config;
+		// reverse processing
+		if ( ! is_file($courseFile) or ! is_readable($courseFile) ) {
+			$config->_log(8,"unable to read courses from: $courseFile");
+		} $config->_log(2,"reading courses from file: $courseFile");
+		$answers = []; $questions = []; $markupLines = [];
+		foreach ( array_reverse(file($courseFile)) as $dataLine ) {
+			$dataLine = rtrim($dataLine);
+			if ( preg_match('/^\#{3}\s+(.*)$/',$dataLine,$result) ) { // answer
+				$answer = new Answer($result[1]);
+				$answer->markup = trim(implode("\n",array_reverse($markupLines)));
+				$answers[$answer->aid] = $answer; $markupLines = [];
+			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$dataLine,$result) ) { // question
+				$question = new Question($result[1]);
+				$question->markup = trim(implode("\n",array_reverse($markupLines)));
+				$question->answers = array_reverse($answers,TRUE);
+				$questions[$question->qid] = $question;
+				$answers = []; $markupLines = [];
+			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$dataLine,$result) ) { // course
+				$course = new Course($result[1]);
+				// work in progress #wip
+			} else { $markupLines[] = $dataLine; }
+		}
+	}
+	private function test_readCourses(string $courseFile) { global $config;
+		// forward processing
 		if ( ! is_file($courseFile) or ! is_readable($courseFile) ) {
 			$config->_log(8,"unable to read courses from: $courseFile");
 		} $config->_log(2,"reading courses from file: $courseFile");
@@ -32,11 +57,16 @@ class Data {
 		foreach ( file($courseFile) as $dataLine ) {
 			$dataLine = rtrim($dataLine);
 			if ( preg_match('/^\#{1}\s+(.*)$/',$dataLine,$result) ) { // course
+				if ( $object ) { $object->markup = implode("\n",$markupLines); }
 				$course = new Course($result[1]);
-				$object = $course;
 				self::$courses[$course->cid] = $course;
+				$object = $course; $markupLines = [];
 			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$dataLine,$result) ) { // question
+				if ( $object ) { $object->markup = implode("\n",$markupLines); }
 				$question = new Question($result[1]);
+				$object->questions[$question->qid] = $question;
+				$object = $question; $markupLines = [];
+				
 				// question
 			} elseif ( preg_match('/^\#{3}\s+(.*)$/',$dataLine,$result) ) { // answer
 				$answer = new Answer($result[1]);
@@ -101,7 +131,6 @@ class Question {
 		$this->qid = substr(md5($dataLine),0,$config->dataHashLength);
 		if ( ! empty($dataLine) ) { $this->parseData($dataLine); }
 		$config->_log(2,'new Question initialized');
-		print_r($this);
 	}
 	protected function parseData(string $dataLine) { $title = '';
 		foreach ( preg_split('/\s+/',$dataLine) as $word ) {
@@ -132,7 +161,20 @@ class Answer {
 		'correct' => FALSE,
 	];
 	public function __construct(string $dataLine) { global $config;
+		foreach ( self::$defaults as $attrib => $value ) { $this->$attrib = $value; }
+		$this->aid = substr(md5($dataLine),0,$config->dataHashLength);
+		if ( ! empty($dataLine) ) { $this->parseData($dataLine); }
 		$config->_log(4,"new Anwer object initialized");
+	}
+	protected function parseData(string $dataLine) {
+		if ( preg_match('/^(.*)\!$/',$dataLine,$result) ) {
+			$this->correct = TRUE; $dataLine = $result[1];
+		} $title = '';
+		foreach ( preg_split('/\s+/',$dataLine) as $word ) {
+			if ( preg_match('/^([\w\-\.]+)\:$/',$word,$result) ) {
+				$this->aid = $result[1];
+			} else { $title = trim("$title $word"); }
+		} $this->title = $title;
 	}
 } // end of class Answer
 
