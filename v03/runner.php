@@ -6,7 +6,7 @@
 	version: v0.0.3
 	author: Michael Wronna, Konstanz
 	created: 2019-11-28
-	modified: 2019-11-28
+	modified: 2019-12-01
 */
 
 require_once('__init.php');
@@ -22,5 +22,9 @@ $data = new Data();
 # echo $config->asJson();
 
 // data tests
+# $data->printTree();
+
+// users tests
+$users = new Users();
 
 ?>

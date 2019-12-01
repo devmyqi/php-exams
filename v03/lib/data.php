@@ -1,12 +1,14 @@
 <?php
 
+// vim-marks: d=Data,b=Base,c=Couse,q=Question,a=Answer
+
 /*	meta information
 	filename: v03/lib/data.php
 	description: data classes for exams
 	version: v0.0.3
 	author: Michael Wronna, Konstanz
 	created: 2019-11-28
-	modified: 2019-11-28
+	modified: 2019-11-29
 */
 
 class Data {
@@ -16,7 +18,10 @@ class Data {
 	// magic methods
 	public function __construct(array $data=[]) { global $config;
 		$config->_log(1,"new Data with files: $config->dataFiles");
-		if ( self::$filesRead === FALSE ) { $this->readFiles($config->dataFiles); }
+		$this->base = new Base();
+		if ( self::$filesRead === FALSE ) {
+			$this->readFiles($config->dataFiles);
+		}
 	}
 	private function readFiles($dataFiles) { global $config;
 		$courseFiles = glob($dataFiles);
@@ -44,36 +49,42 @@ class Data {
 				$answers = []; $markupLines = [];
 			} elseif ( preg_match('/^\#{1}\s+(.*)$/',$dataLine,$result) ) { // course
 				$course = new Course($result[1]);
-				// work in progress #wip
+				$course->markup = trim(implode("\n",array_reverse($markupLines)));
+				$course->questions = array_reverse($questions,TRUE);
+				self::$courses[$course->cid] = $course;
+				$questions = []; $markupLines = [];
 			} else { $markupLines[] = $dataLine; }
 		}
 	}
-	private function test_readCourses(string $courseFile) { global $config;
-		// forward processing
-		if ( ! is_file($courseFile) or ! is_readable($courseFile) ) {
-			$config->_log(8,"unable to read courses from: $courseFile");
-		} $config->_log(2,"reading courses from file: $courseFile");
-		$object = FALSE; $markupLines = []; // for setting the markup
-		foreach ( file($courseFile) as $dataLine ) {
-			$dataLine = rtrim($dataLine);
-			if ( preg_match('/^\#{1}\s+(.*)$/',$dataLine,$result) ) { // course
-				if ( $object ) { $object->markup = implode("\n",$markupLines); }
-				$course = new Course($result[1]);
-				self::$courses[$course->cid] = $course;
-				$object = $course; $markupLines = [];
-			} elseif ( preg_match('/^\#{2}\s+(.*)$/',$dataLine,$result) ) { // question
-				if ( $object ) { $object->markup = implode("\n",$markupLines); }
-				$question = new Question($result[1]);
-				$object->questions[$question->qid] = $question;
-				$object = $question; $markupLines = [];
-				
-				// question
-			} elseif ( preg_match('/^\#{3}\s+(.*)$/',$dataLine,$result) ) { // answer
-				$answer = new Answer($result[1]);
-			} else { $markupLines[] = $dataLine; }
+	// debug methods
+	public function printTree() { global $config;
+		$config->_log(2,"printing the data tree to <stdout>");
+		foreach ( self::$courses as $cid => $course ) {
+			print("[C] $course->cid: $course->title\n");
+			foreach ( $course->questions as $qid => $question ) {
+				print("\t[Q] $question->qid: $question->title\n");
+				foreach ( $question->answers as $aid => $answer ) {
+					print("\t\t[A] $answer->aid: $answer->title\n");
+				}
+			}
 		}
 	}
 } // end of class Data
+
+class Base { // sqlite3 database
+	public $pdo = False;
+	public function __construct() { global $config;
+		$config->_log(1,"new <Base> object initialized");
+		$this->_connect($config->baseType);
+	}
+	private function _connect($baseType) { global $config;
+		if ( $config->baseType === 'sqlite3' ) {
+			$config->_log(2,"connecting to database: $baseType");
+		} else {
+			return $config->_log(8,"undefined database type to connect: $baseType");
+		}
+	}
+} // end of class Base
 
 class Course {
 	static private $defaults = [

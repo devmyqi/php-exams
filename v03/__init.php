@@ -6,7 +6,7 @@
 	version: v0.0.3
 	author: Michael Wronna, Konstanz
 	created: 2019-11-28
-	modified: 2019-11-28
+	modified: 2019-12-01
 */
 
 // load chain: config,(user),data,(exam),(site)
@@ -21,11 +21,14 @@ const CLASSFILES = [
 	'Logger' => 'lib/config.php',
 	// classes
 	'Config' => 'lib/config.php',
-	// planned
+	// data
 	'Data' => 'lib/data.php',
+	'Base' => 'lib/data.php',
 	'Course' => 'lib/data.php',
 	'Question' => 'lib/data.php',
 	'Answer' => 'lib/data.php',
+	// users
+	'Users' => 'lib/user.php',
 ];
 
 // autoloading

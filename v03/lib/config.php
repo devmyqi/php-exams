@@ -6,7 +6,7 @@
 	version: v0.0.3
 	author: Michael Wronna, Konstanz
 	created: 2019-11-28
-	modified: 2019-11-28
+	modified: 2019-12-01
 */
 
 trait Super {
@@ -54,6 +54,8 @@ class Config {
 		'iniFile' => 'settings.ini',
 		'dataFiles' => 'data/03*.md',
 		'dataHashLength' => 4,
+		'baseType' => 'sqlite3',
+		'baseFile' => 'data/v03.sqlite3',
 	];
 	// magic methods
 	public function __construct(array $data) {
@@ -71,7 +73,7 @@ class Config {
 	private function _copy(array $data=[]) { $config = clone($this);
 		foreach ( $data as $attrib => $value ) { $config->$attrib = $value; }
 		$this->_log(2,"copied Config '$this->confid' into Config '$config->confid'");
-		self::$configs[] = $config; return $config;
+		self::$configs[$config->confid] = $config; return $config;
 	}
 	private function readIniFile(string $iniFile) {
 		if ( ! is_file($iniFile) or ! is_readable($iniFile) ) {
@@ -91,9 +93,19 @@ class Config {
 				// echo ">>> setting: $attrib => $value\n";
 			} elseif ( preg_match('/^\@([\w\-\.]+)\s*(.*)$/',$configLine,$result) ) {
 				$action = $result[1]; $argument = $result[2];
-				if ( in_array($action,['copy','default']) ) { $addMode = $action; }
-				else { $this->_log(8,"undefined action in configuration: $action($argument)"); }
+				if ( in_array($action,['copy','default']) ) { $addMode = $action;
+				} elseif ( $action === 'apply' ) { $this->applyConfig($argument);
+				} else { $this->_log(8,"undefined action in configuration: $action($argument)"); }
 			} else { $this->_log(8,"unable to parse configuration: $configLine"); }
+		}
+	}
+	public function applyConfig($confid) {
+		if ( ! array_key_exists($confid,self::$configs) ) {
+			return $this->_log(8,"unable to apply missing configuration: $confid");
+		} $this->_log(2,"applying configuration as default: $confid");
+		$config = self::$configs[$confid];
+		foreach ( get_object_vars($config) as $attrib => $value ) {
+			if ( $attrib !== 'confid' ) { $this->$attrib = $value; }
 		}
 	}
 	// output methods, cli only #debug
