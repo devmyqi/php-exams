@@ -1,0 +1,258 @@
+//	meta information
+//	filename: v03/skins/css/styles.less
+//	description: default skin style for exams
+//	version: v0.0.3
+//	author: Michael Wronna, Konstanz
+//	created: 2019-12-02
+//	modified: 2019-12-03
+
+// variables
+
+@widthMain: 66rem;
+@widthCols: 12rem;
+@colorText: #666;
+@colorMain: #090;
+@marginMain: 1.0rem;
+@marginSmall: 0.5rem;
+
+// reset
+
+*, ::before, ::after {
+	box-sizing: content-box;
+	margin: 0px;
+	padding: 0px;
+}
+
+// design
+
+html {
+	font-family: Montserrat, Arial, helvetica, sans-serif;
+	line-height: 1.5rem;
+	color: @colorText;
+	body {
+		max-width: @widthMain;
+		min-height: 100vh;
+		margin: 0px auto;
+		position: relative; // for #status
+		display: grid;
+		gap: @marginMain;
+		grid-template-columns: @widthCols 1fr;
+		grid-template-areas: "header header" "nav main" "footer footer";
+		grid-template-rows: auto 1fr auto;
+	}
+	a, a:visited {
+		color: @colorMain;
+		&:hover {
+			color: @colorText;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+		}
+	}
+	h2, h3, ul, p {
+		margin-bottom: @marginSmall;
+	}
+	ul {
+		padding-left: @marginSmall;
+	}
+	form {
+		input, button {
+			font-family: Montserrat, Arial, helvetica, sans-serif;
+			font-size: 0.9rem;
+			color: @colorText;
+			padding: 0.2rem 0.4rem;
+			border: solid 1px @colorMain;
+			border-radius: 0.4rem;
+			margin-bottom: @marginSmall;
+		}
+		input[type=submit], button[type=submit] {
+			font-weight: bold;
+			padding: 0.2rem 0.4rem;
+			color: #fff;
+			background-color: @colorMain;
+			cursor: pointer;
+			&:hover {
+				background-color: @colorText;
+				border-color: @colorText;
+				box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+			}
+		}
+		h2 {
+			color: #fff;
+			background-color: @colorMain;
+			padding: 0.5rem 0.6rem;
+			border-radius: 0.4rem;
+		}
+		h3 {
+			color: @colorMain;
+			cursor: pointer;
+		}
+	}
+	table {
+		tr {
+			height: 2rem;
+			th {
+				text-align: left;
+				padding-right: @marginMain;
+				&::after {
+					content: ':';
+				}
+			}
+		}
+	}
+}
+
+// header
+
+body > header {
+	grid-area: header;
+	// border: solid 1px;
+	margin-top: @marginMain;
+	height: 3rem;
+	background-image: url(../../img/logo.png);
+	background-repeat: no-repeat;
+	background-position: top right;
+	background-size: 2rem;
+	h1 a {
+		text-decoration: none;
+	}
+}
+
+// nav
+
+body > nav {
+	grid-area: nav;
+	ul {
+		list-style-type: none; 
+	}
+	ul li a {
+		text-decoration: none;
+	}
+}
+
+// main
+
+body > main {
+	grid-area: main;
+}
+
+// aside
+
+body > aside {
+	grid-area: aside;
+}
+
+// footer
+
+body > footer {
+	grid-area: footer;
+	margin-bottom: @marginMain;
+	font-size: 0.9rem;
+	padding-top: 0.2rem;
+	border-top: solid 2px @colorMain;
+}
+
+// sid courses
+.courses main header {
+	background-color: @colorMain;
+	color: white;
+	padding: 0.3rem 0.6rem;
+	border-radius: 0.5rem;
+	margin-bottom: @marginMain;
+	h3 {
+		margin: 0px;
+	}
+	ul {
+		float: right;
+		li {
+			display: inline;
+			margin-left: @marginMain;
+			a {
+				color: white;
+				text-decoration: none;
+				&:hover {
+					color: white;
+				}
+			}
+		}
+	}
+}
+
+// font awesome icons
+
+input[type=checkbox] {
+	display: none;
+}
+
+label.answer {
+	background-color: @colorMain;
+	color: white;
+	font-weight: bold;
+	padding: 0.4rem 0.6rem;
+	border-radius: 0.4rem;
+	cursor: pointer;
+	display: block;
+	margin: @marginMain 0px;
+}
+
+label.answer::before {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 400;
+	margin-right: @marginSmall;
+	width: 1.0rem;
+	content: "\f0c8";
+}
+
+input[type=checkbox] + label {
+	cursor: pointer;
+}
+
+input[type=checkbox] + label::before {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 400;
+	margin-right: @marginSmall;
+	display: inline-block;
+	width: 1.0rem;
+	content: "\f0c8";
+}
+
+input[type=checkbox] + label.question::before {
+	content: "";
+}
+
+input[type=checkbox]:checked + label.question::before {
+	font-weight: bold;
+	font-size: 0.8em;
+	content: "\f02e";
+}
+
+input[type=checkbox]:checked + label::before {
+	font-weight: 900;
+	content: "\f00c";
+}
+
+*[class^=link_]::before {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	margin-right: @marginSmall;
+}
+
+// navig icons
+.link_home::before { content: "\f4b8"; } // fa-couch
+// users icons
+.link_register::before { content: "\f234"; } // fa-user-plus
+.link_login::before { content: "\f2f6"; } // fa-sign-in-alt
+.link_profile::before { content: "\f007"; } // fa-user
+.link_logout::before { content: "\f2f5"; } // fa-sign-out-alt
+// course icons
+.link_courses::before { content: "\f02d"; } // fa-book
+.link_course::before { content: "\f518"; } // fa-book-open
+.link_details::before { content: "\f129"; } // fa-info
+.link_start::before { content: "\f04b"; } // fa-play
+// exam icons
+.link_exam::before { content: "\f518"; } // fa-book-open
+.link_prev::before { content: "\f060"; } // fa-arrow-right
+.link_next::before { content: "\f061"; } // fa-arrow-right
+.link_overview::before { content: "\f518"; } // fa-book-open
+.link_reset::before { content: "\f1f8"; } // fa-trash
+
+// hacks
+

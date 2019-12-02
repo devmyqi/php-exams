@@ -21,24 +21,31 @@ const CLASSFILES = [
 	'Logger' => 'lib/config.php',
 	// classes
 	'Config' => 'lib/config.php',
-	// data
+	// request (controller)
+	'Request' => 'lib/request.php',
+	// users
+	'Users' => 'lib/user.php',
+	'User' => 'lib/user.php',
+	'Profile' => 'lib/user.php',
+	'Settings' => 'lib/user.php',
+	// data (model)
 	'Data' => 'lib/data.php',
 	'Base' => 'lib/data.php',
 	'Course' => 'lib/data.php',
 	'Question' => 'lib/data.php',
 	'Answer' => 'lib/data.php',
-	// users
-	'Users' => 'lib/user.php',
+	// site (view)
+	'Site' => 'lib/site.php',
 ];
 
 // autoloading
-function __autoload(string $class) {
+function autoload(string $class) {
 	if ( ! array_key_exists($class,CLASSFILES) ) { return NULL; }
 	$classfile = CLASSFILES[$class];
 	if ( ! is_file($classfile) or ! is_readable($classfile) ) { return NULL; }
 	require_once($classfile);
 }
 
-spl_autoload_register('__autoload');
+spl_autoload_register('autoload');
 
 ?>

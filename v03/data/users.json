@@ -1,0 +1,14 @@
+[
+	{
+		"email": "mike@myqs.net",
+		"password": "geheim",
+		"username": "Michael Wronna",
+		"firstname": "Michael",
+		"lastname": "Wronna"
+	},
+	{
+		"email": "else@someone.com",
+		"password": "geheim",
+		"username": "Else Someone"
+	}
+]

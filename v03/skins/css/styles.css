@@ -1,0 +1,233 @@
+*,
+::before,
+::after {
+  box-sizing: content-box;
+  margin: 0px;
+  padding: 0px;
+}
+html {
+  font-family: Montserrat, Arial, helvetica, sans-serif;
+  line-height: 1.5rem;
+  color: #666;
+}
+html body {
+  max-width: 66rem;
+  min-height: 100vh;
+  margin: 0px auto;
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 12rem 1fr;
+  grid-template-areas: "header header" "nav main" "footer footer";
+  grid-template-rows: auto 1fr auto;
+}
+html a,
+html a:visited {
+  color: #090;
+}
+html a:hover,
+html a:visited:hover {
+  color: #666;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+html h2,
+html h3,
+html ul,
+html p {
+  margin-bottom: 0.5rem;
+}
+html ul {
+  padding-left: 0.5rem;
+}
+html form input,
+html form button {
+  font-family: Montserrat, Arial, helvetica, sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  padding: 0.2rem 0.4rem;
+  border: solid 1px #090;
+  border-radius: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+html form input[type=submit],
+html form button[type=submit] {
+  font-weight: bold;
+  padding: 0.2rem 0.4rem;
+  color: #fff;
+  background-color: #090;
+  cursor: pointer;
+}
+html form input[type=submit]:hover,
+html form button[type=submit]:hover {
+  background-color: #666;
+  border-color: #666;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+html form h2 {
+  color: #fff;
+  background-color: #090;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.4rem;
+}
+html form h3 {
+  color: #090;
+  cursor: pointer;
+}
+html table tr {
+  height: 2rem;
+}
+html table tr th {
+  text-align: left;
+  padding-right: 1rem;
+}
+html table tr th::after {
+  content: ':';
+}
+body > header {
+  grid-area: header;
+  margin-top: 1rem;
+  height: 3rem;
+  background-image: url(../../img/logo.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: 2rem;
+}
+body > header h1 a {
+  text-decoration: none;
+}
+body > nav {
+  grid-area: nav;
+}
+body > nav ul {
+  list-style-type: none;
+}
+body > nav ul li a {
+  text-decoration: none;
+}
+body > main {
+  grid-area: main;
+}
+body > aside {
+  grid-area: aside;
+}
+body > footer {
+  grid-area: footer;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  padding-top: 0.2rem;
+  border-top: solid 2px #090;
+}
+.courses main header {
+  background-color: #090;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+.courses main header h3 {
+  margin: 0px;
+}
+.courses main header ul {
+  float: right;
+}
+.courses main header ul li {
+  display: inline;
+  margin-left: 1rem;
+}
+.courses main header ul li a {
+  color: white;
+  text-decoration: none;
+}
+.courses main header ul li a:hover {
+  color: white;
+}
+input[type=checkbox] {
+  display: none;
+}
+label.answer {
+  background-color: #090;
+  color: white;
+  font-weight: bold;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  display: block;
+  margin: 1rem 0px;
+}
+label.answer::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  margin-right: 0.5rem;
+  width: 1rem;
+  content: "\f0c8";
+}
+input[type=checkbox] + label {
+  cursor: pointer;
+}
+input[type=checkbox] + label::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 400;
+  margin-right: 0.5rem;
+  display: inline-block;
+  width: 1rem;
+  content: "\f0c8";
+}
+input[type=checkbox] + label.question::before {
+  content: "";
+}
+input[type=checkbox]:checked + label.question::before {
+  font-weight: bold;
+  font-size: 0.8em;
+  content: "\f02e";
+}
+input[type=checkbox]:checked + label::before {
+  font-weight: 900;
+  content: "\f00c";
+}
+*[class^=link_]::before {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  margin-right: 0.5rem;
+}
+.link_home::before {
+  content: "\f4b8";
+}
+.link_register::before {
+  content: "\f234";
+}
+.link_login::before {
+  content: "\f2f6";
+}
+.link_profile::before {
+  content: "\f007";
+}
+.link_logout::before {
+  content: "\f2f5";
+}
+.link_courses::before {
+  content: "\f02d";
+}
+.link_course::before {
+  content: "\f518";
+}
+.link_details::before {
+  content: "\f129";
+}
+.link_start::before {
+  content: "\f04b";
+}
+.link_exam::before {
+  content: "\f518";
+}
+.link_prev::before {
+  content: "\f060";
+}
+.link_next::before {
+  content: "\f061";
+}
+.link_overview::before {
+  content: "\f518";
+}
+.link_reset::before {
+  content: "\f1f8";
+}

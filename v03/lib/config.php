@@ -1,12 +1,14 @@
 <?php
 
+// vim-marks: s=Super,l=Logger,c=Config
+
 /*	meta information
 	filename: v03/lib/config.php
 	description: config class for exams
 	version: v0.0.3
 	author: Michael Wronna, Konstanz
 	created: 2019-11-28
-	modified: 2019-12-01
+	modified: 2019-12-02
 */
 
 trait Super {
@@ -54,15 +56,20 @@ class Config {
 		'iniFile' => 'settings.ini',
 		'dataFiles' => 'data/03*.md',
 		'dataHashLength' => 4,
+		'userFile' => 'data/users.json',
 		'baseType' => 'sqlite3',
 		'baseFile' => 'data/v03.sqlite3',
+		'skinDir' => 'skins',
+		'siteName' => 'exams?',
 	];
 	// magic methods
-	public function __construct(array $data) {
+	public function __construct(array $data=[]) {
 		foreach ( array_merge(self::$defaults,$data) as $attrib => $value ) {
 			$this->$attrib = $value;
 		} $this->_log(1,"new Config: $this->confid ($this->logLevel)");
-		self::$configs[$this->confid] = $this;
+		if ( empty(self::$configs) ) {
+			$this->description = 'default configuration set by the program';
+		} self::$configs[$this->confid] = $this;
 		if ( self::$iniRead === FALSE ) { $this->readIniFile($this->iniFile); }
 	}
 	public function __toString() {
